@@ -28,10 +28,19 @@ public class VoxelData
 		{1, 2, 5, 6} // Right Face  (+X)
     };
 
+    public static readonly Vector3Int[] SurfaceNormal = new Vector3Int[6]
+    {
+        Vector3Int.back,
+        Vector3Int.forward,
+        Vector3Int.up,
+        Vector3Int.down,
+        Vector3Int.left,
+        Vector3Int.right
+    };
+
     // ! Left Triangle {0, 1, 2}, Right Triangle {2, 1, 3}
     public static readonly int[] TriIdxOrder = new int[6] { 0, 1, 2, 2, 1, 3 };
 
-    // LUT - uv data
     public static readonly Vector2[] Uvs = new Vector2[4]
     {
         new Vector2 (0.0f, 0.0f),

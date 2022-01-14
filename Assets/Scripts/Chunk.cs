@@ -8,7 +8,7 @@ public class Chunk : MonoBehaviour
     public static readonly int Height = 30;
 
     // ? Map type can be change to another types or seperated to `Sometype blockMap` and  `bool blockActivateMap`
-    protected bool[,,] blockMap = new bool[Width, Height, Width]; // x, y, z
+    public Block[,,] BlockMap = new Block[Width, Height, Width];
 
     protected List<Vector3> verts = new List<Vector3>();
     protected List<int> tris = new List<int>();
@@ -29,18 +29,31 @@ public class Chunk : MonoBehaviour
     {
         foreach (var pos in ChunkFullIterator())
         {
-            blockMap[pos.x, pos.y, pos.z] = true;
+            BlockMap[pos.x, pos.y, pos.z] = new Block();
+            BlockMap[pos.x, pos.y, pos.z].IsSolid = true;
         }
     }
 
     protected void CreateCube()
     {
-        foreach (var pos in ChunkFullIterator())
+        bool IsBoundaryBlock(Vector3Int pos)
         {
-            if (blockMap[pos.x, pos.y, pos.z])
-                MakeCube(transform.position + pos);
+            foreach (var normal in VoxelData.SurfaceNormal)
+            {
+                var outerBlock = pos + normal;
+                if (outerBlock.x < 0) return true;
+                if (outerBlock.y < 0) return true;
+                if (outerBlock.z < 0) return true;
+                if (outerBlock.x >= Width) return true;
+                if (outerBlock.y >= Height) return true;
+                if (outerBlock.z >= Width) return true;
+            }
+            return false;
         }
 
+        foreach (var pos in ChunkFullIterator())
+            if (BlockMap[pos.x, pos.y, pos.z].IsSolid && IsBoundaryBlock(pos))
+                MakeCube(transform.position + pos);
     }
 
     protected void MakeCube(Vector3 pos)
@@ -80,6 +93,7 @@ public class Chunk : MonoBehaviour
 
         meshFilter.mesh = mesh;
     }
+
     public static IEnumerable<Vector3Int> ChunkFullIterator()
     {
         for (int x = 0; x < Width; x++)
