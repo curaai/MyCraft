@@ -7,7 +7,7 @@ public class VoxelData
     public static readonly int FACE_COUNT = 6;
     public static readonly int VERTEX_COUNT = 6;
 
-    public static readonly Vector3[] verts = new Vector3[8] {
+    public static readonly Vector3[] Verts = new Vector3[8] {
         new Vector3(0.0f, 0.0f, 0.0f),
         new Vector3(1.0f, 0.0f, 0.0f),
         new Vector3(1.0f, 1.0f, 0.0f),
@@ -18,7 +18,7 @@ public class VoxelData
         new Vector3(0.0f, 1.0f, 1.0f),
     };
 
-    public static readonly int[,] tris = new int[6, 4]
+    public static readonly int[,] Tris = new int[6, 4]
     {
         {0, 3, 1, 2}, // Back Face   (-Z)
 		{5, 6, 4, 7}, // Front Face  (+Z)
@@ -28,8 +28,11 @@ public class VoxelData
 		{1, 2, 5, 6} // Right Face  (+X)
     };
 
+    // ! Left Triangle {0, 1, 2}, Right Triangle {2, 1, 3}
+    public static readonly int[] TriIdxOrder = new int[6] { 0, 1, 2, 2, 1, 3 };
+
     // LUT - uv data
-    public static readonly Vector2[] uvs = new Vector2[4]
+    public static readonly Vector2[] Uvs = new Vector2[4]
     {
         new Vector2 (0.0f, 0.0f),
         new Vector2 (0.0f, 1.0f),

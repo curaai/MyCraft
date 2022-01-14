@@ -21,8 +21,6 @@ public static class TilePos
             y *= NormTextureAtlasSize;
             y = 1 - y - NormTextureAtlasSize;
 
-            Debug.Log("x: " + x + " y:" + y);
-
             var uvs = new Vector2[]
             {
             new Vector2(x, y),
