@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chunk : MonoBehaviour
+public class Chunk
 {
-    public static readonly int Width = 10;
-    public static readonly int Height = 30;
+    public static readonly int Width = 30;
+    public static readonly int Height = 10;
 
     // ? Map type can be change to another types or seperated to `Sometype blockMap` and  `bool blockActivateMap`
     public Block[,,] BlockMap = new Block[Width, Height, Width];
@@ -14,11 +14,22 @@ public class Chunk : MonoBehaviour
     protected List<int> tris = new List<int>();
     protected List<Vector2> uvs = new List<Vector2>();
 
-    public MeshRenderer meshRenderer;
-    public MeshFilter meshFilter;
+    private World world;
+    protected GameObject chunkObject;
 
-    void Start()
+    protected MeshRenderer meshRenderer;
+    protected MeshFilter meshFilter;
+
+    public Chunk(World world)
     {
+        this.world = world;
+
+        chunkObject = new GameObject();
+        meshRenderer = chunkObject.AddComponent<MeshRenderer>();
+        meshFilter = chunkObject.AddComponent<MeshFilter>();
+        chunkObject.transform.SetParent(world.transform);
+        meshRenderer.material = world.material;
+
         ActivateBlocks();
         CreateCube();
         CreateMesh();
@@ -27,33 +38,17 @@ public class Chunk : MonoBehaviour
     // ? Currently Make simple rectangle chunk
     protected void ActivateBlocks()
     {
-        foreach (var pos in ChunkFullIterator())
+        foreach (var pos in BlockFullIterator())
         {
-            BlockMap[pos.x, pos.y, pos.z] = new Block();
-            BlockMap[pos.x, pos.y, pos.z].IsSolid = true;
+            BlockMap[pos.x, pos.y, pos.z] = world.GetVoxel(pos);
         }
     }
 
     protected void CreateCube()
     {
-        bool IsBoundaryBlock(Vector3Int pos)
-        {
-            foreach (var normal in VoxelData.SurfaceNormal)
-            {
-                var outerBlock = pos + normal;
-                if (outerBlock.x < 0) return true;
-                if (outerBlock.y < 0) return true;
-                if (outerBlock.z < 0) return true;
-                if (outerBlock.x >= Width) return true;
-                if (outerBlock.y >= Height) return true;
-                if (outerBlock.z >= Width) return true;
-            }
-            return false;
-        }
-
-        foreach (var pos in ChunkFullIterator())
-            if (BlockMap[pos.x, pos.y, pos.z].IsSolid && IsBoundaryBlock(pos))
-                MakeCube(transform.position + pos);
+        foreach (var pos in BlockFullIterator())
+            if (BlockMap[pos.x, pos.y, pos.z].IsSolid)
+                MakeCube(chunkObject.transform.position + pos);
     }
 
     protected void MakeCube(Vector3 pos)
@@ -94,7 +89,7 @@ public class Chunk : MonoBehaviour
         meshFilter.mesh = mesh;
     }
 
-    public static IEnumerable<Vector3Int> ChunkFullIterator()
+    public static IEnumerable<Vector3Int> BlockFullIterator()
     {
         for (int x = 0; x < Width; x++)
             for (int y = 0; y < Height; y++)
