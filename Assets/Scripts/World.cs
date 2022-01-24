@@ -17,14 +17,19 @@ public class World : MonoBehaviour
     {
         var block = new Block();
 
-        int yPos = Mathf.FloorToInt(pos.y);
+        void SetTerrarian()
+        {
+            int yPos = Mathf.FloorToInt(pos.y);
+            float noise = Noise.Perlin(new Vector2(pos.x, pos.z), 0f, 0.1f);
+            var terrianHeight = Mathf.FloorToInt(noise * Chunk.Height);
+            if (yPos <= terrianHeight)
+                block.IsSolid = true;
+            else
+                block.IsSolid = false;
+        }
 
-        float noise = Noise.Perlin(new Vector2(pos.x, pos.z), 0f, 0.1f);
-        var terrianHeight = Mathf.FloorToInt(noise * Chunk.Height);
-        if (yPos <= terrianHeight)
-            block.IsSolid = true;
-        else
-            block.IsSolid = false;
+        // SetTerrarian();
+        block.IsSolid = true;
 
         return block;
     }

@@ -53,28 +53,31 @@ public class Chunk
 
     protected void MakeCube(Vector3 pos)
     {
-        void SetGrassBlock()
+        bool IsOuterFace(Vector3 pos)
         {
-            uvs.AddRange(TilePos.GetUVs(Tile.GrassSide));
-            uvs.AddRange(TilePos.GetUVs(Tile.GrassSide));
-            uvs.AddRange(TilePos.GetUVs(Tile.Grass));
-            uvs.AddRange(TilePos.GetUVs(Tile.Dirt));
-            uvs.AddRange(TilePos.GetUVs(Tile.GrassSide));
-            uvs.AddRange(TilePos.GetUVs(Tile.GrassSide));
+            if (pos.x < 0) return false;
+            if (pos.y < 0) return false;
+            if (pos.z < 0) return false;
+            if (pos.x >= Width) return false;
+            if (pos.y >= Height) return false;
+            if (pos.z >= Width) return false;
+            return true;
         }
 
         for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT; faceIdx++)
         {
-            int vertIdx = verts.Count;
+            if (IsOuterFace(pos) && !IsOuterFace(pos + VoxelData.SurfaceNormal[faceIdx]))
+            {
+                int vertIdx = verts.Count;
 
-            for (int i = 0; i < 4; i++)
-                verts.Add(pos + VoxelData.Verts[VoxelData.Tris[faceIdx, i]]);
+                for (int i = 0; i < 4; i++)
+                    verts.Add(pos + VoxelData.Verts[VoxelData.Tris[faceIdx, i]]);
 
-            foreach (var i in VoxelData.TriIdxOrder)
-                tris.Add(vertIdx + i);
+                foreach (var i in VoxelData.TriIdxOrder)
+                    tris.Add(vertIdx + i);
+                uvs.AddRange(TilePos.GetUVs(Tile.GrassSide));
+            }
         }
-
-        SetGrassBlock();
     }
 
     private void CreateMesh()
