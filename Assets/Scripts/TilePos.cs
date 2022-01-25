@@ -38,4 +38,22 @@ public static class TilePos
     }
 };
 
-public enum Tile { Stone, Dirt, GrassSide, Glass, Plank, WoodSide, Wood, Grass, CobbleStone, Bedrock, Send, Brick, FurnaceFront, FurnaceSide, FurnaceActive, FurnaceUp };
+public enum Tile
+{
+    Stone,
+    Dirt,
+    GrassSide,
+    Glass,
+    Plank,
+    WoodSide,
+    Wood,
+    Grass,
+    CobbleStone,
+    Bedrock,
+    Send,
+    Brick,
+    FurnaceFront,
+    FurnaceSide,
+    FurnaceActive,
+    FurnaceUp
+};

@@ -4,31 +4,47 @@ using UnityEngine;
 
 public class Chunk
 {
+    #region World
+    private World world;
+    public ChunkCoord coord;
+    #endregion
+
+    #region BlockMap
     public static readonly int Width = 30;
-    public static readonly int Height = 10;
+    public static readonly int Height = 128;
 
     // ? Map type can be change to another types or seperated to `Sometype blockMap` and  `bool blockActivateMap`
     public Block[,,] BlockMap = new Block[Width, Height, Width];
+    #endregion
+
+    #region Render
 
     protected List<Vector3> verts = new List<Vector3>();
     protected List<int> tris = new List<int>();
     protected List<Vector2> uvs = new List<Vector2>();
 
-    private World world;
-    protected GameObject chunkObject;
-
     protected MeshRenderer meshRenderer;
     protected MeshFilter meshFilter;
+    #endregion
 
-    public Chunk(World world)
+    public GameObject chunkObject;
+    protected Transform chunkTransform;
+    public Vector3 chunkPos { get => chunkTransform.position; }
+
+    public Chunk(ChunkCoord coord, World world)
     {
         this.world = world;
+        this.coord = coord;
 
         chunkObject = new GameObject();
         meshRenderer = chunkObject.AddComponent<MeshRenderer>();
         meshFilter = chunkObject.AddComponent<MeshFilter>();
-        chunkObject.transform.SetParent(world.transform);
         meshRenderer.material = world.material;
+
+        chunkObject.name = $"Chunk [{coord.x}, {coord.z}]";
+        chunkTransform = chunkObject.transform;
+        chunkTransform.SetParent(world.transform);
+        chunkTransform.position = new Vector3(coord.x * Width, 0f, coord.z * Width);
 
         ActivateBlocks();
         CreateCube();
@@ -40,42 +56,43 @@ public class Chunk
     {
         foreach (var pos in BlockFullIterator())
         {
-            BlockMap[pos.x, pos.y, pos.z] = world.GetVoxel(pos);
+            BlockMap[pos.x, pos.y, pos.z] = world.GenerateVoxel(chunkTransform.position + pos);
         }
     }
 
     protected void CreateCube()
     {
         foreach (var pos in BlockFullIterator())
-            if (BlockMap[pos.x, pos.y, pos.z].IsSolid)
-                MakeCube(chunkObject.transform.position + pos);
+        {
+            var block = BlockMap[pos.x, pos.y, pos.z];
+            if (block.IsSolid)
+                MakeCube(block, pos);
+        }
     }
 
-    protected void MakeCube(Vector3 pos)
+    protected void MakeCube(Block block, Vector3Int chunkCoord)
     {
-        bool IsOuterFace(Vector3 pos)
+        bool IsEmptyBlock(Vector3Int coord)
         {
-            if (pos.x < 0) return false;
-            if (pos.y < 0) return false;
-            if (pos.z < 0) return false;
-            if (pos.x >= Width) return false;
-            if (pos.y >= Height) return false;
-            if (pos.z >= Width) return false;
-            return true;
+            if (coord.x < 0 || Width <= coord.x ||
+                coord.z < 0 || Width <= coord.z ||
+                coord.y < 0 || Height <= coord.y)
+                return true;
+            return !GetBlock(coord).IsSolid;
         }
 
         for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT; faceIdx++)
         {
-            if (IsOuterFace(pos) && !IsOuterFace(pos + VoxelData.SurfaceNormal[faceIdx]))
+            if (block.IsSolid && IsEmptyBlock(chunkCoord + VoxelData.SurfaceNormal[faceIdx]))
             {
                 int vertIdx = verts.Count;
 
                 for (int i = 0; i < 4; i++)
-                    verts.Add(pos + VoxelData.Verts[VoxelData.Tris[faceIdx, i]]);
+                    verts.Add(chunkCoord + VoxelData.Verts[VoxelData.Tris[faceIdx, i]]);
 
                 foreach (var i in VoxelData.TriIdxOrder)
                     tris.Add(vertIdx + i);
-                uvs.AddRange(TilePos.GetUVs(Tile.GrassSide));
+                uvs.AddRange(block.GetTexture((VoxelFace)faceIdx));
             }
         }
     }
@@ -98,5 +115,22 @@ public class Chunk
             for (int y = 0; y < Height; y++)
                 for (int z = 0; z < Width; z++)
                     yield return new Vector3Int(x, y, z);
+    }
+
+    public Block GetBlock(Vector3Int v)
+    {
+        return BlockMap[v.x, v.y, v.z];
+    }
+}
+
+public readonly struct ChunkCoord
+{
+    public readonly int x;
+    public readonly int z;
+
+    public ChunkCoord(int x, int z)
+    {
+        this.x = x;
+        this.z = z;
     }
 }

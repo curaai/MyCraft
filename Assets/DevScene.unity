@@ -227,7 +227,7 @@ GameObject:
   - component: {fileID: 554214901}
   - component: {fileID: 554214900}
   m_Layer: 0
-  m_Name: chunk
+  m_Name: World
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -246,6 +246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 9eb5513a568d50a4aaaeae2eb3afa29e, type: 2}
+  player: {fileID: 1401837898}
 --- !u!4 &554214901
 Transform:
   m_ObjectHideFlags: 0
