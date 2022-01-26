@@ -8,37 +8,27 @@ public class World : MonoBehaviour
 {
     #region World Init
     public Material material;
-    public static readonly int WorldChunkWidth = 100;
-    public static readonly int WorldSizeInVoxels = WorldChunkWidth * Chunk.Width;
+    public static readonly int WidthByChunk = 100;
+    public static readonly int SizeByVoxels = WidthByChunk * Chunk.Width;
     #endregion
 
     #region User
     public Transform player;
     #endregion
 
-    static readonly int ChunkViewDistance = 1;
-    public Chunk[,] chunks = new Chunk[WorldChunkWidth, WorldChunkWidth];
+    public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
     private void Start()
     {
-        int ctr = WorldChunkWidth / 2;
-        (int viewMin, int viewMax) = (ctr - ChunkViewDistance, ctr + ChunkViewDistance);
-        for (int x = viewMin; x < viewMax; x++)
-        {
-            for (int z = viewMin; z < viewMax; z++)
-            {
-                chunks[x, z] = new Chunk(new ChunkCoord(x, z), this);
-            }
-        }
+        int ctr = WidthByChunk / 2;
 
-        player.position = new Vector3(ctr * Chunk.Width, 120f, ctr * Chunk.Width);
+        player.position = new Vector3(ctr * Chunk.Width, 40f, ctr * Chunk.Width);
     }
-
 
     public bool IsBlockInWorld(in Vector3 worldPos)
     {
         return (
-            0 <= worldPos.x && worldPos.x <= WorldSizeInVoxels &&
-            0 <= worldPos.z && worldPos.z <= WorldSizeInVoxels &&
+            0 <= worldPos.x && worldPos.x <= SizeByVoxels &&
+            0 <= worldPos.z && worldPos.z <= SizeByVoxels &&
             0 <= worldPos.y && worldPos.y <= Chunk.Height
         );
     }
@@ -77,4 +67,7 @@ public class World : MonoBehaviour
 
         return block;
     }
+
+    public ChunkCoord GetChunkCoord(Vector3 worldPos) =>
+        new ChunkCoord((int)worldPos.x / Chunk.Width, (int)worldPos.z / Chunk.Width);
 }

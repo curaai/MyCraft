@@ -11,7 +11,7 @@ public class Chunk
 
     #region BlockMap
     public static readonly int Width = 30;
-    public static readonly int Height = 128;
+    public static readonly int Height = 8;
 
     // ? Map type can be change to another types or seperated to `Sometype blockMap` and  `bool blockActivateMap`
     public Block[,,] BlockMap = new Block[Width, Height, Width];
@@ -133,4 +133,16 @@ public readonly struct ChunkCoord
         this.x = x;
         this.z = z;
     }
+
+    public bool Equals(in ChunkCoord temp)
+    {
+        if (temp == null)
+            return false;
+        return (x == temp.x) && (z == temp.z);
+    }
+
+    public override int GetHashCode() => (x, z).GetHashCode();
+    public static bool operator ==(ChunkCoord a, ChunkCoord b) => a.Equals(b);
+    public static bool operator !=(ChunkCoord a, ChunkCoord b) => !(a == b);
+
 }
