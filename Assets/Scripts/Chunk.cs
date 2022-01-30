@@ -11,7 +11,7 @@ public class Chunk
 
     #region BlockMap
     public static readonly int Width = 30;
-    public static readonly int Height = 8;
+    public static readonly int Height = 128;
 
     // ? Map type can be change to another types or seperated to `Sometype blockMap` and  `bool blockActivateMap`
     public Block[,,] BlockMap = new Block[Width, Height, Width];
@@ -25,6 +25,7 @@ public class Chunk
 
     protected MeshRenderer meshRenderer;
     protected MeshFilter meshFilter;
+    protected MeshCollider meshCollider;
     #endregion
 
     public GameObject chunkObject;
@@ -39,6 +40,7 @@ public class Chunk
         chunkObject = new GameObject();
         meshRenderer = chunkObject.AddComponent<MeshRenderer>();
         meshFilter = chunkObject.AddComponent<MeshFilter>();
+        meshCollider = chunkObject.AddComponent<MeshCollider>();
         meshRenderer.material = world.material;
 
         chunkObject.name = $"Chunk [{coord.x}, {coord.z}]";
