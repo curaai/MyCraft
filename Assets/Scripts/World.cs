@@ -21,7 +21,7 @@ public class World : MonoBehaviour
     {
         int ctr = WidthByChunk / 2;
 
-        player.position = new Vector3(ctr * Chunk.Width, Chunk.Height, ctr * Chunk.Width);
+        player.position = new Vector3(ctr * Chunk.Width, Chunk.Height - 20, ctr * Chunk.Width);
     }
 
     public bool IsBlockInWorld(in Vector3 worldPos)
@@ -33,7 +33,7 @@ public class World : MonoBehaviour
         );
     }
 
-    public Block? GetBlock(Vector3 worldPos)
+    public Block GetBlock(Vector3 worldPos)
     {
         int x = (int)worldPos.x;
         int y = (int)worldPos.y;
@@ -44,7 +44,7 @@ public class World : MonoBehaviour
 
         x -= chunkX * Chunk.Width;
         z -= chunkZ * Chunk.Width;
-        return chunks[chunkX, chunkZ]?.BlockMap[x, y, z];
+        return chunks[chunkX, chunkZ].BlockMap[x, y, z];
     }
 
     public Block GenerateVoxel(Vector3 pos)

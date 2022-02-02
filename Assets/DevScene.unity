@@ -338,7 +338,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1401837895}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1621593439}
@@ -376,7 +376,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Width: 0.6
-  cameraTransform: {fileID: 0}
+  Height: 2
+  cam: {fileID: 0}
 --- !u!4 &1621593439
 Transform:
   m_ObjectHideFlags: 0
@@ -418,8 +419,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92444c719196f4ee99b445ff0a6bd11a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  world: {fileID: 0}
   WalkSpeed: 3
   SprintSpeed: 6
   JumpForce: 5

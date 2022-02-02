@@ -6,10 +6,13 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public float Width = 0.6f;
-    public Transform cameraTransform;
+    public float Height = 2f;
+
+    [HideInInspector]
+    public Transform cam;
 
     public void Start()
     {
-        cameraTransform = GameObject.Find("Main Camera").transform;
+        cam = GameObject.Find("Main Camera").transform;
     }
 }
