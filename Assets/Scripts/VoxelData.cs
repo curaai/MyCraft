@@ -5,7 +5,6 @@ using UnityEngine;
 public class VoxelData
 {
     public static readonly int FACE_COUNT = 6;
-    public static readonly int VERTEX_COUNT = 6;
 
     public static readonly Vector3[] Verts = new Vector3[8] {
         new Vector3(0.0f, 0.0f, 0.0f),

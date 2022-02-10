@@ -142,8 +142,6 @@ public readonly struct ChunkCoord
             return false;
         return (x == temp.x) && (z == temp.z);
     }
-
-    public override int GetHashCode() => (x, z).GetHashCode();
     public static bool operator ==(ChunkCoord a, ChunkCoord b) => a.Equals(b);
     public static bool operator !=(ChunkCoord a, ChunkCoord b) => !(a == b);
 

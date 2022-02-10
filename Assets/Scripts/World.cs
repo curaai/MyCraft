@@ -24,13 +24,9 @@ public class World : MonoBehaviour
         player.position = new Vector3(ctr * Chunk.Width, Chunk.Height - 20, ctr * Chunk.Width);
     }
 
-    public bool IsBlockInWorld(in Vector3 worldPos)
+    public bool IsSolidBlockInWorld(in Vector3 worldPos)
     {
-        return (
-            0 <= worldPos.x && worldPos.x <= SizeByVoxels &&
-            0 <= worldPos.z && worldPos.z <= SizeByVoxels &&
-            0 <= worldPos.y && worldPos.y <= Chunk.Height
-        );
+        return GetBlock(worldPos).IsSolid;
     }
 
     public Block GetBlock(Vector3 worldPos)
@@ -49,23 +45,27 @@ public class World : MonoBehaviour
 
     public Block GenerateVoxel(Vector3 pos)
     {
-        var block = new Block();
-
-        void SetTerrarian()
+        Block TerrarianBlock()
         {
             int yPos = Mathf.FloorToInt(pos.y);
             float noise = Noise.Perlin(new Vector2(pos.x, pos.z), 0f, 0.1f);
             var terrianHeight = Mathf.FloorToInt(noise * Chunk.Height);
+
+            Block block;
             if (yPos <= terrianHeight)
+            {
+                block = new Block();
+                block.type = BlockType.Grass;
                 block.IsSolid = true;
+            }
             else
-                block.IsSolid = false;
-            block.type = BlockType.Grass;
+            {
+                block = new Air();
+            }
+            return block;
         }
 
-        SetTerrarian();
-
-        return block;
+        return TerrarianBlock();
     }
 
     public ChunkCoord GetChunkCoord(Vector3 worldPos) =>

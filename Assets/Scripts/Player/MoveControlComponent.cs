@@ -63,24 +63,24 @@ public class MoveControlComponent : MonoBehaviour
         {
             void refineHorizontal(Vector3 pos)
             {
-                Block right = world.GetBlock(pos + Vector3.right * player.Width / 2);
-                Block left = world.GetBlock(pos + Vector3.left * player.Width / 2);
-                Block forward = world.GetBlock(pos + Vector3.forward * player.Width / 2);
-                Block back = world.GetBlock(pos + Vector3.back * player.Width / 2);
+                bool right = world.IsSolidBlockInWorld(pos + Vector3.right * player.Width / 2);
+                bool left = world.IsSolidBlockInWorld(pos + Vector3.left * player.Width / 2);
+                bool forward = world.IsSolidBlockInWorld(pos + Vector3.forward * player.Width / 2);
+                bool back = world.IsSolidBlockInWorld(pos + Vector3.back * player.Width / 2);
 
-                if ((velocity.x > 0 && right.IsSolid) || (velocity.x < 0 && left.IsSolid))
+                if ((velocity.x > 0 && right) || (velocity.x < 0 && left))
                     velocity.x = 0;
-                if ((velocity.z > 0 && forward.IsSolid) || (velocity.z < 0 && back.IsSolid))
+                if ((velocity.z > 0 && forward) || (velocity.z < 0 && back))
                     velocity.z = 0;
             }
             bool checkVertical(Vector3 pos, float speed)
             {
                 float wh = player.Width / 2;
 
-                return world.GetBlock(new Vector3(pos.x - wh, pos.y + speed, pos.z - wh)).IsSolid ||
-                    world.GetBlock(new Vector3(pos.x + wh, pos.y + speed, pos.z - wh)).IsSolid ||
-                    world.GetBlock(new Vector3(pos.x + wh, pos.y + speed, pos.z + wh)).IsSolid ||
-                    world.GetBlock(new Vector3(pos.x - wh, pos.y + speed, pos.z + wh)).IsSolid;
+                return world.IsSolidBlockInWorld(new Vector3(pos.x - wh, pos.y + speed, pos.z - wh)) ||
+                    world.IsSolidBlockInWorld(new Vector3(pos.x + wh, pos.y + speed, pos.z - wh)) ||
+                    world.IsSolidBlockInWorld(new Vector3(pos.x + wh, pos.y + speed, pos.z + wh)) ||
+                    world.IsSolidBlockInWorld(new Vector3(pos.x - wh, pos.y + speed, pos.z + wh));
             }
 
             // Players height is 2
