@@ -11,8 +11,11 @@ public class Player : MonoBehaviour
     [HideInInspector]
     public Transform cam;
 
+    public float Reach = 8;
+    public Block? CurSelectedBlock { get { return GetComponent<FocusBlockComponent>().CurSelectedBlock; } }
+
     public void Start()
     {
-        cam = GameObject.Find("Main Camera").transform;
+        cam = transform.GetChild(0);
     }
 }
