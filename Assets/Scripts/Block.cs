@@ -29,7 +29,7 @@ public class Block
     {
         var textures = blockTextureList[(int)type];
         var faceIdx = textures.Length == 1 ? 0 : (int)face;
-        return TilePos.GetUVs(textures[faceIdx]);
+        return TilePosHelper.GetUVs(textures[faceIdx]);
     }
 }
 

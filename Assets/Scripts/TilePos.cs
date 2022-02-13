@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class TilePos
+public static class TilePosHelper
 {
     static readonly int TextureAtlasSize = 4;
     static readonly float NormTextureAtlasSize = 1f / 4f;
     static List<Vector2[]> uvsList;
 
-    static TilePos()
+    static TilePosHelper()
     {
         uvsList = new List<Vector2[]>();
 

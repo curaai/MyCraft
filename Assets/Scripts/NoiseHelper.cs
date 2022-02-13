@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class Noise
+public static class NoiseHelper
 {
     public static float Perlin(Vector2 pos, float offset, float scale)
     {

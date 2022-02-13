@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     public Transform cam;
 
     public float Reach = 8;
-    public Block? CurSelectedBlock { get { return GetComponent<FocusBlockComponent>().CurSelectedBlock; } }
+    public Block? CurSelectedBlock { get { return GetComponent<Players.FocusBlockComponent>().CurSelectedBlock; } }
 
     public void Start()
     {

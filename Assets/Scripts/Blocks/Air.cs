@@ -3,17 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class Air : Block
+namespace Blocks
 {
-    // TODO: User interaction methods can be added
-    public Air()
+    [Serializable]
+    public class Air : Block
     {
-        IsSolid = false;
-    }
+        // TODO: User interaction methods can be added
+        public Air()
+        {
+            IsSolid = false;
+        }
 
-    public override Vector2[] GetTexture(VoxelFace face)
-    {
-        throw new InvalidOperationException("Air Cannot generate texture");
+        public override Vector2[] GetTexture(VoxelFace face)
+        {
+            throw new InvalidOperationException("Air Cannot generate texture");
+        }
     }
 }

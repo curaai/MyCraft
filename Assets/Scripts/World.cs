@@ -48,7 +48,7 @@ public class World : MonoBehaviour
         Block TerrarianBlock()
         {
             int yPos = Mathf.FloorToInt(pos.y);
-            float noise = Noise.Perlin(new Vector2(pos.x, pos.z), 0f, 0.1f);
+            float noise = NoiseHelper.Perlin(new Vector2(pos.x, pos.z), 0f, 0.1f);
             var terrianHeight = Mathf.FloorToInt(noise * Chunk.Height);
 
             Block block;
@@ -60,7 +60,7 @@ public class World : MonoBehaviour
             }
             else
             {
-                block = new Air();
+                block = new Blocks.Air();
             }
             return block;
         }
