@@ -66,10 +66,10 @@ namespace Players
             {
                 void refineHorizontal(Vector3 pos)
                 {
-                    bool right = world.IsSolidBlockInWorld(pos + Vector3.right * player.Width / 2);
-                    bool left = world.IsSolidBlockInWorld(pos + Vector3.left * player.Width / 2);
-                    bool forward = world.IsSolidBlockInWorld(pos + Vector3.forward * player.Width / 2);
-                    bool back = world.IsSolidBlockInWorld(pos + Vector3.back * player.Width / 2);
+                    bool right = world.IsSolidBlock(pos + Vector3.right * player.Width / 2);
+                    bool left = world.IsSolidBlock(pos + Vector3.left * player.Width / 2);
+                    bool forward = world.IsSolidBlock(pos + Vector3.forward * player.Width / 2);
+                    bool back = world.IsSolidBlock(pos + Vector3.back * player.Width / 2);
 
                     if ((velocity.x > 0 && right) || (velocity.x < 0 && left))
                         velocity.x = 0;
@@ -80,10 +80,10 @@ namespace Players
                 {
                     float wh = player.Width / 2;
 
-                    return world.IsSolidBlockInWorld(new Vector3(pos.x - wh, pos.y + speed, pos.z - wh)) ||
-                        world.IsSolidBlockInWorld(new Vector3(pos.x + wh, pos.y + speed, pos.z - wh)) ||
-                        world.IsSolidBlockInWorld(new Vector3(pos.x + wh, pos.y + speed, pos.z + wh)) ||
-                        world.IsSolidBlockInWorld(new Vector3(pos.x - wh, pos.y + speed, pos.z + wh));
+                    return world.IsSolidBlock(new Vector3(pos.x - wh, pos.y + speed, pos.z - wh)) ||
+                        world.IsSolidBlock(new Vector3(pos.x + wh, pos.y + speed, pos.z - wh)) ||
+                        world.IsSolidBlock(new Vector3(pos.x + wh, pos.y + speed, pos.z + wh)) ||
+                        world.IsSolidBlock(new Vector3(pos.x - wh, pos.y + speed, pos.z + wh));
                 }
 
                 // Players height is 2

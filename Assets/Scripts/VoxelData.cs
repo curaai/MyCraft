@@ -6,15 +6,15 @@ public class VoxelData
 {
     public static readonly int FACE_COUNT = 6;
 
-    public static readonly Vector3[] Verts = new Vector3[8] {
-        new Vector3(0.0f, 0.0f, 0.0f),
-        new Vector3(1.0f, 0.0f, 0.0f),
-        new Vector3(1.0f, 1.0f, 0.0f),
-        new Vector3(0.0f, 1.0f, 0.0f),
-        new Vector3(0.0f, 0.0f, 1.0f),
-        new Vector3(1.0f, 0.0f, 1.0f),
-        new Vector3(1.0f, 1.0f, 1.0f),
-        new Vector3(0.0f, 1.0f, 1.0f),
+    public static readonly Vector3Int[] Verts = new Vector3Int[8] {
+        new Vector3Int(0, 0, 0),
+        new Vector3Int(1, 0, 0),
+        new Vector3Int(1, 1, 0),
+        new Vector3Int(0, 1, 0),
+        new Vector3Int(0, 0, 1),
+        new Vector3Int(1, 0, 1),
+        new Vector3Int(1, 1, 1),
+        new Vector3Int(0, 1, 1),
     };
 
     public static readonly int[,] Tris = new int[6, 4]
@@ -40,12 +40,12 @@ public class VoxelData
     // ! Left Triangle {0, 1, 2}, Right Triangle {2, 1, 3}
     public static readonly int[] TriIdxOrder = new int[6] { 0, 1, 2, 2, 1, 3 };
 
-    public static readonly Vector2[] Uvs = new Vector2[4]
+    public static readonly Vector2Int[] Uvs = new Vector2Int[4]
     {
-        new Vector2 (0.0f, 0.0f),
-        new Vector2 (0.0f, 1.0f),
-        new Vector2 (1.0f, 0.0f),
-        new Vector2 (1.0f, 1.0f)
+        new Vector2Int (0, 0),
+        new Vector2Int (0, 1),
+        new Vector2Int (1, 0),
+        new Vector2Int (1, 1)
     };
 }
 

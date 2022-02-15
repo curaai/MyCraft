@@ -19,6 +19,11 @@ namespace Players
         protected List<Chunk> curActivatedChunkList = new List<Chunk>();
         protected List<Chunk> prevActivatedChunkList = new List<Chunk>();
 
+        public void Start()
+        {
+            Update();
+        }
+
         public void Update()
         {
             curPlayerCoord = world.ToChunkCoord(player.position).Item1;

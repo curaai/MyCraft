@@ -74,5 +74,11 @@ public class World : MonoBehaviour
     public (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3 worldPos) => ToChunkCoord(Vector3Int.FloorToInt(worldPos));
     public Chunk GetChunk(Vector3Int worldPos) => GetChunk(ToChunkCoord(worldPos).Item1);
     public Chunk GetChunk(ChunkCoord coord) => chunks[coord.x, coord.z];
-    public bool IsSolidBlockInWorld(in Vector3 worldPos) => GetBlock(worldPos).IsSolid;
+    public bool IsSolidBlock(in Vector3 worldPos)
+    {
+        var pos = ToChunkCoord(worldPos);
+        if (GetChunk(pos.Item1) != null && GetBlock(worldPos) != null)
+            return GetBlock(worldPos).IsSolid;
+        return false;
+    }
 }
