@@ -7,12 +7,14 @@ public class Player : MonoBehaviour
 {
     public float Width = 0.6f;
     public float Height = 2f;
+    public float Reach = 8;
 
     [HideInInspector]
     public Transform cam;
 
-    public float Reach = 8;
-    public Block? CurSelectedBlock => GetComponent<Players.FocusBlockComponent>().CurSelectedBlock;
+    public Block? HighlightBlock => GetComponent<Players.PlaceBlockComponent>().HighlightBlock;
+    public Vector3Int? HighlightPos => GetComponent<Players.PlaceBlockComponent>().HighlightPos;
+    public Vector3Int? PlacedPos => GetComponent<Players.PlaceBlockComponent>().PlacedPos;
 
     public void Start()
     {
