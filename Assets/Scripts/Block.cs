@@ -7,11 +7,9 @@ using UnityEngine;
 public class Block
 {
     // TODO: User interaction methods can be added
-
     public bool IsSolid;
     public BlockType type;
 
-    //
     private static List<Tile[]> blockTextureList = new List<Tile[]>(){
         new Tile[] {Tile.Stone},
         new Tile[] {Tile.GrassSide, Tile.GrassSide, Tile.Grass, Tile.Dirt, Tile.GrassSide, Tile.GrassSide},

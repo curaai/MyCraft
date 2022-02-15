@@ -7,6 +7,12 @@ namespace Players
 {
     public class MoveControlComponent : MonoBehaviour
     {
+        public static readonly float Gravity = -9.8f;
+
+        public float WalkSpeed = 3f;
+        public float SprintSpeed = 6f;
+        public float JumpForce = 5f;
+
         protected Player player;
         protected World world;
 
@@ -15,15 +21,8 @@ namespace Players
         private float mouseH;
         private float mouseV;
         private Vector3 velocity;
-
-        public float WalkSpeed = 3f;
-        public float SprintSpeed = 6f;
-        public float JumpForce = 5f;
-        protected float verticalMomentum = 0f;
-        public static readonly float Gravity = -9.8f;
-
+        protected float verticalMomentum;
         protected bool JumpRequest;
-
 
         public bool IsJumping { get; protected set; }
         public bool IsSprinting { get; protected set; }
@@ -33,6 +32,8 @@ namespace Players
         {
             player = GetComponent<Player>();
             world = GameObject.Find("World").GetComponent<World>();
+
+            verticalMomentum = 0f;
         }
 
         private void Update()

@@ -7,9 +7,12 @@ namespace Players
 {
     public class AdjacentChunkRenderComponent : MonoBehaviour
     {
-        public World world;
-        public Transform player;
         public static readonly int ViewDistanceInChunk = 3;
+
+        [SerializeField]
+        public World world;
+        [SerializeField]
+        public Transform player;
 
         protected ChunkCoord curPlayerCoord;
         protected ChunkCoord prevPlayerCoord;
@@ -18,7 +21,7 @@ namespace Players
 
         public void Update()
         {
-            curPlayerCoord = world.GetChunkCoord(player.position);
+            curPlayerCoord = world.ToChunkCoord(player.position).Item1;
 
             if (curPlayerCoord != prevPlayerCoord)
             {
@@ -37,14 +40,14 @@ namespace Players
                         if (chunk == null)
                             chunk = new Chunk(new ChunkCoord(x, z), world);
 
-                        chunk.chunkObject.SetActive(true);
+                        chunk.gameObj.SetActive(true);
                         curActivatedChunkList.Add(chunk);
                         prevActivatedChunkList.Remove(chunk);
                     }
                 }
 
                 foreach (var leftChunk in prevActivatedChunkList)
-                    leftChunk.chunkObject.SetActive(false);
+                    leftChunk.gameObj.SetActive(false);
             }
             prevPlayerCoord = curPlayerCoord;
         }

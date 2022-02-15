@@ -4,49 +4,38 @@ using UnityEngine;
 
 public class Chunk
 {
-    #region World
-    private World world;
-    public ChunkCoord coord;
-    #endregion
-
-    #region BlockMap
     public static readonly int Width = 30;
     public static readonly int Height = 128;
 
-    // ? Map type can be change to another types or seperated to `Sometype blockMap` and  `bool blockActivateMap`
     public Block[,,] BlockMap = new Block[Width, Height, Width];
-    #endregion
 
-    #region Render
+    private World world;
+    public ChunkCoord coord;
+    public GameObject gameObj;
+    protected Transform transform => gameObj.transform;
+    public Vector3Int pos => Vector3Int.CeilToInt(transform.position);
 
     protected List<Vector3> verts = new List<Vector3>();
     protected List<int> tris = new List<int>();
     protected List<Vector2> uvs = new List<Vector2>();
-
     protected MeshRenderer meshRenderer;
     protected MeshFilter meshFilter;
     protected MeshCollider meshCollider;
-    #endregion
-
-    public GameObject chunkObject;
-    protected Transform chunkTransform;
-    public Vector3 chunkPos { get => chunkTransform.position; }
 
     public Chunk(ChunkCoord coord, World world)
     {
         this.world = world;
         this.coord = coord;
 
-        chunkObject = new GameObject();
-        meshRenderer = chunkObject.AddComponent<MeshRenderer>();
-        meshFilter = chunkObject.AddComponent<MeshFilter>();
-        meshCollider = chunkObject.AddComponent<MeshCollider>();
+        gameObj = new GameObject();
+        meshRenderer = gameObj.AddComponent<MeshRenderer>();
+        meshFilter = gameObj.AddComponent<MeshFilter>();
+        meshCollider = gameObj.AddComponent<MeshCollider>();
         meshRenderer.material = world.material;
 
-        chunkObject.name = $"Chunk [{coord.x}, {coord.z}]";
-        chunkTransform = chunkObject.transform;
-        chunkTransform.SetParent(world.transform);
-        chunkTransform.position = new Vector3(coord.x * Width, 0f, coord.z * Width);
+        gameObj.name = $"Chunk [{coord.x}, {coord.z}]";
+        transform.SetParent(world.transform);
+        transform.position = new Vector3(coord.x * Width, 0f, coord.z * Width);
 
         ActivateBlocks();
         CreateCube();
@@ -57,22 +46,20 @@ public class Chunk
     protected void ActivateBlocks()
     {
         foreach (var pos in BlockFullIterator())
-        {
-            BlockMap[pos.x, pos.y, pos.z] = world.GenerateVoxel(chunkTransform.position + pos);
-        }
+            BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(this.pos + pos);
     }
 
     protected void CreateCube()
     {
         foreach (var pos in BlockFullIterator())
         {
-            var block = BlockMap[pos.x, pos.y, pos.z];
+            var block = GetBlock(pos);
             if (block.IsSolid)
                 MakeCube(block, pos);
         }
     }
 
-    protected void MakeCube(Block block, Vector3Int chunkCoord)
+    protected void MakeCube(Block block, in Vector3Int chunkCoord)
     {
         bool IsEmptyBlock(Vector3Int coord)
         {
@@ -119,8 +106,5 @@ public class Chunk
                     yield return new Vector3Int(x, y, z);
     }
 
-    public Block GetBlock(Vector3Int v)
-    {
-        return BlockMap[v.x, v.y, v.z];
-    }
+    public Block GetBlock(in Vector3Int v) => BlockMap[v.x, v.y, v.z];
 }

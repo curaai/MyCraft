@@ -16,7 +16,7 @@ namespace Players
         protected World world;
 
         public Block? CurSelectedBlock { get; protected set; }
-        protected Transform Cam { get { return player.cam; } }
+        protected Transform Cam => player.cam;
 
         public void Start()
         {

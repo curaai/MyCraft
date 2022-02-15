@@ -4,9 +4,9 @@ using UnityEngine;
 
 public static class TilePosHelper
 {
-    static readonly int TextureAtlasSize = 4;
-    static readonly float NormTextureAtlasSize = 1f / 4f;
-    static List<Vector2[]> uvsList;
+    private static readonly int TextureAtlasSize = 4;
+    private static readonly float NormTextureAtlasSize = 1f / 4f;
+    private static List<Vector2[]> uvsList;
 
     static TilePosHelper()
     {
@@ -32,10 +32,7 @@ public static class TilePosHelper
         }
     }
 
-    public static Vector2[] GetUVs(Tile t)
-    {
-        return uvsList[(int)t];
-    }
+    public static Vector2[] GetUVs(Tile t) => uvsList[(int)t];
 };
 
 public enum Tile
