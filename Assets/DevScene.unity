@@ -388,6 +388,7 @@ GameObject:
   - component: {fileID: 1621593440}
   - component: {fileID: 1621593441}
   - component: {fileID: 1621593442}
+  - component: {fileID: 1621593443}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -468,6 +469,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HighlightBlockTransform: {fileID: 5339462}
+--- !u!114 &1621593443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621593437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d0847c2934ef754a98fd1ee389e2988, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedBlock:
+    IsSolid: 0
+    type: 0
 --- !u!1 &1809482068
 GameObject:
   m_ObjectHideFlags: 0

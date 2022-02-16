@@ -15,7 +15,7 @@ public class Chunk
     public ChunkCoord coord;
     public GameObject gameObj;
     protected Transform transform => gameObj.transform;
-    public Vector3Int pos => Vector3Int.CeilToInt(transform.position);
+    public Vector3Int chunkPos => Vector3Int.CeilToInt(transform.position);
 
     protected List<Vector3> verts = new List<Vector3>();
     protected List<int> tris = new List<int>();
@@ -29,7 +29,7 @@ public class Chunk
         void GenerateBlocks()
         {
             foreach (var pos in BlockFullIterator())
-                BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(this.pos + pos);
+                BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(chunkPos + pos);
         }
 
         this.world = world;
@@ -48,6 +48,7 @@ public class Chunk
         GenerateBlocks();
         UpdateChunk();
     }
+
     protected void UpdateChunk()
     {
         ClearMesh();
@@ -80,6 +81,23 @@ public class Chunk
         }
     }
 
+    public void EditBlock(Block newBlock, Vector3Int coord)
+    {
+        void UpdateSurroundedChunks()
+        {
+            for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT; faceIdx++)
+            {
+                var faceCoord = coord + VoxelData.SurfaceNormal[faceIdx];
+                if (!IsVoxelInChunk(faceCoord))
+                    world.GetChunk(chunkPos + faceCoord).UpdateChunk();
+            }
+        }
+
+        BlockMap[coord.x, coord.y, coord.z] = newBlock;
+        UpdateSurroundedChunks();
+        UpdateChunk();
+    }
+
     protected void CreateMesh()
     {
         Mesh mesh = new Mesh();
@@ -109,7 +127,7 @@ public class Chunk
     public bool IsSolidBlock(in Vector3Int vp)
     {
         if (IsVoxelInChunk(vp)) return GetBlock(vp).IsSolid;
-        return world.IsSolidBlock(pos + vp);
+        return world.IsSolidBlock(chunkPos + vp);
     }
 
     public Block GetBlock(in Vector3Int v) => BlockMap[v.x, v.y, v.z];

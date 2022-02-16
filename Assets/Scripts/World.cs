@@ -22,14 +22,6 @@ public class World : MonoBehaviour
         player.position = new Vector3(ctr * Chunk.Width, Chunk.Height - 20, ctr * Chunk.Width);
     }
 
-    public Block GetBlock(Vector3 worldPos)
-    {
-        var pair = ToChunkCoord(worldPos);
-        var chunkCoord = pair.Item1;
-        var pos = pair.Item2;
-        return chunks[chunkCoord.x, chunkCoord.z].BlockMap[pos.x, pos.y, pos.z];
-    }
-
     public Block GenerateBlock(Vector3Int pos)
     {
         Block TerrarianBlock()
@@ -55,6 +47,18 @@ public class World : MonoBehaviour
         return TerrarianBlock();
     }
 
+    public void EditBlock(Vector3Int pos, Block block)
+    {
+        var coord = ToChunkCoord(pos);
+        GetChunk(coord.Item1).EditBlock(block, coord.Item2);
+    }
+
+    public Block GetBlock(Vector3 worldPos)
+    {
+        var pair = ToChunkCoord(worldPos);
+        return GetChunk(pair.Item1).GetBlock(pair.Item2);
+    }
+
     public (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3Int worldPos)
     {
         int x = worldPos.x;
@@ -77,6 +81,9 @@ public class World : MonoBehaviour
     public bool IsSolidBlock(in Vector3 worldPos)
     {
         var pos = ToChunkCoord(worldPos);
+        if (pos.Item2.y < 0 || Chunk.Height <= pos.Item2.y)
+            return false;
+
         if (GetChunk(pos.Item1) != null && GetBlock(worldPos) != null)
             return GetBlock(worldPos).IsSolid;
         return false;
