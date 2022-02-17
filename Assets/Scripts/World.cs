@@ -18,6 +18,8 @@ public class World : MonoBehaviour
 
     private void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+
         int ctr = WidthByChunk / 2;
         player.position = new Vector3(ctr * Chunk.Width, Chunk.Height - 20, ctr * Chunk.Width);
     }
