@@ -16,6 +16,11 @@ public class Chunk
     public GameObject gameObj;
     protected Transform transform => gameObj.transform;
     public Vector3Int chunkPos => Vector3Int.CeilToInt(transform.position);
+    public bool Activated
+    {
+        get => gameObj != null ? gameObj.activeSelf : false;
+        set => gameObj.SetActive(value);
+    }
 
     protected List<Vector3> verts = new List<Vector3>();
     protected List<int> tris = new List<int>();
@@ -26,14 +31,23 @@ public class Chunk
 
     public Chunk(ChunkCoord coord, World world)
     {
+
+        this.world = world;
+        this.coord = coord;
+
+        Init();
+    }
+
+    public void Init()
+    {
         void GenerateBlocks()
         {
             foreach (var pos in BlockFullIterator())
                 BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(chunkPos + pos);
         }
 
-        this.world = world;
-        this.coord = coord;
+        if (gameObj != null)
+            return;
 
         gameObj = new GameObject();
         meshRenderer = gameObj.AddComponent<MeshRenderer>();

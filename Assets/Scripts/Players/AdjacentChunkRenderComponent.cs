@@ -14,47 +14,77 @@ namespace Players
         [SerializeField]
         public Transform player;
 
-        protected ChunkCoord curPlayerCoord;
-        protected ChunkCoord prevPlayerCoord;
-        protected List<Chunk> curActivatedChunkList = new List<Chunk>();
-        protected List<Chunk> prevActivatedChunkList = new List<Chunk>();
+        protected ChunkCoord playerCoord;
+        protected ChunkCoord lastPlayerCoord;
+        protected List<Chunk> activatedList = new List<Chunk>();
+        protected List<Chunk> lastActivatedList = new List<Chunk>();
+
+        protected Queue<Chunk> toInitQueue = new Queue<Chunk>();
+        protected bool initializeNow = false;
 
         public void Start()
         {
-            Update();
+            void InitOnFirst()
+            {
+                playerCoord = world.ToChunkCoord(player.position).Item1;
+                CreateAdjacentChunk();
+                foreach (var chunk in activatedList)
+                    chunk.Init();
+            }
+
+            InitOnFirst();
         }
 
         public void Update()
         {
-            curPlayerCoord = world.ToChunkCoord(player.position).Item1;
+            playerCoord = world.ToChunkCoord(player.position).Item1;
+            if (playerCoord != lastPlayerCoord)
+                CreateAdjacentChunk();
+            if (toInitQueue.Count != 0)
+                StartCoroutine("InitChunks");
+        }
 
-            if (curPlayerCoord != prevPlayerCoord)
+        public void CreateAdjacentChunk()
+        {
+            lastPlayerCoord = playerCoord;
+            var dist = ViewDistanceInChunk;
+            (int x, int z) viewMin = (playerCoord.x - dist, playerCoord.z - dist);
+            (int x, int z) viewMax = (playerCoord.x + dist, playerCoord.z + dist);
+
+            lastActivatedList.AddRange(activatedList);
+            activatedList.Clear();
+
+            for (int x = viewMin.x; x < viewMax.x; x++)
             {
-                var dist = ViewDistanceInChunk;
-                (int x, int z) viewMin = (curPlayerCoord.x - dist, curPlayerCoord.z - dist);
-                (int x, int z) viewMax = (curPlayerCoord.x + dist, curPlayerCoord.z + dist);
-
-                prevActivatedChunkList.AddRange(curActivatedChunkList);
-                curActivatedChunkList.Clear();
-
-                for (int x = viewMin.x; x < viewMax.x; x++)
+                for (int z = viewMin.z; z < viewMax.z; z++)
                 {
-                    for (int z = viewMin.z; z < viewMax.z; z++)
+                    ref Chunk chunk = ref world.chunks[x, z];
+                    if (chunk == null)
                     {
-                        ref Chunk chunk = ref world.chunks[x, z];
-                        if (chunk == null)
-                            chunk = new Chunk(new ChunkCoord(x, z), world);
-
-                        chunk.gameObj.SetActive(true);
-                        curActivatedChunkList.Add(chunk);
-                        prevActivatedChunkList.Remove(chunk);
+                        chunk = new Chunk(new ChunkCoord(x, z), world);
+                        toInitQueue.Enqueue(chunk);
                     }
-                }
 
-                foreach (var leftChunk in prevActivatedChunkList)
-                    leftChunk.gameObj.SetActive(false);
+                    chunk.Activated = true;
+                    activatedList.Add(chunk);
+                    lastActivatedList.Remove(chunk);
+                }
             }
-            prevPlayerCoord = curPlayerCoord;
+
+            foreach (var chunk in lastActivatedList)
+                chunk.Activated = false;
+        }
+
+        IEnumerator InitChunks()
+        {
+            initializeNow = true;
+            while (toInitQueue.Count != 0)
+            {
+                var chunk = toInitQueue.Dequeue();
+                chunk.Init();
+                yield return null;
+            }
+            initializeNow = false;
         }
     }
 }

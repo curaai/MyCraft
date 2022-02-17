@@ -43,14 +43,14 @@ namespace Players
 
         private void FixedUpdate()
         {
-            calcVelocity();
+            CalcVelocity();
             if (JumpRequest) Jump();
-            rotatePlayerView();
+            RotatePlayerView();
 
             transform.Translate(velocity, Space.Self);
         }
 
-        protected void calcVelocity()
+        protected void CalcVelocity()
         {
             void calcHotizontal()
             {
@@ -106,7 +106,7 @@ namespace Players
             checkAndRefineCollidingBlock();
         }
 
-        protected void rotatePlayerView()
+        protected void RotatePlayerView()
         {
             transform.Rotate(Vector3.up * mouseH);
             player.cam.Rotate(Vector3.right * -mouseV);
