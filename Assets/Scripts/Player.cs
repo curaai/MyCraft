@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public Block? HighlightBlock => GetComponent<Players.PlaceBlockComponent>().HighlightBlock;
     public Vector3Int? HighlightPos => GetComponent<Players.PlaceBlockComponent>().HighlightPos;
     public Vector3Int? PlacedPos => GetComponent<Players.PlaceBlockComponent>().PlacedPos;
+    public Block SelectedBlock;
 
     public void Start()
     {

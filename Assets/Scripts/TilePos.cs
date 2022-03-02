@@ -47,7 +47,7 @@ public enum Tile
     Grass,
     CobbleStone,
     Bedrock,
-    Send,
+    Sand,
     Brick,
     FurnaceFront,
     FurnaceSide,

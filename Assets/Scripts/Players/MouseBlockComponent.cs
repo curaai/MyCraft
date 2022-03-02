@@ -9,16 +9,11 @@ namespace Players
     {
         protected Player player;
         protected World world;
-        public Block selectedBlock;
 
         private void Start()
         {
             player = GetComponent<Player>();
             world = GameObject.Find("World").GetComponent<World>();
-
-            selectedBlock = new Block();
-            selectedBlock.type = BlockType.Grass;
-            selectedBlock.IsSolid = true;
         }
 
         public void Update()
@@ -31,7 +26,7 @@ namespace Players
 
             if (Input.GetMouseButtonDown(1) && player.PlacedPos.HasValue) // Right Button
             {
-                world.EditBlock(player.PlacedPos.Value, selectedBlock);
+                world.EditBlock(player.PlacedPos.Value, player.SelectedBlock);
             }
         }
     }

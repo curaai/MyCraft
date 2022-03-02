@@ -18,9 +18,10 @@ public class Block
         new Tile[] {Tile.WoodSide, Tile.WoodSide, Tile.Wood, Tile.Wood, Tile.WoodSide, Tile.WoodSide},
         new Tile[] {Tile.CobbleStone},
         new Tile[] {Tile.Bedrock},
-        new Tile[] {Tile.Send},
+        new Tile[] {Tile.Sand},
         new Tile[] {Tile.Brick},
         new Tile[] {Tile.FurnaceSide, Tile.FurnaceFront, Tile.FurnaceUp, Tile.FurnaceUp, Tile.FurnaceSide, Tile.FurnaceSide},
+        new Tile[] {Tile.Dirt},
     };
 
     public virtual Vector2[] GetTexture(VoxelFace face)
@@ -40,8 +41,9 @@ public enum BlockType
     Wood,
     CobbleStone,
     Bedrock,
-    Send,
+    Sand,
     Brick,
     Furnace,
+    Dirt,
     Air,
 };
