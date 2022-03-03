@@ -9,6 +9,7 @@ public class Block
     // TODO: User interaction methods can be added
     public bool IsSolid;
     public BlockType type;
+    protected static TextureUvPosHelper uvPosHelper = new TextureUvPosHelper(4);
 
     private static List<Tile[]> blockTextureList = new List<Tile[]>(){
         new Tile[] {Tile.Stone},
@@ -28,7 +29,7 @@ public class Block
     {
         var textures = blockTextureList[(int)type];
         var faceIdx = textures.Length == 1 ? 0 : (int)face;
-        return TilePosHelper.GetUVs(textures[faceIdx]);
+        return uvPosHelper.GetUVs(textures[faceIdx]);
     }
 }
 
