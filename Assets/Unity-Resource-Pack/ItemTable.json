@@ -1,0 +1,26 @@
+[
+    {
+        "id": 0,
+        "name": "air",
+        "model": null,
+        "rewardId": null
+    },
+    {
+        "id": 1,
+        "name": "dirt",
+        "model": "dirt_alt",
+        "rewardId": null
+    },
+    {
+        "id": 2,
+        "name": "grass",
+        "model": "grass_block_alt",
+        "rewardId": null
+    },
+    {
+        "id": 3,
+        "name": "oak_plank",
+        "model": "oak_planks_long",
+        "rewardId": null
+    }
+]

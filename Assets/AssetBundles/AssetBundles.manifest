@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 2577881883
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: resourcepack.resource
+      Dependencies: {}
