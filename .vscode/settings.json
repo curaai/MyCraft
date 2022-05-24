@@ -54,5 +54,6 @@
     },
     "editor.defaultFormatter": "ms-dotnettools.csharp",
     "editor.formatOnSave": true,
-    "omnisharp.useGlobalMono": "always"
+    "omnisharp.useGlobalMono": "always",
+    "omnisharp.projectLoadTimeout": 60
 }
