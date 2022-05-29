@@ -27,6 +27,33 @@ public class Block
 
     public virtual Vector2[] GetTexture(VoxelFace face)
     {
+        var world = GameObject.Find("World").GetComponent<World>();
+        Rect uv;
+        switch (face)
+        {
+            case VoxelFace.TOP:
+                uv = world.TextureUvList[0];
+                break;
+            case VoxelFace.BOTTOM:
+                uv = world.TextureUvList[2];
+                break;
+            default:
+                uv = world.TextureUvList[1];
+                break;
+        }
+        Vector2[] rect2vec(Rect uv)
+        {
+            var uvs = new Vector2[]
+            {
+            new Vector2(uv.xMin, uv.yMin),
+            new Vector2(uv.xMin, uv.yMax),
+            new Vector2(uv.xMax, uv.yMin),
+            new Vector2(uv.xMax, uv.yMax)
+            };
+            return uvs;
+        }
+        return rect2vec(uv);
+
         var textures = blockTextureList[(int)type];
         var faceIdx = textures.Length == 1 ? 0 : (int)face;
         return uvPosHelper.GetUVs(textures[faceIdx]);
