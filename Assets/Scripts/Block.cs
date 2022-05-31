@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,38 +10,14 @@ public class Block
     // TODO: User interaction methods can be added
     public bool IsSolid;
     public BlockType type;
-    protected static TextureUvPosHelper uvPosHelper = new TextureUvPosHelper(4);
-
-    private static List<Tile[]> blockTextureList = new List<Tile[]>(){
-        new Tile[] {Tile.Stone},
-        new Tile[] {Tile.GrassSide, Tile.GrassSide, Tile.Grass, Tile.Dirt, Tile.GrassSide, Tile.GrassSide},
-        new Tile[] {Tile.Glass},
-        new Tile[] {Tile.Plank},
-        new Tile[] {Tile.WoodSide, Tile.WoodSide, Tile.Wood, Tile.Wood, Tile.WoodSide, Tile.WoodSide},
-        new Tile[] {Tile.CobbleStone},
-        new Tile[] {Tile.Bedrock},
-        new Tile[] {Tile.Sand},
-        new Tile[] {Tile.Brick},
-        new Tile[] {Tile.FurnaceSide, Tile.FurnaceFront, Tile.FurnaceUp, Tile.FurnaceUp, Tile.FurnaceSide, Tile.FurnaceSide},
-        new Tile[] {Tile.Dirt},
-    };
 
     public virtual Vector2[] GetTexture(VoxelFace face)
     {
         var world = GameObject.Find("World").GetComponent<World>();
         Rect uv;
-        switch (face)
-        {
-            case VoxelFace.TOP:
-                uv = world.TextureUvList[0];
-                break;
-            case VoxelFace.BOTTOM:
-                uv = world.TextureUvList[2];
-                break;
-            default:
-                uv = world.TextureUvList[1];
-                break;
-        }
+        var blockTable = world.GetComponent<BlockTable>();
+        var texModel = blockTable.TextureModelList.Where(x => x.name == "grass_normal").ToArray()[0];
+        uv = blockTable.TextureUvList[texModel.GetFace(face)];
         Vector2[] rect2vec(Rect uv)
         {
             var uvs = new Vector2[]
@@ -53,10 +30,6 @@ public class Block
             return uvs;
         }
         return rect2vec(uv);
-
-        var textures = blockTextureList[(int)type];
-        var faceIdx = textures.Length == 1 ? 0 : (int)face;
-        return uvPosHelper.GetUVs(textures[faceIdx]);
     }
 }
 

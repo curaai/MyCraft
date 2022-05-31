@@ -49,4 +49,4 @@ public class VoxelData
     };
 }
 
-public enum VoxelFace { BACK, FRONT, TOP, BOTTOM, LEFT, RIGHT };
+public enum VoxelFace { NORTH, SOUTH, UP, DOWN, WEST, EAST };

@@ -12,38 +12,12 @@ public class World : MonoBehaviour
     public static readonly int SizeByVoxels = WidthByChunk * Chunk.Width;
 
     [SerializeField]
-    public Material material;
-    [SerializeField]
     public Transform player;
-
-    public Texture2D texture;
-    public List<String> TextureNameList = new();
-    public List<Rect> TextureUvList = new();
 
     public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
 
     private void Start()
     {
-        void material_test()
-        {
-            Texture2D[] textures = new Texture2D[3];
-
-            // Material mat = new Material();
-            TextureNameList.Add("grass_top");
-            TextureNameList.Add("grass_side");
-            TextureNameList.Add("dirt");
-
-            textures[0] = Resources.Load<Texture2D>("Textures/grass_top");
-            textures[1] = Resources.Load<Texture2D>("Textures/grass_side");
-            textures[2] = Resources.Load<Texture2D>("Textures/dirt");
-            // texture = new Texture2D(256, 256, TextureFormat.ARGB32, false);
-            texture = new Texture2D(256, 256);
-            TextureUvList = texture.PackTextures(textures, 0, 256).ToList();
-            material.mainTexture = texture;
-        }
-
-        material_test();
-
         Cursor.lockState = CursorLockMode.Locked;
 
         int ctr = WidthByChunk / 2;

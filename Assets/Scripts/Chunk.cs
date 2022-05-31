@@ -53,7 +53,7 @@ public class Chunk
         meshRenderer = gameObj.AddComponent<MeshRenderer>();
         meshFilter = gameObj.AddComponent<MeshFilter>();
         meshCollider = gameObj.AddComponent<MeshCollider>();
-        meshRenderer.material = world.material;
+        meshRenderer.material = world.GetComponent<BlockTable>().material;
 
         gameObj.name = $"Chunk [{coord.x}, {coord.z}]";
         transform.SetParent(world.transform);

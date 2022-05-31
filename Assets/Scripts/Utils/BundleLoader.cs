@@ -9,20 +9,9 @@ using Newtonsoft.Json.Linq;
 
 public class BundleLoader : MonoBehaviour
 {
-    List<String> CurSupportModels = new List<string>() { "block", "cube", "cube_all", "grass" };
+    public static readonly List<String> CurSupportModels = new List<string>() { "block", "cube", "cube_all", "grass" };
 
-    public struct TextureModel
-    {
-        public string name;
-        public int up;
-        public int down;
-        public int east;
-        public int west;
-        public int south;
-        public int north;
-    };
-
-    private void Start()
+    public static (List<Texture2D>, List<BlockTextureModel>) LoadBundle()
     {
         List<Texture2D> textureLoad()
         {
@@ -36,39 +25,48 @@ public class BundleLoader : MonoBehaviour
             return bundle.LoadAllAssets<Texture2D>().ToList();
         }
 
-        List<TextureModel> modelLoad(Dictionary<String, int> texDict)
+        List<BlockTextureModel> modelLoad(Dictionary<String, int> texDict)
         {
-            Func<String, String> getName = x => x.Substring(x.IndexOf('/'));
+            Func<String, String> getName = x => x.Substring(x.IndexOf('/') + 1);
 
-            TextureModel? parse(in TextAsset asset)
+            BlockTextureModel? parse(in TextAsset asset)
             {
                 var json = JObject.Parse(asset.text);
-                if (CurSupportModels.IndexOf(json["parent"].ToString()) == -1 ||
-                    json["textures"] == null)
+                if (json["textures"] == null ||
+                    json["parent"] == null ||
+                    CurSupportModels.IndexOf(getName(json["parent"].ToString())) == -1)
                     return null;
 
-                var res = new TextureModel();
+                var res = new BlockTextureModel();
                 JObject textureJson = json["textures"].ToObject<JObject>();
-                switch (getName(json["parent"].ToString()))
+                try
                 {
-                    case "cube_all":
-                        res.up = res.down = res.east = res.west = res.south = res.north = texDict[textureJson["all"].ToString()];
-                        break;
-                    case "grass":
-                    case "block":
-                        res.up = texDict[textureJson["up"].ToString()];
-                        res.down = texDict[textureJson["down"].ToString()];
-                        res.east = res.west = res.south = res.north = texDict[textureJson["side"].ToString()];
-                        break;
-                    case "cube":
-                        res.up = texDict[textureJson["up"].ToString()];
-                        res.down = texDict[textureJson["down"].ToString()];
-                        res.east = texDict[textureJson["east"].ToString()];
-                        res.west = texDict[textureJson["west"].ToString()];
-                        res.south = texDict[textureJson["south"].ToString()];
-                        res.north = texDict[textureJson["north"].ToString()];
-                        break;
+                    switch (getName(json["parent"].ToString()))
+                    {
+                        case "cube_all":
+                            res.up = res.down = res.east = res.west = res.south = res.north = texDict[getName(textureJson["all"].ToString())];
+                            break;
+                        case "grass":
+                        case "block":
+                            res.up = texDict[getName(textureJson["top"].ToString())];
+                            res.down = texDict[getName(textureJson["bottom"].ToString())];
+                            res.east = res.west = res.south = res.north = texDict[getName(textureJson["side"].ToString())];
+                            break;
+                        case "cube":
+                            res.up = texDict[getName(textureJson["up"].ToString())];
+                            res.down = texDict[getName(textureJson["down"].ToString())];
+                            res.east = texDict[getName(textureJson["east"].ToString())];
+                            res.west = texDict[getName(textureJson["west"].ToString())];
+                            res.south = texDict[getName(textureJson["south"].ToString())];
+                            res.north = texDict[getName(textureJson["north"].ToString())];
+                            break;
+                    }
                 }
+                catch (Exception e) // catch when don't modelize 
+                {
+                    return null;
+                }
+                res.name = asset.name;
                 return res;
             }
 
@@ -78,11 +76,11 @@ public class BundleLoader : MonoBehaviour
                 Debug.Log("Failed to load Asset Bundle");
                 throw new ArgumentNullException("Can't find asset bundle");
             }
-            // var models = modelBundle.LoadAllAssets<TextAsset>();
             var asstes = bundle.LoadAllAssets<TextAsset>();
-            return asstes.Select(x => parse(x)).Where(x => x.HasValue).Cast<TextureModel>().ToList();
+            return asstes.Select(x => parse(x)).Where(x => x.HasValue).Cast<BlockTextureModel>().ToList();
         }
         var textures = textureLoad();
         var models = modelLoad(textures.Select((e, i) => new { e, i }).ToDictionary(x => x.e.name, x => x.i));
+        return (textures, models);
     }
 }
