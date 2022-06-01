@@ -17,7 +17,7 @@ public class World : MonoBehaviour
 
     public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
 
-    private void Start()
+    private void Awake()
     {
         BlockTable = new();
 

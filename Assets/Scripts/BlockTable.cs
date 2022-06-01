@@ -10,6 +10,7 @@ public class BlockTable
 {
     public static readonly List<String> CurSupportModels = new List<string>() { "block", "cube", "cube_all", "grass" };
 
+    public List<Texture2D> Textures;
     public Texture2D AtlasTexture;
     public List<Vector2[]> TextureUvList;
     public Dictionary<int, BlockData> dataTable;
@@ -115,16 +116,16 @@ public class BlockTable
         }
 
 
-        var _textures = textureLoad(AssetBundle.LoadFromFile(Path.Combine(Application.dataPath + "/AssetBundles", "textures")));
+        Textures = textureLoad(AssetBundle.LoadFromFile(Path.Combine(Application.dataPath + "/AssetBundles", "textures")));
         var _datas = tableLoad(
             AssetBundle.LoadFromFile(Path.Combine(Application.dataPath + "/AssetBundles", "table")),
             AssetBundle.LoadFromFile(Path.Combine(Application.dataPath + "/AssetBundles", "models")),
-            _textures);
+            Textures);
         dataTable = _datas.ToDictionary(x => x.id, x => x);
 
         AtlasTexture = new Texture2D(512, 512);
         material = new Material(Shader.Find("Unlit/Texture"));
-        TextureUvList = AtlasTexture.PackTextures(_textures.ToArray(), 0, 512, true).Select(x => rect2vec(x)).ToList();
+        TextureUvList = AtlasTexture.PackTextures(Textures.ToArray(), 0, 512, true).Select(x => rect2vec(x)).ToList();
         material.mainTexture = AtlasTexture;
     }
 
