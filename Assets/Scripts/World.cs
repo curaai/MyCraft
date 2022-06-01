@@ -13,11 +13,14 @@ public class World : MonoBehaviour
 
     [SerializeField]
     public Transform player;
+    public BlockTable BlockTable;
 
     public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
 
     private void Start()
     {
+        BlockTable = new();
+
         Cursor.lockState = CursorLockMode.Locked;
 
         int ctr = WidthByChunk / 2;
@@ -34,15 +37,9 @@ public class World : MonoBehaviour
 
             Block block;
             if (yPos <= terrianHeight)
-            {
-                block = new Block();
-                block.type = BlockType.Grass;
-                block.IsSolid = true;
-            }
+                block = new Block(2);// grass
             else
-            {
                 block = new Blocks.Air();
-            }
             return block;
         }
 
@@ -87,7 +84,7 @@ public class World : MonoBehaviour
             return false;
 
         if (GetChunk(pos.Item1) != null && GetBlock(worldPos) != null)
-            return GetBlock(worldPos).IsSolid;
+            return GetBlock(worldPos).isSolid;
         return false;
     }
 }

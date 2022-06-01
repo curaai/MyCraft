@@ -6,17 +6,13 @@ using UnityEngine;
 namespace Blocks
 {
     [Serializable]
-    public class Air : Block
+    public record Air : Block
     {
         // TODO: User interaction methods can be added
         public Air()
         {
-            IsSolid = false;
-        }
-
-        public override Vector2[] GetTexture(VoxelFace face)
-        {
-            throw new InvalidOperationException("Air Cannot generate texture");
+            isSolid = false;
+            id = 0;
         }
     }
 }

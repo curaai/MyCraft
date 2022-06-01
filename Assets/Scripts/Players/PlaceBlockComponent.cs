@@ -37,7 +37,7 @@ namespace Players
 
                 var blockPos = Vector3Int.FloorToInt(targetPos);
                 var tempBlock = world.GetBlock(blockPos);
-                if (tempBlock.IsSolid)
+                if (tempBlock.isSolid)
                 {
                     HighlightBlockTransform.position = blockPos;
                     HighlightBlockTransform.gameObject.SetActive(true);

@@ -1,0 +1,41 @@
+[
+    {
+        "id": 0,
+        "name": "Air"
+    },
+    {
+        "id": 1,
+        "name": "Stone",
+        "model": "stone"
+    },
+    {
+        "id": 2,
+        "name": "Grass",
+        "model": "grass_normal"
+    },
+    {
+        "id": 3,
+        "name": "Dirt",
+        "model": "dirt"
+    },
+    {
+        "id": 4,
+        "name": "Cobblestone",
+        "model": "cobblestone"
+    },
+    {
+        "id": 5,
+        "name": "Oak Wood Plank",
+        "model": "oak_planks"
+    },
+    {
+        "id": 7,
+        "name": "Bedrock",
+        "model": "bedrock"
+    },
+    {
+        "id": 12,
+        "name": "Sand",
+        "model": "sand"
+    }
+]

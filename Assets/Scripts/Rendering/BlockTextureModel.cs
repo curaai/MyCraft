@@ -2,7 +2,6 @@ using System;
 
 public struct BlockTextureModel
 {
-    public string name;
     public int up;
     public int down;
     public int east;

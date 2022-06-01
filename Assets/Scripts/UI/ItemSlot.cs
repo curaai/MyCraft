@@ -8,6 +8,6 @@ using UnityEngine.UI;
 public class ItemSlot : MonoBehaviour
 {
     // * Item class can be replace int type of property ItemID 
-    public BlockType ItemID;
+    public int ItemID;
     public Image Icon;
 }

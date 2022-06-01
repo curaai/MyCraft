@@ -18,9 +18,7 @@ namespace UI
             protected set
             {
                 highlightTransform.position = itemSlots[slotIndex].Icon.transform.position;
-                var block = new Block();
-                block.IsSolid = true;
-                player.SelectedBlock = block;
+                player.SelectedBlock = new Blocks.Air();
 
                 // TODO: Implement initialize block part
             }

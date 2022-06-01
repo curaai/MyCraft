@@ -53,7 +53,7 @@ public class Chunk
         meshRenderer = gameObj.AddComponent<MeshRenderer>();
         meshFilter = gameObj.AddComponent<MeshFilter>();
         meshCollider = gameObj.AddComponent<MeshCollider>();
-        meshRenderer.material = world.GetComponent<BlockTable>().material;
+        meshRenderer.material = world.BlockTable.material;
 
         gameObj.name = $"Chunk [{coord.x}, {coord.z}]";
         transform.SetParent(world.transform);
@@ -69,7 +69,7 @@ public class Chunk
 
         foreach (var pos in BlockFullIterator())
         {
-            if (GetBlock(pos).IsSolid)
+            if (GetBlock(pos).isSolid)
                 UpdateMeshBlock(pos);
         }
 
@@ -90,7 +90,8 @@ public class Chunk
 
                 foreach (var i in VoxelData.TriIdxOrder)
                     tris.Add(vertIdx + i);
-                uvs.AddRange(block.GetTexture((VoxelFace)faceIdx));
+
+                uvs.AddRange(world.BlockTable.GetTexture(block.id, (VoxelFace)faceIdx));
             }
         }
     }
@@ -140,7 +141,7 @@ public class Chunk
 
     public bool IsSolidBlock(in Vector3Int vp)
     {
-        if (IsVoxelInChunk(vp)) return GetBlock(vp).IsSolid;
+        if (IsVoxelInChunk(vp)) return GetBlock(vp).isSolid;
         return world.IsSolidBlock(chunkPos + vp);
     }
 

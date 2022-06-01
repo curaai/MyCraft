@@ -1,11 +1,10 @@
 using System;
 
-public struct BlockData
+public record BlockData
 {
-    public uint id;
+    public int id;
     public string name;
-    public string model;
-    public uint rewardId;
+    public BlockTextureModel textureModel;
 
     public override string ToString() => $"BlockData [{id}, {name}]";
 }
