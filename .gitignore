@@ -466,3 +466,4 @@ crashlytics-build.properties
 # End of https://www.toptal.com/developers/gitignore/api/unity,visualstudiocode,csharp
 .vscode/launch.json
 
+.DS_Store
