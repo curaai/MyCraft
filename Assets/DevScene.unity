@@ -1967,7 +1967,7 @@ MonoBehaviour:
     Icon: {fileID: 863071275}
   - ItemID: 0
     Icon: {fileID: 596596695}
-  highlightTransform: {fileID: 0}
+  highlightTransform: {fileID: 810723377}
 --- !u!1 &1887085195
 GameObject:
   m_ObjectHideFlags: 0
