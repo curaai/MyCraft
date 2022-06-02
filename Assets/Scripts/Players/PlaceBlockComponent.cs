@@ -19,6 +19,7 @@ namespace Players
         public Block? HighlightBlock { get; protected set; }
         public Vector3Int? HighlightPos { get; protected set; }
         public Vector3Int? PlacedPos { get; protected set; }
+        public Material DestroyMaterial => HighlightBlockTransform.GetChild(0).GetComponent<MeshRenderer>().materials[1];
 
         public void Start()
         {
