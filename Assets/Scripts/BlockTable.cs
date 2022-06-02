@@ -128,7 +128,7 @@ public class BlockTable
             Textures);
         dataTable = _datas.ToDictionary(x => x.id, x => x);
 
-        AtlasTexture = new Texture2D(512, 512);
+        AtlasTexture = new Texture2D(512, 512) { filterMode = FilterMode.Point };
         material = new Material(Shader.Find("Unlit/Texture"));
         TextureUvList = AtlasTexture.PackTextures(Textures.ToArray(), 0, 512, true).Select(x => rect2vec(x)).ToList();
         material.mainTexture = AtlasTexture;

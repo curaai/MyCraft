@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3616717850
+CRC: 3290962992
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f226d58667662e491b1c4145f5f6d22e
+    Hash: 992bd8ca1133f918b33f52a3c4221f4f
   TypeTreeHash:
     serializedVersion: 2
     Hash: b0363f7088f9761414f730641bf9a24b
@@ -63,7 +63,6 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/nether_wart_block.png
 - Assets/MinecraftPackage/textures/blocks/wool_colored_green.png
 - Assets/MinecraftPackage/textures/blocks/trip_wire_source.png
-- Assets/MinecraftPackage/textures/blocks/destroy_stage_1.png
 - Assets/MinecraftPackage/textures/blocks/cake_side.png
 - Assets/MinecraftPackage/textures/blocks/wheat_stage_6.png
 - Assets/MinecraftPackage/textures/blocks/shulker_top_green.png
@@ -81,11 +80,10 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/cocoa_stage_1.png
 - Assets/MinecraftPackage/textures/blocks/redstone_torch_off.png
 - Assets/MinecraftPackage/textures/blocks/stone_andesite_smooth.png
-- Assets/MinecraftPackage/textures/blocks/destroy_stage_6.png
+- Assets/MinecraftPackage/textures/blocks/hardened_clay_stained_orange.png
 - Assets/MinecraftPackage/textures/blocks/glass_pane_top_orange.png
 - Assets/MinecraftPackage/textures/blocks/command_block_side.png
 - Assets/MinecraftPackage/textures/blocks/beetroots_stage_2.png
-- Assets/MinecraftPackage/textures/blocks/hardened_clay_stained_orange.png
 - Assets/MinecraftPackage/textures/blocks/door_acacia_upper.png
 - Assets/MinecraftPackage/textures/blocks/wool_colored_purple.png
 - Assets/MinecraftPackage/textures/blocks/redstone_ore.png
@@ -141,18 +139,16 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/leaves_birch.png
 - Assets/MinecraftPackage/textures/blocks/cauldron_top.png
 - Assets/MinecraftPackage/textures/blocks/door_birch_upper.png
-- Assets/MinecraftPackage/textures/blocks/destroy_stage_9.png
-- Assets/MinecraftPackage/textures/blocks/comparator_on.png
 - Assets/MinecraftPackage/textures/blocks/hardened_clay_stained_cyan.png
-- Assets/MinecraftPackage/textures/blocks/red_sandstone_normal.png
+- Assets/MinecraftPackage/textures/blocks/comparator_on.png
 - Assets/MinecraftPackage/textures/blocks/sandstone_normal.png
+- Assets/MinecraftPackage/textures/blocks/red_sandstone_normal.png
 - Assets/MinecraftPackage/textures/blocks/door_dark_oak_lower.png
 - Assets/MinecraftPackage/textures/blocks/hardened_clay_stained_silver.png
 - Assets/MinecraftPackage/textures/blocks/shulker_top_cyan.png
 - Assets/MinecraftPackage/textures/blocks/observer_side.png
 - Assets/MinecraftPackage/textures/blocks/chain_command_block_front.png
 - Assets/MinecraftPackage/textures/blocks/planks_birch.png
-- Assets/MinecraftPackage/textures/blocks/destroy_stage_2.png
 - Assets/MinecraftPackage/textures/blocks/hardened_clay_stained_gray.png
 - Assets/MinecraftPackage/textures/blocks/frosted_ice_2.png
 - Assets/MinecraftPackage/textures/blocks/glass.png
@@ -166,7 +162,6 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/water_still.png
 - Assets/MinecraftPackage/textures/blocks/enchanting_table_top.png
 - Assets/MinecraftPackage/textures/blocks/double_plant_rose_top.png
-- Assets/MinecraftPackage/textures/blocks/destroy_stage_0.png
 - Assets/MinecraftPackage/textures/blocks/sponge.png
 - Assets/MinecraftPackage/textures/blocks/potatoes_stage_3.png
 - Assets/MinecraftPackage/textures/blocks/mob_spawner.png
@@ -182,11 +177,10 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/grass_side_snowed.png
 - Assets/MinecraftPackage/textures/blocks/mycelium_top.png
 - Assets/MinecraftPackage/textures/blocks/daylight_detector_inverted_top.png
-- Assets/MinecraftPackage/textures/blocks/destroy_stage_7.png
+- Assets/MinecraftPackage/textures/blocks/shulker_top_gray.png
 - Assets/MinecraftPackage/textures/blocks/brick.png
 - Assets/MinecraftPackage/textures/blocks/door_iron_lower.png
 - Assets/MinecraftPackage/textures/blocks/piston_top_sticky.png
-- Assets/MinecraftPackage/textures/blocks/shulker_top_gray.png
 - Assets/MinecraftPackage/textures/blocks/quartz_block_lines_top.png
 - Assets/MinecraftPackage/textures/blocks/red_nether_brick.png
 - Assets/MinecraftPackage/textures/blocks/tnt_top.png
@@ -202,11 +196,11 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/enchanting_table_side.png
 - Assets/MinecraftPackage/textures/blocks/glass_pane_top_cyan.png
 - Assets/MinecraftPackage/textures/blocks/cactus_side.png
-- Assets/MinecraftPackage/textures/blocks/destroy_stage_3.png
 - Assets/MinecraftPackage/textures/blocks/dirt.png
-- Assets/MinecraftPackage/textures/blocks/cocoa_stage_0.png
 - Assets/MinecraftPackage/textures/blocks/magma.png
+- Assets/MinecraftPackage/textures/blocks/cocoa_stage_0.png
 - Assets/MinecraftPackage/textures/blocks/repeater_off.png
+- Assets/MinecraftPackage/textures/blocks/wheat_stage_1.png
 - Assets/MinecraftPackage/textures/blocks/cocoa_stage_2.png
 - Assets/MinecraftPackage/textures/blocks/glass_lime.png
 - Assets/MinecraftPackage/textures/blocks/noteblock.png
@@ -222,10 +216,9 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/pumpkin_face_off.png
 - Assets/MinecraftPackage/textures/blocks/rail_normal.png
 - Assets/MinecraftPackage/textures/blocks/glass_pane_top_purple.png
-- Assets/MinecraftPackage/textures/blocks/wheat_stage_1.png
+- Assets/MinecraftPackage/textures/blocks/wool_colored_orange.png
 - Assets/MinecraftPackage/textures/blocks/purpur_block.png
 - Assets/MinecraftPackage/textures/blocks/flower_rose.png
-- Assets/MinecraftPackage/textures/blocks/wool_colored_orange.png
 - Assets/MinecraftPackage/textures/blocks/log_big_oak.png
 - Assets/MinecraftPackage/textures/blocks/wool_colored_yellow.png
 - Assets/MinecraftPackage/textures/blocks/chorus_plant.png
@@ -348,7 +341,6 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/cauldron_side.png
 - Assets/MinecraftPackage/textures/blocks/double_plant_grass_bottom.png
 - Assets/MinecraftPackage/textures/blocks/glass_pane_top_light_blue.png
-- Assets/MinecraftPackage/textures/blocks/destroy_stage_4.png
 - Assets/MinecraftPackage/textures/blocks/carrots_stage_2.png
 - Assets/MinecraftPackage/textures/blocks/door_dark_oak_upper.png
 - Assets/MinecraftPackage/textures/blocks/mycelium_side.png
@@ -417,7 +409,6 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/wool_colored_light_blue.png
 - Assets/MinecraftPackage/textures/blocks/glass_black.png
 - Assets/MinecraftPackage/textures/blocks/obsidian.png
-- Assets/MinecraftPackage/textures/blocks/destroy_stage_8.png
 - Assets/MinecraftPackage/textures/blocks/structure_block_load.png
 - Assets/MinecraftPackage/textures/blocks/dropper_front_vertical.png
 - Assets/MinecraftPackage/textures/blocks/wool_colored_red.png
@@ -430,7 +421,6 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/double_plant_sunflower_bottom.png
 - Assets/MinecraftPackage/textures/blocks/anvil_top_damaged_2.png
 - Assets/MinecraftPackage/textures/blocks/end_stone.png
-- Assets/MinecraftPackage/textures/blocks/destroy_stage_5.png
 - Assets/MinecraftPackage/textures/blocks/end_rod.png
 - Assets/MinecraftPackage/textures/blocks/chain_command_block_conditional.png
 - Assets/MinecraftPackage/textures/blocks/cake_inner.png
