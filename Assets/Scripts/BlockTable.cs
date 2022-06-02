@@ -83,6 +83,8 @@ public class BlockTable
                 BlockData res = new();
                 res.id = json["id"].ToObject<int>();
                 res.name = json["name"].ToString();
+                res.materialType = Enum.Parse<MaterialType>(json["material_type"].ToString(), true);
+                res.hardness = json["hardness"].ToObject<float>();
 
                 if (json["model"] != null)
                 {
@@ -100,7 +102,10 @@ public class BlockTable
                 throw new ArgumentNullException("Can't find asset bundle");
             }
 
-            return JArray.Parse(rawTable.text).Select(x => parse(x.ToObject<JObject>())).ToList();
+            var air = new BlockData() { id = 0, name = "Air", hardness = -1 };
+            var res = JArray.Parse(rawTable.text).Select(x => parse(x.ToObject<JObject>())).ToList();
+            res.Insert(0, air);
+            return res;
         }
 
         Vector2[] rect2vec(Rect uv)

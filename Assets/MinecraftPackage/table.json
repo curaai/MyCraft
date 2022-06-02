@@ -1,41 +1,51 @@
 [
     {
-        "id": 0,
-        "name": "Air"
-    },
-    {
         "id": 1,
         "name": "Stone",
-        "model": "stone"
+        "model": "stone",
+        "material_type": "ore",
+        "hardness": 1.5
     },
     {
         "id": 2,
         "name": "Grass",
-        "model": "grass_normal"
+        "model": "grass_normal",
+        "material_type": "dirt",
+        "hardness": 0.6
     },
     {
         "id": 3,
         "name": "Dirt",
-        "model": "dirt"
+        "model": "dirt",
+        "material_type": "dirt",
+        "hardness": 0.6
     },
     {
         "id": 4,
         "name": "Cobblestone",
-        "model": "cobblestone"
+        "model": "cobblestone",
+        "material_type": "ore",
+        "hardness": 2
     },
     {
         "id": 5,
         "name": "Oak Wood Plank",
-        "model": "oak_planks"
+        "model": "oak_planks",
+        "material_type": "wood",
+        "hardness": 2
     },
     {
         "id": 7,
         "name": "Bedrock",
-        "model": "bedrock"
+        "model": "bedrock",
+        "material_type": "ore",
+        "hardness": -1
     },
     {
         "id": 12,
         "name": "Sand",
-        "model": "sand"
+        "model": "sand",
+        "material_type": "dirt",
+        "hardness": 0.5
     }
 ]
