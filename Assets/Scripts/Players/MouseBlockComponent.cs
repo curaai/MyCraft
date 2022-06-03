@@ -31,7 +31,7 @@ namespace Players
                 }
                 else
                 {
-                    var blockData = world.BlockTable.dataTable[player.HighlightBlock.id];
+                    var blockData = world.BlockTable.DataDict[player.HighlightBlock.id];
                     var sec = CalcBreakSecond(blockData, 1);
                     destoryBlockAnimator.Init(sec, player.HighlightPos);
                 }

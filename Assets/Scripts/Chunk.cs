@@ -91,7 +91,7 @@ public class Chunk
                 foreach (var i in VoxelData.TriIdxOrder)
                     tris.Add(vertIdx + i);
 
-                uvs.AddRange(world.BlockTable.GetTexture(block.id, (VoxelFace)faceIdx));
+                uvs.AddRange(world.BlockTable.GetTextureUv(block.id, (VoxelFace)faceIdx));
             }
         }
     }

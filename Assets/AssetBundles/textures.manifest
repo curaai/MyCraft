@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3290962992
+CRC: 2830521347
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 992bd8ca1133f918b33f52a3c4221f4f
+    Hash: dd9c740e8cc088aa059695c951b80f07
   TypeTreeHash:
     serializedVersion: 2
     Hash: b0363f7088f9761414f730641bf9a24b
@@ -232,6 +232,7 @@ Assets:
 - Assets/MinecraftPackage/textures/blocks/dirt_podzol_side.png
 - Assets/MinecraftPackage/textures/blocks/lava_flow.png
 - Assets/MinecraftPackage/textures/blocks/jukebox_side.png
+- Assets/MinecraftPackage/textures/blocks/air.png
 - Assets/MinecraftPackage/textures/blocks/structure_block_save.png
 - Assets/MinecraftPackage/textures/blocks/glass_pane_top_brown.png
 - Assets/MinecraftPackage/textures/blocks/stone_slab_top.png

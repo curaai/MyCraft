@@ -1,10 +1,11 @@
 using System;
+using UnityEngine;
 
-public record BlockData
+[CreateAssetMenu(fileName = "BlockData", menuName = "MyCraft/Block Attribute")]
+public class BlockData : ScriptableObject
 {
     public int id;
-    public string name;
-    public BlockTextureModel textureModel;
+    public string textureModelName;
     public MaterialType materialType;
     public float hardness;
 

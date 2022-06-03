@@ -39,10 +39,11 @@ namespace UI
         {
             world = GameObject.Find("World").GetComponent<World>();
             player = world.player.GetComponent<Player>();
+
             int i = 0;
-            foreach (var v in world.BlockTable.dataTable.Values)
+            foreach (var v in world.BlockTable.DataDict.Values)
             {
-                var texture = world.BlockTable.Textures[v.textureModel.south];
+                var texture = world.BlockTable.GetTexture(v.id, VoxelFace.SOUTH);
                 Rect rect = new Rect(0, 0, texture.width, texture.height);
                 ItemSlots[i].ItemID = v.id;
                 ItemSlots[i].Icon.enabled = true;
