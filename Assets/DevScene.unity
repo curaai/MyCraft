@@ -756,6 +756,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1621593439}
+  biomes: []
 --- !u!4 &554214901
 Transform:
   m_ObjectHideFlags: 0
@@ -1682,7 +1683,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0847c2934ef754a98fd1ee389e2988, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1809482068
 GameObject:
   m_ObjectHideFlags: 0

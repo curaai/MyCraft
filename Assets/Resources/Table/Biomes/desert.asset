@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b92f3534dc3f942eda8336cc5943767a, type: 3}
+  m_Name: desert
+  m_EditorClassIdentifier: 
+  id: 2
+  offset: 123
+  scale: 0.058
+  terrainHeight: 52
+  terrainScale: 0.05
+  surfaceBlockId: 4
+  subSurfaceBlockId: 4
+  subSurfaceHeight: 20
+  lodes:
+  - blockId: 1
+    minHeight: 1
+    maxHeight: 255
+    scale: 0.1
+    threshold: 0
+    noiseOffset: 0
+  - blockId: 7
+    minHeight: 0
+    maxHeight: 0
+    scale: 0.2
+    threshold: 0
+    noiseOffset: 5000

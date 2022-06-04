@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using WorldEnvironment;
 
 
 public class World : MonoBehaviour
@@ -16,10 +17,12 @@ public class World : MonoBehaviour
     public BlockTable BlockTable;
 
     public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
+    public BiomeAttribute[] biomes;
 
     private void Awake()
     {
         BlockTable = new();
+        biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
 
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -29,21 +32,22 @@ public class World : MonoBehaviour
 
     public Block GenerateBlock(Vector3Int pos)
     {
-        Block TerrarianBlock()
+        float sumOfHeights = 0f;
+        float strongestWeight = 0f;
+        BiomeAttribute strongestBiome = biomes[0];
+
+        foreach (var biome in biomes)
         {
-            int yPos = Mathf.FloorToInt(pos.y);
-            float noise = NoiseHelper.Perlin(new Vector2(pos.x, pos.z), 0f, 0.1f);
-            var terrianHeight = Mathf.FloorToInt(noise * Chunk.Height);
-
-            Block block;
-            if (yPos <= terrianHeight)
-                block = new Block(2);// grass
-            else
-                block = new Blocks.Air();
-            return block;
+            float weight = NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), biome.offset, biome.scale);
+            if (weight > strongestWeight)
+            {
+                strongestWeight = weight;
+                strongestBiome = biome;
+            }
+            float height = biome.terrainHeight * NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale) * weight;
+            sumOfHeights += height;
         }
-
-        return TerrarianBlock();
+        return strongestBiome.GenerateBlock(pos, Mathf.FloorToInt(sumOfHeights / biomes.Length) + BiomeAttribute.BASE_GROUND_HEIGHT);
     }
 
     public void EditBlock(Vector3Int pos, Block block)
