@@ -26,7 +26,7 @@ namespace Players
         {
             void InitOnFirst()
             {
-                playerCoord = world.ToChunkCoord(player.position).Item1;
+                playerCoord = World.ToChunkCoord(player.position).Item1;
                 CreateAdjacentChunk();
                 foreach (var chunk in activatedList)
                     chunk.Init();
@@ -37,7 +37,7 @@ namespace Players
 
         public void Update()
         {
-            playerCoord = world.ToChunkCoord(player.position).Item1;
+            playerCoord = World.ToChunkCoord(player.position).Item1;
             if (playerCoord != lastPlayerCoord)
                 CreateAdjacentChunk();
             if (toInitQueue.Count != 0)

@@ -10,7 +10,7 @@ public class BlockTable
 {
     private static readonly string TextureBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "textures");
     private static readonly string TextureModelBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "models");
-    public static readonly List<String> CurSupportModels = new List<string>() { "block", "cube", "cube_all", "grass" };
+    public static readonly List<String> CurSupportModels = new List<string>() { "block", "cube", "cube_all", "cube_column", "grass", "leaves" };
 
     public List<Texture2D> Textures;
     public Texture2D AtlasTexture;
@@ -53,7 +53,12 @@ public class BlockTable
                 switch (getName(json["parent"].ToString()))
                 {
                     case "cube_all":
+                    case "leaves":
                         res.up = res.down = res.east = res.west = res.south = res.north = texDict[getName(textureJson["all"].ToString())];
+                        break;
+                    case "cube_column":
+                        res.up = res.down = texDict[getName(textureJson["end"].ToString())];
+                        res.east = res.west = res.south = res.north = texDict[getName(textureJson["side"].ToString())];
                         break;
                     case "grass":
                     case "block":

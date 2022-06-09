@@ -1,10 +1,10 @@
 ManifestFileVersion: 0
-CRC: 2966596675
+CRC: 2935307875
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: textures
+      Name: models
       Dependencies: {}
     Info_1:
-      Name: models
+      Name: textures
       Dependencies: {}

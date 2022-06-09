@@ -96,20 +96,24 @@ public class Chunk
         }
     }
 
-    public void EditBlock(Block newBlock, Vector3Int coord)
+    public void EditBlock(List<BlockMod> mods)
     {
-        void UpdateSurroundedChunks()
+        void UpdateSurroundedChunks(Vector3Int coord)
         {
             for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT; faceIdx++)
             {
                 var faceCoord = coord + VoxelData.SurfaceNormal[faceIdx];
                 if (!IsVoxelInChunk(faceCoord))
-                    world.GetChunk(chunkPos + faceCoord).UpdateChunk();
+                    world.GetChunk(chunkPos + faceCoord)?.UpdateChunk();
             }
         }
 
-        BlockMap[coord.x, coord.y, coord.z] = newBlock;
-        UpdateSurroundedChunks();
+        foreach (var mod in mods)
+        {
+            var coord = mod.pos;
+            BlockMap[coord.x, coord.y, coord.z] = mod.block;
+            UpdateSurroundedChunks(coord);
+        }
         UpdateChunk();
     }
 

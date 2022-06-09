@@ -17,19 +17,20 @@ MonoBehaviour:
   scale: 0.058
   terrainHeight: 52
   terrainScale: 0.05
-  surfaceBlockId: 4
-  subSurfaceBlockId: 4
+  surfaceBlockId: 12
+  subSurfaceBlockId: 12
   subSurfaceHeight: 20
   lodes:
   - blockId: 1
     minHeight: 1
     maxHeight: 255
-    scale: 0.1
-    threshold: 0
+    noiseScale: 0
+    noiseThreshold: 0
     noiseOffset: 0
   - blockId: 7
     minHeight: 0
     maxHeight: 0
-    scale: 0.2
-    threshold: 0
+    noiseScale: 0
+    noiseThreshold: 0
     noiseOffset: 5000
+  plants: []

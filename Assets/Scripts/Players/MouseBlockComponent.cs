@@ -27,7 +27,7 @@ namespace Players
                 if (destoryBlockAnimator.IsUpdateNow)
                 {
                     if (destoryBlockAnimator.Update(player.HighlightPos.Value))
-                        world.EditBlock(player.HighlightPos.Value, new Blocks.Air());
+                        world.EditBlock(new BlockMod(player.HighlightPos.Value, new Blocks.Air()));
                 }
                 else
                 {
@@ -41,7 +41,7 @@ namespace Players
 
             if (Input.GetMouseButtonDown(1) && player.PlacedPos.HasValue) // Right Button
             {
-                world.EditBlock(player.PlacedPos.Value, player.SelectedBlock);
+                world.EditBlock(new BlockMod(player.PlacedPos.Value, player.SelectedBlock));
             }
         }
 

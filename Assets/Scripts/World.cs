@@ -18,6 +18,7 @@ public class World : MonoBehaviour
 
     public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
     public BiomeAttribute[] biomes;
+    public Queue<BlockMod> modificationQueue = new Queue<BlockMod>();
 
     private void Awake()
     {
@@ -30,8 +31,36 @@ public class World : MonoBehaviour
         player.position = new Vector3(ctr * Chunk.Width, Chunk.Height - 20, ctr * Chunk.Width);
     }
 
+    private void Update()
+    {
+        IEnumerator applyModification()
+        {
+            var buffer = new Queue<BlockMod>();
+            while (0 < modificationQueue.Count)
+            {
+                var mod = modificationQueue.Dequeue();
+                buffer.Enqueue(mod);
+
+                var chunkCoord = ToChunkCoord(mod.pos).Item1;
+                if (GetChunk(chunkCoord) == null)
+                    chunks[chunkCoord.x, chunkCoord.z] = new Chunk(chunkCoord, this);
+
+                if (buffer.Count > 200)
+                {
+                    EditBlock(buffer.ToList());
+                    buffer.Clear();
+                    yield return null;
+                }
+            }
+        }
+
+        StartCoroutine(applyModification());
+    }
+
     public Block GenerateBlock(Vector3Int pos)
     {
+        if (IsSolidBlock(pos)) return GetBlock(pos);
+
         float sumOfHeights = 0f;
         float strongestWeight = 0f;
         BiomeAttribute strongestBiome = biomes[0];
@@ -50,10 +79,16 @@ public class World : MonoBehaviour
         return strongestBiome.GenerateBlock(pos, Mathf.FloorToInt(sumOfHeights / biomes.Length) + BiomeAttribute.BASE_GROUND_HEIGHT);
     }
 
-    public void EditBlock(Vector3Int pos, Block block)
+    public void EditBlock(BlockMod mod)
     {
-        var coord = ToChunkCoord(pos);
-        GetChunk(coord.Item1).EditBlock(block, coord.Item2);
+        GetChunk(mod.pos).EditBlock(new List<BlockMod>() { mod.ConvertInChunkCoord() });
+    }
+
+    public void EditBlock(List<BlockMod> mods)
+    {
+        var modGroups = mods.GroupBy(x => ToChunkCoord(x.pos).Item1).ToList();
+        foreach (var modGroup in modGroups)
+            GetChunk(modGroup.Key).EditBlock(modGroup.Select(x => x.ConvertInChunkCoord()).ToList());
     }
 
     public Block GetBlock(Vector3 worldPos)
@@ -62,7 +97,7 @@ public class World : MonoBehaviour
         return GetChunk(pair.Item1).GetBlock(pair.Item2);
     }
 
-    public (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3Int worldPos)
+    public static (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3Int worldPos)
     {
         int x = worldPos.x;
         int y = worldPos.y;
@@ -78,7 +113,7 @@ public class World : MonoBehaviour
         var b = new Vector3Int(x, y, z);
         return (a, b);
     }
-    public (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3 worldPos) => ToChunkCoord(Vector3Int.FloorToInt(worldPos));
+    public static (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3 worldPos) => ToChunkCoord(Vector3Int.FloorToInt(worldPos));
     public Chunk GetChunk(Vector3Int worldPos) => GetChunk(ToChunkCoord(worldPos).Item1);
     public Chunk GetChunk(ChunkCoord coord) => chunks[coord.x, coord.z];
     public bool IsSolidBlock(in Vector3 worldPos)
@@ -90,5 +125,27 @@ public class World : MonoBehaviour
         if (GetChunk(pos.Item1) != null && GetBlock(worldPos) != null)
             return GetBlock(worldPos).isSolid;
         return false;
+    }
+}
+
+public class BlockMod
+{
+    public Vector3Int pos;
+    public Block block;
+
+    public bool worldCoord;
+
+    public BlockMod(Vector3Int _pos, Block _block, bool _worldCoord = true)
+    {
+        pos = _pos;
+        block = _block;
+        worldCoord = _worldCoord;
+    }
+
+    public BlockMod ConvertInChunkCoord()
+    {
+        if (worldCoord)
+            return new BlockMod(World.ToChunkCoord(pos).Item2, block, false);
+        throw new InvalidOperationException("Cannot convert to InChunkCoord");
     }
 }
