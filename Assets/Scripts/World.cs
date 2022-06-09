@@ -18,7 +18,7 @@ public class World : MonoBehaviour
 
     public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
     public BiomeAttribute[] biomes;
-    public Queue<BlockMod> modificationQueue = new Queue<BlockMod>();
+    public Queue<BlockMod> BlockModifyQueue = new Queue<BlockMod>();
 
     private void Awake()
     {
@@ -33,50 +33,56 @@ public class World : MonoBehaviour
 
     private void Update()
     {
-        IEnumerator applyModification()
+        if (0 < BlockModifyQueue.Count)
+            StartCoroutine(ApplyBlockModification());
+    }
+
+    public IEnumerator ApplyBlockModification()
+    {
+        var buffer = new Queue<BlockMod>();
+        while (0 < BlockModifyQueue.Count)
         {
-            var buffer = new Queue<BlockMod>();
-            while (0 < modificationQueue.Count)
+            var mod = BlockModifyQueue.Dequeue();
+            buffer.Enqueue(mod);
+
+            var chunkCoord = ToChunkCoord(mod.pos).Item1;
+            if (GetChunk(chunkCoord) == null)
+                chunks[chunkCoord.x, chunkCoord.z] = new Chunk(chunkCoord, this);
+
+            if (buffer.Count > 200)
             {
-                var mod = modificationQueue.Dequeue();
-                buffer.Enqueue(mod);
-
-                var chunkCoord = ToChunkCoord(mod.pos).Item1;
-                if (GetChunk(chunkCoord) == null)
-                    chunks[chunkCoord.x, chunkCoord.z] = new Chunk(chunkCoord, this);
-
-                if (buffer.Count > 200)
-                {
-                    EditBlock(buffer.ToList());
-                    buffer.Clear();
-                    yield return null;
-                }
+                EditBlock(buffer.ToList());
+                buffer.Clear();
+                yield return null;
             }
         }
-
-        StartCoroutine(applyModification());
     }
 
     public Block GenerateBlock(Vector3Int pos)
     {
+        (BiomeAttribute, int) strongestBiome()
+        {
+            float sumOfHeights = 0f;
+            float strongestWeight = 0f;
+            BiomeAttribute res = biomes[0];
+
+            foreach (var biome in biomes)
+            {
+                float weight = NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), biome.offset, biome.scale);
+                if (weight > strongestWeight)
+                {
+                    strongestWeight = weight;
+                    res = biome;
+                }
+                float height = biome.terrainHeight * NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale) * weight;
+                sumOfHeights += height;
+            }
+            return (res, Mathf.FloorToInt(sumOfHeights / biomes.Length));
+        }
         if (IsSolidBlock(pos)) return GetBlock(pos);
 
-        float sumOfHeights = 0f;
-        float strongestWeight = 0f;
-        BiomeAttribute strongestBiome = biomes[0];
-
-        foreach (var biome in biomes)
-        {
-            float weight = NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), biome.offset, biome.scale);
-            if (weight > strongestWeight)
-            {
-                strongestWeight = weight;
-                strongestBiome = biome;
-            }
-            float height = biome.terrainHeight * NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale) * weight;
-            sumOfHeights += height;
-        }
-        return strongestBiome.GenerateBlock(pos, Mathf.FloorToInt(sumOfHeights / biomes.Length) + BiomeAttribute.BASE_GROUND_HEIGHT);
+        (var biome, var noiseHeight) = strongestBiome();
+        return biome.GenerateBlock(pos, noiseHeight + BiomeAttribute.BASE_GROUND_HEIGHT);
     }
 
     public void EditBlock(BlockMod mod)

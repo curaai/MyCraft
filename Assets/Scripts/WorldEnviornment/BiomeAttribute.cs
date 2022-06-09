@@ -25,7 +25,7 @@ namespace WorldEnvironment
         public List<LodeAttribute> lodes;
         public List<TerrianPlantAttribute> plants;
 
-        public Block GenerateBlock(Vector3Int pos, int height)
+        public Block GenerateBlock(Vector3Int pos, int noiseHeight)
         {
             bool isTreePlacable()
             {
@@ -48,7 +48,7 @@ namespace WorldEnvironment
                 height = Math.Max(height, attr.minHeight);
 
                 foreach (var i in Enumerable.Range(1, height - 1))
-                    world.modificationQueue.Enqueue(new BlockMod(new Vector3Int(pos.x, pos.y + i, pos.z), stem));
+                    world.BlockModifyQueue.Enqueue(new BlockMod(new Vector3Int(pos.x, pos.y + i, pos.z), stem));
 
                 var leaveCoords = (
                     from x in Enumerable.Range(-3, 7)
@@ -57,20 +57,20 @@ namespace WorldEnvironment
                     select pos + new Vector3Int(x, height + y, z)
                 );
                 foreach (var v in leaveCoords)
-                    world.modificationQueue.Enqueue(new BlockMod(v, leave));
+                    world.BlockModifyQueue.Enqueue(new BlockMod(v, leave));
             }
 
             Block res = new Block() { isSolid = true };
-            if (pos.y == height)
+            if (pos.y == noiseHeight)
             {
                 res.id = surfaceBlockId;
                 if (isTreePlacable()) PlaceTree();
             }
-            else if (height - subSurfaceHeight <= pos.y && pos.y < height)
+            else if (noiseHeight - subSurfaceHeight <= pos.y && pos.y < noiseHeight)
             {
                 res.id = subSurfaceBlockId;
             }
-            else if (height < pos.y)
+            else if (noiseHeight < pos.y)
             {
                 return new Blocks.Air();
             }

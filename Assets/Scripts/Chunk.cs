@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Chunk
 {
-    public static readonly int Width = 30;
+    public static readonly int Width = 16;
     public static readonly int Height = 128;
 
     public Block[,,] BlockMap = new Block[Width, Height, Width];
@@ -18,7 +18,7 @@ public class Chunk
     public Vector3Int chunkPos => Vector3Int.CeilToInt(transform.position);
     public bool Activated
     {
-        get => gameObj != null ? gameObj.activeSelf : false;
+        get => gameObj.activeSelf;
         set => gameObj.SetActive(value);
     }
 
@@ -29,25 +29,12 @@ public class Chunk
     protected MeshFilter meshFilter;
     protected MeshCollider meshCollider;
 
+    public bool Initialized { get; private set; }
     public Chunk(ChunkCoord coord, World world)
     {
 
         this.world = world;
         this.coord = coord;
-
-        Init();
-    }
-
-    public void Init()
-    {
-        void GenerateBlocks()
-        {
-            foreach (var pos in BlockFullIterator())
-                BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(chunkPos + pos);
-        }
-
-        if (gameObj != null)
-            return;
 
         gameObj = new GameObject();
         meshRenderer = gameObj.AddComponent<MeshRenderer>();
@@ -58,9 +45,23 @@ public class Chunk
         gameObj.name = $"Chunk [{coord.x}, {coord.z}]";
         transform.SetParent(world.transform);
         transform.position = new Vector3(coord.x * Width, 0f, coord.z * Width);
+        Initialized = false;
+    }
+
+    public void Init()
+    {
+        if (Initialized)
+            return;
+
+        void GenerateBlocks()
+        {
+            foreach (var pos in BlockFullIterator())
+                BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(chunkPos + pos);
+        }
 
         GenerateBlocks();
         UpdateChunk();
+        Initialized = true;
     }
 
     protected void UpdateChunk()
