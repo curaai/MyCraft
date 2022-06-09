@@ -21,7 +21,7 @@ public class World : MonoBehaviour
 
     private void Awake()
     {
-        BlockTable = new();
+        BlockTable = new BlockTable();
         biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
 
         Cursor.lockState = CursorLockMode.Locked;

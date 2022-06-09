@@ -43,6 +43,9 @@ namespace UI
             int i = 0;
             foreach (var v in world.BlockTable.DataDict.Values)
             {
+                if (8 < i)
+                    break;
+
                 var texture = world.BlockTable.GetTexture(v.id, VoxelFace.SOUTH);
                 Rect rect = new Rect(0, 0, texture.width, texture.height);
                 ItemSlots[i].ItemID = v.id;

@@ -17,7 +17,7 @@ namespace Players
         {
             player = GetComponent<Player>();
             world = GameObject.Find("World").GetComponent<World>();
-            destoryBlockAnimator = new(player.GetComponent<PlaceBlockComponent>().DestroyMaterial);
+            destoryBlockAnimator = new DestoryBlockAnimator(player.GetComponent<PlaceBlockComponent>().DestroyMaterial);
         }
 
         public void Update()

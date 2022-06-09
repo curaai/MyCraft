@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Blocks
 {
     [Serializable]
-    public record Air : Block
+    public class Air : Block
     {
         // TODO: User interaction methods can be added
         public Air()

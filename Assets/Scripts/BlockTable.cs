@@ -35,7 +35,7 @@ public class BlockTable
 
         List<Texture2D> textureLoad()
         {
-            Dictionary<String, Texture2D> res = new();
+
             return loadBundle(TextureBundlePath).LoadAllAssets<Texture2D>().ToList();
         }
 

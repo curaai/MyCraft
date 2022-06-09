@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public record Block
+public class Block
 {
     // TODO: User interaction methods can be added
     public Block() { }
