@@ -50,15 +50,14 @@ public class Chunk
 
     public void Init()
     {
-        if (Initialized)
-            return;
-
         void GenerateBlocks()
         {
             foreach (var pos in BlockFullIterator())
                 BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(chunkPos + pos);
         }
 
+        if (Initialized)
+            return;
         GenerateBlocks();
         UpdateChunk();
         Initialized = true;
@@ -77,7 +76,7 @@ public class Chunk
         CreateMesh();
     }
 
-    protected void UpdateMeshBlock(Vector3Int inChunkCoord)
+    protected void UpdateMeshBlock(in Vector3Int inChunkCoord)
     {
         var block = GetBlock(inChunkCoord);
 

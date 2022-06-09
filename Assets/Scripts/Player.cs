@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
 
     [HideInInspector]
     public Transform cam;
+    public ChunkCoord CurChunkCoord => World.ToChunkCoord(transform.position).Item1;
 
     public Block? HighlightBlock => GetComponent<Players.PlaceBlockComponent>().HighlightBlock;
     public Vector3Int? HighlightPos => GetComponent<Players.PlaceBlockComponent>().HighlightPos;

@@ -14,6 +14,9 @@ public class World : MonoBehaviour
 
     [SerializeField]
     public Transform player;
+    [SerializeField]
+    private GameObject debugScreen;
+
     public BlockTable BlockTable;
 
     public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
@@ -33,6 +36,10 @@ public class World : MonoBehaviour
 
     private void Update()
     {
+        // TODO: Move checker to preferences class
+        if (Input.GetKeyDown(KeyCode.F3))
+            debugScreen.SetActive(!debugScreen.activeSelf);
+
         if (0 < BlockModifyQueue.Count)
             StartCoroutine(ApplyBlockModification());
     }
