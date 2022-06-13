@@ -4,23 +4,26 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class Block
+namespace MyCraft
 {
-    // TODO: User interaction methods can be added
-    public Block() { }
-
-    public Block(int _id)
+    [Serializable]
+    public class Block
     {
-        id = _id;
-        isSolid = true;
-    }
-    public Block(int _id, bool _isSolid)
-    {
-        id = _id;
-        isSolid = _isSolid;
-    }
+        // TODO: User interaction methods can be added
+        public Block() { }
 
-    public int id;
-    public bool isSolid;
+        public Block(int _id)
+        {
+            id = _id;
+            isSolid = true;
+        }
+        public Block(int _id, bool _isSolid)
+        {
+            id = _id;
+            isSolid = _isSolid;
+        }
+
+        public int id;
+        public bool isSolid;
+    }
 }

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Linq;
-namespace Players
+
+namespace MyCraft.Players
 {
     public class MouseBlockComponent : MonoBehaviour
     {

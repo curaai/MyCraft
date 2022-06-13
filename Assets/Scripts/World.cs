@@ -4,161 +4,163 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using WorldEnvironment;
+using MyCraft.WorldEnvironment;
 
-
-public class World : MonoBehaviour
+namespace MyCraft
 {
-    public static readonly int WidthByChunk = 100;
-    public static readonly int SizeByVoxels = WidthByChunk * Chunk.Width;
-
-    [SerializeField]
-    public Transform player;
-    [SerializeField]
-    private GameObject debugScreen;
-
-    public BlockTable BlockTable;
-
-    public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
-    public BiomeAttribute[] biomes;
-    public Queue<BlockMod> BlockModifyQueue = new Queue<BlockMod>();
-
-    private void Awake()
+    public class World : MonoBehaviour
     {
-        BlockTable = new BlockTable();
-        biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
+        public static readonly int WidthByChunk = 100;
+        public static readonly int SizeByVoxels = WidthByChunk * Chunk.Width;
 
-        Cursor.lockState = CursorLockMode.Locked;
+        [SerializeField]
+        public Transform player;
+        [SerializeField]
+        private GameObject debugScreen;
 
-        int ctr = WidthByChunk / 2;
-        player.position = new Vector3(ctr * Chunk.Width, Chunk.Height - 20, ctr * Chunk.Width);
-    }
+        public BlockTable BlockTable;
 
-    private void Update()
-    {
-        // TODO: Move checker to preferences class
-        if (Input.GetKeyDown(KeyCode.F3))
-            debugScreen.SetActive(!debugScreen.activeSelf);
+        public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
+        public BiomeAttribute[] biomes;
+        public Queue<BlockMod> BlockModifyQueue = new Queue<BlockMod>();
 
-        if (0 < BlockModifyQueue.Count)
-            StartCoroutine(ApplyBlockModification());
-    }
-
-    public IEnumerator ApplyBlockModification()
-    {
-        var buffer = new Queue<BlockMod>();
-        while (0 < BlockModifyQueue.Count)
+        private void Awake()
         {
-            var mod = BlockModifyQueue.Dequeue();
-            buffer.Enqueue(mod);
+            BlockTable = new BlockTable();
+            biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
 
-            var chunkCoord = ToChunkCoord(mod.pos).Item1;
-            if (GetChunk(chunkCoord) == null)
-                chunks[chunkCoord.x, chunkCoord.z] = new Chunk(chunkCoord, this);
+            Cursor.lockState = CursorLockMode.Locked;
 
-            if (buffer.Count > 200)
-            {
-                EditBlock(buffer.ToList());
-                buffer.Clear();
-                yield return null;
-            }
+            int ctr = WidthByChunk / 2;
+            player.position = new Vector3(ctr * Chunk.Width, Chunk.Height - 20, ctr * Chunk.Width);
         }
-    }
 
-    public Block GenerateBlock(Vector3Int pos)
-    {
-        (BiomeAttribute, int) strongestBiome()
+        private void Update()
         {
-            float sumOfHeights = 0f;
-            float strongestWeight = 0f;
-            BiomeAttribute res = biomes[0];
+            // TODO: Move checker to preferences class
+            if (Input.GetKeyDown(KeyCode.F3))
+                debugScreen.SetActive(!debugScreen.activeSelf);
 
-            foreach (var biome in biomes)
+            if (0 < BlockModifyQueue.Count)
+                StartCoroutine(ApplyBlockModification());
+        }
+
+        public IEnumerator ApplyBlockModification()
+        {
+            var buffer = new Queue<BlockMod>();
+            while (0 < BlockModifyQueue.Count)
             {
-                float weight = NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), biome.offset, biome.scale);
-                if (weight > strongestWeight)
+                var mod = BlockModifyQueue.Dequeue();
+                buffer.Enqueue(mod);
+
+                var chunkCoord = ToChunkCoord(mod.pos).Item1;
+                if (GetChunk(chunkCoord) == null)
+                    chunks[chunkCoord.x, chunkCoord.z] = new Chunk(chunkCoord, this);
+
+                if (buffer.Count > 200)
                 {
-                    strongestWeight = weight;
-                    res = biome;
+                    EditBlock(buffer.ToList());
+                    buffer.Clear();
+                    yield return null;
                 }
-                float height = biome.terrainHeight * NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale) * weight;
-                sumOfHeights += height;
             }
-            return (res, Mathf.FloorToInt(sumOfHeights / biomes.Length));
         }
-        if (IsSolidBlock(pos)) return GetBlock(pos);
 
-        (var biome, var noiseHeight) = strongestBiome();
-        return biome.GenerateBlock(pos, noiseHeight + BiomeAttribute.BASE_GROUND_HEIGHT);
-    }
+        public Block GenerateBlock(Vector3Int pos)
+        {
+            (BiomeAttribute, int) strongestBiome()
+            {
+                float sumOfHeights = 0f;
+                float strongestWeight = 0f;
+                BiomeAttribute res = biomes[0];
 
-    public void EditBlock(BlockMod mod)
-    {
-        GetChunk(mod.pos).EditBlock(new List<BlockMod>() { mod.ConvertInChunkCoord() });
-    }
+                foreach (var biome in biomes)
+                {
+                    float weight = Utils.NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), biome.offset, biome.scale);
+                    if (weight > strongestWeight)
+                    {
+                        strongestWeight = weight;
+                        res = biome;
+                    }
+                    float height = biome.terrainHeight * Utils.NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale) * weight;
+                    sumOfHeights += height;
+                }
+                return (res, Mathf.FloorToInt(sumOfHeights / biomes.Length));
+            }
+            if (IsSolidBlock(pos)) return GetBlock(pos);
 
-    public void EditBlock(List<BlockMod> mods)
-    {
-        var modGroups = mods.GroupBy(x => ToChunkCoord(x.pos).Item1).ToList();
-        foreach (var modGroup in modGroups)
-            GetChunk(modGroup.Key).EditBlock(modGroup.Select(x => x.ConvertInChunkCoord()).ToList());
-    }
+            (var biome, var noiseHeight) = strongestBiome();
+            return biome.GenerateBlock(pos, noiseHeight + BiomeAttribute.BASE_GROUND_HEIGHT);
+        }
 
-    public Block GetBlock(Vector3 worldPos)
-    {
-        var pair = ToChunkCoord(worldPos);
-        return GetChunk(pair.Item1).GetBlock(pair.Item2);
-    }
+        public void EditBlock(BlockMod mod)
+        {
+            GetChunk(mod.pos).EditBlock(new List<BlockMod>() { mod.ConvertInChunkCoord() });
+        }
 
-    public static (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3Int worldPos)
-    {
-        int x = worldPos.x;
-        int y = worldPos.y;
-        int z = worldPos.z;
+        public void EditBlock(List<BlockMod> mods)
+        {
+            var modGroups = mods.GroupBy(x => ToChunkCoord(x.pos).Item1).ToList();
+            foreach (var modGroup in modGroups)
+                GetChunk(modGroup.Key).EditBlock(modGroup.Select(x => x.ConvertInChunkCoord()).ToList());
+        }
 
-        int chunkX = x / Chunk.Width;
-        int chunkZ = z / Chunk.Width;
+        public Block GetBlock(Vector3 worldPos)
+        {
+            var pair = ToChunkCoord(worldPos);
+            return GetChunk(pair.Item1).GetBlock(pair.Item2);
+        }
 
-        x -= chunkX * Chunk.Width;
-        z -= chunkZ * Chunk.Width;
+        public static (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3Int worldPos)
+        {
+            int x = worldPos.x;
+            int y = worldPos.y;
+            int z = worldPos.z;
 
-        var a = new ChunkCoord(chunkX, chunkZ);
-        var b = new Vector3Int(x, y, z);
-        return (a, b);
-    }
-    public static (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3 worldPos) => ToChunkCoord(Vector3Int.FloorToInt(worldPos));
-    public Chunk GetChunk(Vector3Int worldPos) => GetChunk(ToChunkCoord(worldPos).Item1);
-    public Chunk GetChunk(ChunkCoord coord) => chunks[coord.x, coord.z];
-    public bool IsSolidBlock(in Vector3 worldPos)
-    {
-        var pos = ToChunkCoord(worldPos);
-        if (pos.Item2.y < 0 || Chunk.Height <= pos.Item2.y)
+            int chunkX = x / Chunk.Width;
+            int chunkZ = z / Chunk.Width;
+
+            x -= chunkX * Chunk.Width;
+            z -= chunkZ * Chunk.Width;
+
+            var a = new ChunkCoord(chunkX, chunkZ);
+            var b = new Vector3Int(x, y, z);
+            return (a, b);
+        }
+        public static (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3 worldPos) => ToChunkCoord(Vector3Int.FloorToInt(worldPos));
+        public Chunk GetChunk(Vector3Int worldPos) => GetChunk(ToChunkCoord(worldPos).Item1);
+        public Chunk GetChunk(ChunkCoord coord) => chunks[coord.x, coord.z];
+        public bool IsSolidBlock(in Vector3 worldPos)
+        {
+            var pos = ToChunkCoord(worldPos);
+            if (pos.Item2.y < 0 || Chunk.Height <= pos.Item2.y)
+                return false;
+
+            if (GetChunk(pos.Item1) != null && GetBlock(worldPos) != null)
+                return GetBlock(worldPos).isSolid;
             return false;
-
-        if (GetChunk(pos.Item1) != null && GetBlock(worldPos) != null)
-            return GetBlock(worldPos).isSolid;
-        return false;
-    }
-}
-
-public class BlockMod
-{
-    public Vector3Int pos;
-    public Block block;
-
-    public bool worldCoord;
-
-    public BlockMod(Vector3Int _pos, Block _block, bool _worldCoord = true)
-    {
-        pos = _pos;
-        block = _block;
-        worldCoord = _worldCoord;
+        }
     }
 
-    public BlockMod ConvertInChunkCoord()
+    public class BlockMod
     {
-        if (worldCoord)
-            return new BlockMod(World.ToChunkCoord(pos).Item2, block, false);
-        throw new InvalidOperationException("Cannot convert to InChunkCoord");
+        public Vector3Int pos;
+        public Block block;
+
+        public bool worldCoord;
+
+        public BlockMod(Vector3Int _pos, Block _block, bool _worldCoord = true)
+        {
+            pos = _pos;
+            block = _block;
+            worldCoord = _worldCoord;
+        }
+
+        public BlockMod ConvertInChunkCoord()
+        {
+            if (worldCoord)
+                return new BlockMod(World.ToChunkCoord(pos).Item2, block, false);
+            throw new InvalidOperationException("Cannot convert to InChunkCoord");
+        }
     }
 }

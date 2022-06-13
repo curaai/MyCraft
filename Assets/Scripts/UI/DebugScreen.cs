@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace MyCraft.UI
 {
     public class DebugScreen : MonoBehaviour
     {

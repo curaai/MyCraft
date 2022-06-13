@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace Players
+namespace MyCraft.Players
 {
     public class DestoryBlockAnimator
     {

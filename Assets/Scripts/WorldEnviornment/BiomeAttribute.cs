@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using MyCraft.Utils;
 
-namespace WorldEnvironment
+namespace MyCraft.WorldEnvironment
 {
     [CreateAssetMenu(fileName = "BiomeAttribute", menuName = "MyCraft/Biome Attribute")]
     public class BiomeAttribute : ScriptableObject

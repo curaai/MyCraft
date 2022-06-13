@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Blocks
+namespace MyCraft.Blocks
 {
     [Serializable]
     public class Air : Block
