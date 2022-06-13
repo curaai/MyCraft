@@ -58,7 +58,7 @@ namespace MyCraft.Rendering
                     foreach (var i in VoxelData.TriIdxOrder)
                         tris.Add(vertIdx + i);
 
-                    uvs.AddRange(blockTable.GetTextureUv(blockId, (VoxelFace)faceIdx));
+                    uvs.AddRange(blockTable[blockId].GetUv((VoxelFace)faceIdx));
                 }
             }
         }

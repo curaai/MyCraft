@@ -15,13 +15,12 @@ namespace MyCraft
         private static readonly string TextureModelBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "models");
         public static readonly List<String> CurSupportModels = new List<string>() { "block", "cube", "cube_all", "cube_column", "grass", "leaves" };
 
-        public List<Texture2D> Textures;
         public Texture2D AtlasTexture;
-        public List<Vector2[]> TextureUvList;
         public Material material;
 
         public Dictionary<int, BlockData> DataDict;
-        public Dictionary<int, BlockTextureModel> TextureModelDict;
+
+        public BlockData this[int id] { get => DataDict[id]; set => DataDict[id] = value; }
 
         public BlockTable()
         {
@@ -38,11 +37,9 @@ namespace MyCraft
 
             List<Texture2D> textureLoad()
             {
-
                 return loadBundle(TextureBundlePath).LoadAllAssets<Texture2D>().ToList();
             }
-
-            Dictionary<int, BlockTextureModel> textureModelsLoad(in List<Texture2D> textures)
+            Dictionary<int, BlockTextureModel> textureModelsLoad(in Dictionary<int, BlockScriptData> dataDict, in List<Texture2D> textures)
             {
                 Dictionary<String, int> texDict = textures.Select((e, i) => new { e, i }).ToDictionary(x => x.e.name, x => x.i);
                 Func<String, String> getName = x => x.Substring(x.IndexOf('/') + 1);
@@ -82,7 +79,7 @@ namespace MyCraft
                 }
 
                 var assets = loadBundle(TextureModelBundlePath).LoadAllAssets<TextAsset>();
-                var supportNames = DataDict.Values.ToDictionary(x => x.textureModelName, x => x.id);
+                var supportNames = dataDict.Values.ToDictionary(x => x.textureModelName, x => x.id);
                 return (from x in assets
                         where supportNames.Keys.Contains(x.name)
                         select (supportNames[x.name], parseModel(x)))
@@ -91,28 +88,43 @@ namespace MyCraft
 
             Vector2[] rect2vec(Rect uv)
             {
-                var uvs = new Vector2[]
-                {
-            new Vector2(uv.xMin, uv.yMin),
-            new Vector2(uv.xMin, uv.yMax),
-            new Vector2(uv.xMax, uv.yMin),
-            new Vector2(uv.xMax, uv.yMax)
-                };
-                return uvs;
+                return new Vector2[] {
+                    new Vector2(uv.xMin, uv.yMin),
+                    new Vector2(uv.xMin, uv.yMax),
+                    new Vector2(uv.xMax, uv.yMin),
+                    new Vector2(uv.xMax, uv.yMax) };
             }
 
-            DataDict = Resources.LoadAll<BlockData>("Table/Blocks").ToDictionary(x => x.id, x => x);
-            Textures = textureLoad();
-            TextureModelDict = textureModelsLoad(Textures);
+            var scriptDict = Resources.LoadAll<BlockScriptData>("Table/Blocks").ToDictionary(x => x.id, x => x);
+            var Textures = textureLoad();
+            var textureModels = textureModelsLoad(scriptDict, Textures);
 
             material = new Material(Shader.Find("Unlit/Texture"));
             AtlasTexture = new Texture2D(512, 512) { filterMode = FilterMode.Point };
-            TextureUvList = AtlasTexture.PackTextures(Textures.ToArray(), 0, 512, true).Select(rect2vec).ToList();
+            var textureUvs = AtlasTexture.PackTextures(Textures.ToArray(), 0, 512, true).Select(rect2vec).ToList();
             material.mainTexture = AtlasTexture;
-        }
 
-        public int GetTextureFaceIdx(int id, VoxelFace face) => TextureModelDict[id].GetFace(face);
-        public Texture2D GetTexture(int id, VoxelFace face) => Textures[GetTextureFaceIdx(id, face)];
-        public Vector2[] GetTextureUv(int id, VoxelFace face) => TextureUvList[GetTextureFaceIdx(id, face)];
+            DataDict = new Dictionary<int, BlockData>();
+            foreach (var scriptData in scriptDict.Values)
+            {
+                var textures = new List<Texture2D>();
+                for (int i = 0; i < VoxelData.FACE_COUNT; i++)
+                    textures.Add(Textures[textureModels[scriptData.id].GetFace((VoxelFace)i)]);
+                var uvs = new List<Vector2[]>();
+                for (int i = 0; i < VoxelData.FACE_COUNT; i++)
+                    uvs.Add(textureUvs[textureModels[scriptData.id].GetFace((VoxelFace)i)]);
+
+                var res = new BlockData()
+                {
+                    id = scriptData.id,
+                    name = scriptData.name,
+                    materialType = scriptData.materialType,
+                    hardness = scriptData.hardness,
+                    textures = textures,
+                    uvs = uvs,
+                };
+                DataDict[scriptData.id] = res;
+            }
+        }
     }
 }

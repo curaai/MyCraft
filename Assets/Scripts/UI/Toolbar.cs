@@ -46,7 +46,7 @@ namespace MyCraft.UI
                 if (8 < i)
                     break;
 
-                var texture = world.BlockTable.GetTexture(v.id, VoxelFace.SOUTH);
+                var texture = world.BlockTable[v.id].GetTexture(VoxelFace.SOUTH);
                 Rect rect = new Rect(0, 0, texture.width, texture.height);
                 ItemSlots[i].ItemID = v.id;
                 ItemSlots[i].Icon.enabled = true;
