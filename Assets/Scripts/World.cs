@@ -11,7 +11,7 @@ namespace MyCraft
     public class World : MonoBehaviour
     {
         public static readonly int WidthByChunk = 100;
-        public static readonly int SizeByVoxels = WidthByChunk * Chunk.Width;
+        public static readonly int SizeByVoxels = WidthByChunk * Chunk.ChunkShape.x;
 
         [SerializeField]
         public Transform player;
@@ -32,7 +32,7 @@ namespace MyCraft
             Cursor.lockState = CursorLockMode.Locked;
 
             int ctr = WidthByChunk / 2;
-            player.position = new Vector3(ctr * Chunk.Width, Chunk.Height - 20, ctr * Chunk.Width);
+            player.position = new Vector3(ctr * Chunk.ChunkShape.x, Chunk.ChunkShape.y - 20, ctr * Chunk.ChunkShape.x);
         }
 
         private void Update()
@@ -117,11 +117,11 @@ namespace MyCraft
             int y = worldPos.y;
             int z = worldPos.z;
 
-            int chunkX = x / Chunk.Width;
-            int chunkZ = z / Chunk.Width;
+            int chunkX = x / Chunk.ChunkShape.x;
+            int chunkZ = z / Chunk.ChunkShape.x;
 
-            x -= chunkX * Chunk.Width;
-            z -= chunkZ * Chunk.Width;
+            x -= chunkX * Chunk.ChunkShape.x;
+            z -= chunkZ * Chunk.ChunkShape.x;
 
             var a = new ChunkCoord(chunkX, chunkZ);
             var b = new Vector3Int(x, y, z);
@@ -133,7 +133,7 @@ namespace MyCraft
         public bool IsSolidBlock(in Vector3 worldPos)
         {
             var pos = ToChunkCoord(worldPos);
-            if (pos.Item2.y < 0 || Chunk.Height <= pos.Item2.y)
+            if (pos.Item2.y < 0 || Chunk.ChunkShape.y <= pos.Item2.y)
                 return false;
 
             if (GetChunk(pos.Item1) != null && GetBlock(worldPos) != null)

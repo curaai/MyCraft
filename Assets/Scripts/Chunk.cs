@@ -8,17 +8,15 @@ namespace MyCraft
 {
     public class Chunk
     {
-        public static readonly int Width = 16;
-        public static readonly int Height = 128;
-
-        public Block[,,] BlockMap = new Block[Width, Height, Width];
-        protected static readonly Vector3Int ChunkShape = new Vector3Int(Width - 1, Height - 1, Width - 1);
+        public Block[,,] BlockMap = new Block[ChunkShape.x, ChunkShape.y, ChunkShape.x];
+        public static readonly Vector2Int ChunkShape = new Vector2Int(16, 128);
 
         protected World world;
-        public ChunkCoord coord;
         public GameObject gameObj;
+
+        public ChunkCoord coord;
         protected Transform transform => gameObj.transform;
-        public Vector3Int chunkPos => Vector3Int.CeilToInt(transform.position);
+        public Vector3Int chunkPos;
         public bool Activated
         {
             get => gameObj.activeSelf;
@@ -28,15 +26,16 @@ namespace MyCraft
         public ChunkRenderer renderer;
 
         public bool Initialized { get; private set; }
-        public Chunk(ChunkCoord coord, World world)
+        public Chunk(ChunkCoord _coord, World _world)
         {
-            this.world = world;
-            this.coord = coord;
+            world = _world;
+            coord = _coord;
 
             gameObj = new GameObject();
             gameObj.name = $"Chunk [{coord.x}, {coord.z}]";
             transform.SetParent(world.transform);
-            transform.position = new Vector3(coord.x * Width, 0f, coord.z * Width);
+            transform.position = new Vector3(coord.x * ChunkShape.x, 0f, coord.z * ChunkShape.x);
+            chunkPos = Vector3Int.CeilToInt(transform.position);
 
             Initialized = false;
             renderer = new ChunkRenderer(this, world.BlockTable);
@@ -86,14 +85,19 @@ namespace MyCraft
         }
 
         public Block GetBlock(in Vector3Int v) => BlockMap[v.x, v.y, v.z];
-        protected bool IsVoxelInChunk(in Vector3Int v) => v == Vector3Int.Max(Vector3Int.zero, Vector3Int.Min(ChunkShape, v));
 
         public static IEnumerable<Vector3Int> BlockFullIterator()
         {
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                    for (int z = 0; z < Width; z++)
+            for (int x = 0; x < ChunkShape.x; x++)
+                for (int y = 0; y < ChunkShape.y; y++)
+                    for (int z = 0; z < ChunkShape.x; z++)
                         yield return new Vector3Int(x, y, z);
+        }
+        protected bool IsVoxelInChunk(in Vector3Int v)
+        {
+            return (0 <= v.x && v.x < ChunkShape.x &&
+                    0 <= v.y && v.y < ChunkShape.y &&
+                    0 <= v.z && v.z < ChunkShape.x);
         }
     }
 }

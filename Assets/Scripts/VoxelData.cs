@@ -41,14 +41,6 @@ namespace MyCraft
 
         // ! Left Triangle {0, 1, 2}, Right Triangle {2, 1, 3}
         public static readonly int[] TriIdxOrder = new int[6] { 0, 1, 2, 2, 1, 3 };
-
-        public static readonly Vector2Int[] Uvs = new Vector2Int[4]
-        {
-        new Vector2Int (0, 0),
-        new Vector2Int (0, 1),
-        new Vector2Int (1, 0),
-        new Vector2Int (1, 1)
-        };
     }
 
     public enum VoxelFace { NORTH, SOUTH, UP, DOWN, WEST, EAST };

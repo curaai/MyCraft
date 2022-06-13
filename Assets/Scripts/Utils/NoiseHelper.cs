@@ -11,8 +11,8 @@ namespace MyCraft.Utils
         public static float Get2DPerlin(Vector2 pos, float offset, float scale)
         {
             return Mathf.PerlinNoise(
-                (pos.x + 0.1f) / Chunk.Width * scale + offset,
-                (pos.y + 0.1f) / Chunk.Width * scale + offset
+                (pos.x + 0.1f) / Chunk.ChunkShape.x * scale + offset,
+                (pos.y + 0.1f) / Chunk.ChunkShape.x * scale + offset
             );
         }
 
