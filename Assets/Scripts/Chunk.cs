@@ -10,24 +10,19 @@ namespace MyCraft
     public class Chunk
     {
         public Block[,,] BlockMap = new Block[ChunkShape.x, ChunkShape.y, ChunkShape.x];
-        public Block this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
         public static readonly Vector2Int ChunkShape = new Vector2Int(16, 128);
 
         protected World world;
         public GameObject gameObj;
 
-        public ChunkCoord coord;
-        protected Transform transform => gameObj.transform;
-        public Vector3Int chunkPos;
-        public bool Activated
-        {
-            get => gameObj.activeSelf;
-            set => gameObj.SetActive(value);
-        }
-
-        public ChunkRenderer renderer;
-
+        public ChunkCoord coord { get; private set; }
+        public Vector3Int worldPos { get; private set; }
         public bool Initialized { get; private set; }
+
+        private ChunkRenderer renderer;
+
+        private Queue<BlockEdit> editsQueue = new Queue<BlockEdit>();
+
         public Chunk(ChunkCoord _coord, World _world)
         {
             world = _world;
@@ -35,9 +30,9 @@ namespace MyCraft
 
             gameObj = new GameObject();
             gameObj.name = $"Chunk [{coord.x}, {coord.z}]";
-            transform.SetParent(world.transform);
-            transform.position = new Vector3(coord.x * ChunkShape.x, 0f, coord.z * ChunkShape.x);
-            chunkPos = Vector3Int.CeilToInt(transform.position);
+            gameObj.transform.SetParent(world.transform);
+            gameObj.transform.position = new Vector3(coord.x * ChunkShape.x, 0f, coord.z * ChunkShape.x);
+            worldPos = Vector3Int.CeilToInt(gameObj.transform.position);
 
             Initialized = false;
             renderer = new ChunkRenderer(this, world.BlockTable);
@@ -48,43 +43,60 @@ namespace MyCraft
             void GenerateBlocks()
             {
                 foreach (var pos in CoordHelper.ChunkIndexIterator())
-                    BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(chunkPos + pos);
+                    BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(worldPos + pos);
             }
 
             if (Initialized)
                 return;
 
-            Initialized = true;
             GenerateBlocks();
+            Initialized = true;
             renderer.RefreshMesh();
         }
 
-        public void EditBlock(List<BlockEdit> mods)
+        public void Update()
         {
+            while (0 < editsQueue.Count)
+            {
+                var e = editsQueue.Dequeue().ConvertInChunkCoord();
+                this[e.pos] = e.block;
+            }
+
+            renderer.RefreshMesh();
+        }
+
+        public void EditBlock(BlockEdit edit)
+        {
+            editsQueue.Enqueue(edit);
+
             void UpdateSurroundedChunks(Vector3Int coord)
             {
                 for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT; faceIdx++)
                 {
+                    // except y changes
+                    if ((VoxelFace)faceIdx == VoxelFace.UP || (VoxelFace)faceIdx == VoxelFace.DOWN)
+                        continue;
+
                     var faceCoord = coord + VoxelData.SurfaceNormal[faceIdx];
-                    // ! this line makes program slow
-                    // if (!IsVoxelInChunk(faceCoord))
-                    //     world.GetChunk(chunkPos + faceCoord)?.renderer.RefreshMesh();
+                    var targetPos = worldPos + faceCoord;
+                    var chunk = world.GetChunk(CoordHelper.ToChunkCoord(targetPos).Item1);
+                    if (chunk != null && chunk.Initialized && !IsVoxelInChunk(faceCoord))
+                    {
+                        var dummyPos = targetPos + VoxelData.SurfaceNormal[faceIdx]; // avoid infite call
+                        var dummyReqForUpdate = new BlockEdit(dummyPos, chunk[CoordHelper.ToChunkCoord(dummyPos).Item2]);
+                        world.EditBlock(dummyReqForUpdate);
+                    }
                 }
             }
-
-            foreach (var mod in mods)
-            {
-                var coord = mod.pos;
-                BlockMap[coord.x, coord.y, coord.z] = mod.block;
-                UpdateSurroundedChunks(coord);
-            }
-            renderer.RefreshMesh();
+            UpdateSurroundedChunks(edit.ConvertInChunkCoord().pos);
         }
 
-        public bool IsSolidBlock(in Vector3Int vp)
+        public bool IsSolidBlock(in Vector3Int chunkPos)
         {
-            if (IsVoxelInChunk(vp)) return this[vp].isSolid;
-            return world.IsSolidBlock(chunkPos + vp);
+            if (IsVoxelInChunk(chunkPos))
+                return this[chunkPos].isSolid;
+            else
+                return world.IsSolidBlock(this.worldPos + chunkPos);
         }
 
         protected bool IsVoxelInChunk(in Vector3Int v)
@@ -93,5 +105,8 @@ namespace MyCraft
                     0 <= v.y && v.y < ChunkShape.y &&
                     0 <= v.z && v.z < ChunkShape.x);
         }
+
+        public Block this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
+        public bool Activated { get => gameObj.activeSelf; set => gameObj.SetActive(value); }
     }
 }

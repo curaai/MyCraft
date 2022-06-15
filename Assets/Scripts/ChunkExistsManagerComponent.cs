@@ -40,7 +40,7 @@ namespace MyCraft
             if (playerCoord != lastPlayerCoord)
                 CreateAdjacentChunk();
             if (0 < toInitQueue.Count)
-                StartCoroutine(InitChunks());
+                InitChunks();
             lastPlayerCoord = playerCoord;
         }
 
@@ -67,13 +67,12 @@ namespace MyCraft
                 chunk.Activated = false;
         }
 
-        IEnumerator InitChunks()
+        void InitChunks()
         {
             while (0 < toInitQueue.Count)
             {
                 var chunk = toInitQueue.Dequeue();
                 chunk.Init();
-                yield return null;
             }
         }
 

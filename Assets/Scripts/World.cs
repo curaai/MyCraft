@@ -22,8 +22,9 @@ namespace MyCraft
         public BlockTable BlockTable;
 
         public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
-        public BiomeAttribute[] biomes;
-        public Queue<BlockEdit> BlockModifyQueue = new Queue<BlockEdit>();
+        private BiomeAttribute[] biomes;
+        private Queue<BlockEdit> blockEditQueue = new Queue<BlockEdit>();
+        private List<Chunk> chunksToUpdate = new List<Chunk>();
 
         private void Awake()
         {
@@ -42,27 +43,44 @@ namespace MyCraft
             if (Input.GetKeyDown(KeyCode.F3))
                 debugScreen.SetActive(!debugScreen.activeSelf);
 
-            if (0 < BlockModifyQueue.Count)
-                StartCoroutine(ApplyBlockModification());
+            if (0 < blockEditQueue.Count)
+                ApplyBlockModification();
+
+            if (0 < chunksToUpdate.Count)
+                UpdateChunks();
         }
 
-        public IEnumerator ApplyBlockModification()
+        public void ApplyBlockModification()
         {
-            var buffer = new Queue<BlockEdit>();
-            while (0 < BlockModifyQueue.Count)
+            while (0 < blockEditQueue.Count)
             {
-                var mod = BlockModifyQueue.Dequeue();
-                buffer.Enqueue(mod);
+                var mod = blockEditQueue.Dequeue();
 
                 var chunkCoord = CoordHelper.ToChunkCoord(mod.pos).Item1;
-                if (GetChunk(chunkCoord) == null)
-                    chunks[chunkCoord.x, chunkCoord.z] = new Chunk(chunkCoord, this);
+                var chunk = GetChunk(chunkCoord);
+                if (chunk == null)
+                    chunk = chunks[chunkCoord.x, chunkCoord.z] = new Chunk(chunkCoord, this);
+                if (!chunksToUpdate.Contains(chunk))
+                    chunksToUpdate.Add(chunk);
 
-                if (buffer.Count > 200)
+                GetChunk(chunkCoord).EditBlock(mod);
+            }
+        }
+
+        public void UpdateChunks()
+        {
+            int idx = 0;
+            while (idx < chunksToUpdate.Count - 1)
+            {
+                if (chunksToUpdate[idx].Initialized)
                 {
-                    EditBlock(buffer.ToList());
-                    buffer.Clear();
-                    yield return null;
+                    chunksToUpdate[idx].Update();
+                    chunksToUpdate.RemoveAt(idx);
+                    return;
+                }
+                else
+                {
+                    idx++;
                 }
             }
         }
@@ -94,16 +112,9 @@ namespace MyCraft
             return biome.GenerateBlock(pos, noiseHeight + BiomeAttribute.BASE_GROUND_HEIGHT);
         }
 
-        public void EditBlock(BlockEdit mod)
+        public void EditBlock(BlockEdit edit)
         {
-            GetChunk(mod.pos).EditBlock(new List<BlockEdit>() { mod.ConvertInChunkCoord() });
-        }
-
-        public void EditBlock(List<BlockEdit> mods)
-        {
-            var modGroups = mods.GroupBy(x => CoordHelper.ToChunkCoord(x.pos).Item1).ToList();
-            foreach (var modGroup in modGroups)
-                GetChunk(modGroup.Key).EditBlock(modGroup.Select(x => x.ConvertInChunkCoord()).ToList());
+            blockEditQueue.Enqueue(edit);
         }
 
         public Block GetBlock(Vector3 worldPos)
@@ -128,7 +139,6 @@ namespace MyCraft
             var b = new Vector3Int(x, y, z);
             return (a, b);
         }
-        public Chunk GetChunk(Vector3Int worldPos) => GetChunk(CoordHelper.ToChunkCoord(worldPos).Item1);
         public Chunk GetChunk(ChunkCoord coord) => chunks[coord.x, coord.z];
         public bool IsSolidBlock(in Vector3 worldPos)
         {
