@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MyCraft.Utils;
 
 namespace MyCraft
 {
@@ -13,7 +14,7 @@ namespace MyCraft
         [SerializeField]
         public Transform player;
 
-        protected ChunkCoord playerCoord => World.ToChunkCoord(player.position).Item1;
+        protected ChunkCoord playerCoord => CoordHelper.ToChunkCoord(player.position).Item1;
         protected ChunkCoord lastPlayerCoord;
         protected List<Chunk> activatedList = new List<Chunk>();
 

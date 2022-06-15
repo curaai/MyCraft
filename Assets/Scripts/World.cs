@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using MyCraft.WorldEnvironment;
+using MyCraft.Utils;
 
 namespace MyCraft
 {
@@ -22,7 +23,7 @@ namespace MyCraft
 
         public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
         public BiomeAttribute[] biomes;
-        public Queue<BlockMod> BlockModifyQueue = new Queue<BlockMod>();
+        public Queue<BlockEdit> BlockModifyQueue = new Queue<BlockEdit>();
 
         private void Awake()
         {
@@ -47,13 +48,13 @@ namespace MyCraft
 
         public IEnumerator ApplyBlockModification()
         {
-            var buffer = new Queue<BlockMod>();
+            var buffer = new Queue<BlockEdit>();
             while (0 < BlockModifyQueue.Count)
             {
                 var mod = BlockModifyQueue.Dequeue();
                 buffer.Enqueue(mod);
 
-                var chunkCoord = ToChunkCoord(mod.pos).Item1;
+                var chunkCoord = CoordHelper.ToChunkCoord(mod.pos).Item1;
                 if (GetChunk(chunkCoord) == null)
                     chunks[chunkCoord.x, chunkCoord.z] = new Chunk(chunkCoord, this);
 
@@ -93,22 +94,22 @@ namespace MyCraft
             return biome.GenerateBlock(pos, noiseHeight + BiomeAttribute.BASE_GROUND_HEIGHT);
         }
 
-        public void EditBlock(BlockMod mod)
+        public void EditBlock(BlockEdit mod)
         {
-            GetChunk(mod.pos).EditBlock(new List<BlockMod>() { mod.ConvertInChunkCoord() });
+            GetChunk(mod.pos).EditBlock(new List<BlockEdit>() { mod.ConvertInChunkCoord() });
         }
 
-        public void EditBlock(List<BlockMod> mods)
+        public void EditBlock(List<BlockEdit> mods)
         {
-            var modGroups = mods.GroupBy(x => ToChunkCoord(x.pos).Item1).ToList();
+            var modGroups = mods.GroupBy(x => CoordHelper.ToChunkCoord(x.pos).Item1).ToList();
             foreach (var modGroup in modGroups)
                 GetChunk(modGroup.Key).EditBlock(modGroup.Select(x => x.ConvertInChunkCoord()).ToList());
         }
 
         public Block GetBlock(Vector3 worldPos)
         {
-            var pair = ToChunkCoord(worldPos);
-            return GetChunk(pair.Item1).GetBlock(pair.Item2);
+            var pair = CoordHelper.ToChunkCoord(worldPos);
+            return GetChunk(pair.Item1)[pair.Item2];
         }
 
         public static (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3Int worldPos)
@@ -127,40 +128,17 @@ namespace MyCraft
             var b = new Vector3Int(x, y, z);
             return (a, b);
         }
-        public static (ChunkCoord, Vector3Int) ToChunkCoord(in Vector3 worldPos) => ToChunkCoord(Vector3Int.FloorToInt(worldPos));
-        public Chunk GetChunk(Vector3Int worldPos) => GetChunk(ToChunkCoord(worldPos).Item1);
+        public Chunk GetChunk(Vector3Int worldPos) => GetChunk(CoordHelper.ToChunkCoord(worldPos).Item1);
         public Chunk GetChunk(ChunkCoord coord) => chunks[coord.x, coord.z];
         public bool IsSolidBlock(in Vector3 worldPos)
         {
-            var pos = ToChunkCoord(worldPos);
+            var pos = CoordHelper.ToChunkCoord(worldPos);
             if (pos.Item2.y < 0 || Chunk.ChunkShape.y <= pos.Item2.y)
                 return false;
 
             if (GetChunk(pos.Item1) != null && GetBlock(worldPos) != null)
                 return GetBlock(worldPos).isSolid;
             return false;
-        }
-    }
-
-    public class BlockMod
-    {
-        public Vector3Int pos;
-        public Block block;
-
-        public bool worldCoord;
-
-        public BlockMod(Vector3Int _pos, Block _block, bool _worldCoord = true)
-        {
-            pos = _pos;
-            block = _block;
-            worldCoord = _worldCoord;
-        }
-
-        public BlockMod ConvertInChunkCoord()
-        {
-            if (worldCoord)
-                return new BlockMod(World.ToChunkCoord(pos).Item2, block, false);
-            throw new InvalidOperationException("Cannot convert to InChunkCoord");
         }
     }
 }

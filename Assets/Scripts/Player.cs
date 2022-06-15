@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MyCraft.Utils;
 
 namespace MyCraft
 {
@@ -13,7 +14,7 @@ namespace MyCraft
 
         [HideInInspector]
         public Transform cam;
-        public ChunkCoord CurChunkCoord => World.ToChunkCoord(transform.position).Item1;
+        public ChunkCoord CurChunkCoord => CoordHelper.ToChunkCoord(transform.position).Item1;
 
         public Block? HighlightBlock => GetComponent<Players.PlaceBlockComponent>().HighlightBlock;
         public Vector3Int? HighlightPos => GetComponent<Players.PlaceBlockComponent>().HighlightPos;

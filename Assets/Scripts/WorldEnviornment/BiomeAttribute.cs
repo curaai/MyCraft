@@ -49,7 +49,7 @@ namespace MyCraft.WorldEnvironment
                 height = Math.Max(height, attr.minHeight);
 
                 foreach (var i in Enumerable.Range(1, height - 1))
-                    world.BlockModifyQueue.Enqueue(new BlockMod(new Vector3Int(pos.x, pos.y + i, pos.z), stem));
+                    world.BlockModifyQueue.Enqueue(new BlockEdit(new Vector3Int(pos.x, pos.y + i, pos.z), stem));
 
                 var leaveCoords = (
                     from x in Enumerable.Range(-3, 7)
@@ -58,7 +58,7 @@ namespace MyCraft.WorldEnvironment
                     select pos + new Vector3Int(x, height + y, z)
                 );
                 foreach (var v in leaveCoords)
-                    world.BlockModifyQueue.Enqueue(new BlockMod(v, leave));
+                    world.BlockModifyQueue.Enqueue(new BlockEdit(v, leave));
             }
 
             Block res = new Block() { isSolid = true };

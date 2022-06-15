@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MyCraft.Rendering;
+using MyCraft.Utils;
 
 namespace MyCraft
 {
     public class Chunk
     {
         public Block[,,] BlockMap = new Block[ChunkShape.x, ChunkShape.y, ChunkShape.x];
+        public Block this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
         public static readonly Vector2Int ChunkShape = new Vector2Int(16, 128);
 
         protected World world;
@@ -45,26 +47,28 @@ namespace MyCraft
         {
             void GenerateBlocks()
             {
-                foreach (var pos in BlockFullIterator())
+                foreach (var pos in CoordHelper.ChunkIndexIterator())
                     BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(chunkPos + pos);
             }
 
             if (Initialized)
                 return;
+
+            Initialized = true;
             GenerateBlocks();
             renderer.RefreshMesh();
-            Initialized = true;
         }
 
-        public void EditBlock(List<BlockMod> mods)
+        public void EditBlock(List<BlockEdit> mods)
         {
             void UpdateSurroundedChunks(Vector3Int coord)
             {
                 for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT; faceIdx++)
                 {
                     var faceCoord = coord + VoxelData.SurfaceNormal[faceIdx];
-                    if (!IsVoxelInChunk(faceCoord))
-                        world.GetChunk(chunkPos + faceCoord)?.renderer.RefreshMesh();
+                    // ! this line makes program slow
+                    // if (!IsVoxelInChunk(faceCoord))
+                    //     world.GetChunk(chunkPos + faceCoord)?.renderer.RefreshMesh();
                 }
             }
 
@@ -77,22 +81,12 @@ namespace MyCraft
             renderer.RefreshMesh();
         }
 
-
         public bool IsSolidBlock(in Vector3Int vp)
         {
-            if (IsVoxelInChunk(vp)) return GetBlock(vp).isSolid;
+            if (IsVoxelInChunk(vp)) return this[vp].isSolid;
             return world.IsSolidBlock(chunkPos + vp);
         }
 
-        public Block GetBlock(in Vector3Int v) => BlockMap[v.x, v.y, v.z];
-
-        public static IEnumerable<Vector3Int> BlockFullIterator()
-        {
-            for (int x = 0; x < ChunkShape.x; x++)
-                for (int y = 0; y < ChunkShape.y; y++)
-                    for (int z = 0; z < ChunkShape.x; z++)
-                        yield return new Vector3Int(x, y, z);
-        }
         protected bool IsVoxelInChunk(in Vector3Int v)
         {
             return (0 <= v.x && v.x < ChunkShape.x &&

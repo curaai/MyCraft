@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MyCraft.Utils;
 
 namespace MyCraft.Rendering
 {
@@ -33,11 +34,14 @@ namespace MyCraft.Rendering
 
         public void RefreshMesh()
         {
+            if (!chunk.Initialized)
+                return;
+
             ClearMesh();
 
-            foreach (var pos in Chunk.BlockFullIterator())
+            foreach (var pos in CoordHelper.ChunkIndexIterator())
             {
-                var block = chunk.GetBlock(pos);
+                var block = chunk[pos];
                 if (block.isSolid)
                     AppendBlockMesh(pos, block.id);
             }
