@@ -20,7 +20,7 @@ namespace MyCraft
 
         public Dictionary<int, BlockData> DataDict;
 
-        public BlockData this[int id] { get => DataDict[id]; set => DataDict[id] = value; }
+        public BlockData this[int id] { get => DataDict[id]; }
 
         public BlockTable()
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using MyCraft.Rendering;
 using MyCraft.Utils;
@@ -22,6 +23,7 @@ namespace MyCraft
         private ChunkRenderer renderer;
 
         private Queue<BlockEdit> editsQueue = new Queue<BlockEdit>();
+        private bool threadLocked = false;
 
         public Chunk(ChunkCoord _coord, World _world)
         {
@@ -51,11 +53,19 @@ namespace MyCraft
 
             GenerateBlocks();
             Initialized = true;
-            renderer.RefreshMesh();
+            _update();
         }
 
         public void Update()
         {
+            var thread = new Thread(new ThreadStart(_update));
+            thread.Start();
+        }
+
+        public void _update()
+        {
+            threadLocked = true;
+
             while (0 < editsQueue.Count)
             {
                 var e = editsQueue.Dequeue().ConvertInChunkCoord();
@@ -63,6 +73,8 @@ namespace MyCraft
             }
 
             renderer.RefreshMesh();
+
+            threadLocked = false;
         }
 
         public void EditBlock(BlockEdit edit)
@@ -82,7 +94,7 @@ namespace MyCraft
                     var chunk = world.GetChunk(CoordHelper.ToChunkCoord(targetPos).Item1);
                     if (chunk != null && chunk.Initialized && !IsVoxelInChunk(faceCoord))
                     {
-                        var dummyPos = targetPos + VoxelData.SurfaceNormal[faceIdx]; // avoid infite call
+                        var dummyPos = targetPos + VoxelData.SurfaceNormal[faceIdx]; // avoid infinite call
                         var dummyReqForUpdate = new BlockEdit(dummyPos, chunk[CoordHelper.ToChunkCoord(dummyPos).Item2]);
                         world.EditBlock(dummyReqForUpdate);
                     }
@@ -96,7 +108,7 @@ namespace MyCraft
             if (IsVoxelInChunk(chunkPos))
                 return this[chunkPos].isSolid;
             else
-                return world.IsSolidBlock(this.worldPos + chunkPos);
+                return false;
         }
 
         protected bool IsVoxelInChunk(in Vector3Int v)
@@ -108,5 +120,6 @@ namespace MyCraft
 
         public Block this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
         public bool Activated { get => gameObj.activeSelf; set => gameObj.SetActive(value); }
+        public bool IsEditable => Initialized && !threadLocked;
     }
 }

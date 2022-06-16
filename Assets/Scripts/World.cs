@@ -25,6 +25,7 @@ namespace MyCraft
         private BiomeAttribute[] biomes;
         private Queue<BlockEdit> blockEditQueue = new Queue<BlockEdit>();
         private List<Chunk> chunksToUpdate = new List<Chunk>();
+        public Queue<Rendering.ChunkRenderer> ChunksToDraw = new Queue<Rendering.ChunkRenderer>();
 
         private void Awake()
         {
@@ -48,6 +49,14 @@ namespace MyCraft
 
             if (0 < chunksToUpdate.Count)
                 UpdateChunks();
+            if (0 < ChunksToDraw.Count)
+            {
+                lock (ChunksToDraw)
+                {
+                    if (ChunksToDraw.Peek().chunk.IsEditable)
+                        ChunksToDraw.Dequeue().CreateMesh();
+                }
+            }
         }
 
         public void ApplyBlockModification()
@@ -72,7 +81,7 @@ namespace MyCraft
             int idx = 0;
             while (idx < chunksToUpdate.Count - 1)
             {
-                if (chunksToUpdate[idx].Initialized)
+                if (chunksToUpdate[idx].IsEditable)
                 {
                     chunksToUpdate[idx].Update();
                     chunksToUpdate.RemoveAt(idx);

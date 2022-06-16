@@ -8,17 +8,18 @@ namespace MyCraft.Rendering
 {
     public class ChunkRenderer
     {
-        Chunk chunk;
-        protected GameObject chunkObj;
+        private World world;
+        public Chunk chunk;
+        private GameObject chunkObj;
 
         private BlockTable blockTable;
 
         private List<Vector3> verts = new List<Vector3>();
         private List<int> tris = new List<int>();
         private List<Vector2> uvs = new List<Vector2>();
-        protected MeshRenderer meshRenderer;
-        protected MeshFilter meshFilter;
-        protected MeshCollider meshCollider;
+        private MeshRenderer meshRenderer;
+        private MeshFilter meshFilter;
+        private MeshCollider meshCollider;
 
         public ChunkRenderer(Chunk _chunk, BlockTable _blockTable)
         {
@@ -30,6 +31,8 @@ namespace MyCraft.Rendering
             meshRenderer.material = _blockTable.material;
 
             blockTable = _blockTable;
+
+            world = GameObject.Find("World").GetComponent<World>();
         }
 
         public void RefreshMesh()
@@ -37,19 +40,22 @@ namespace MyCraft.Rendering
             if (!chunk.Initialized)
                 return;
 
-            ClearMesh();
+            clearMesh();
 
             foreach (var pos in CoordHelper.ChunkIndexIterator())
             {
                 var block = chunk[pos];
                 if (block.isSolid)
-                    AppendBlockMesh(pos, block.id);
+                    appendBlockMesh(pos, block.id);
             }
 
-            CreateMesh();
+            lock (world.ChunksToDraw)
+            {
+                world.ChunksToDraw.Enqueue(this);
+            }
         }
 
-        protected void AppendBlockMesh(in Vector3Int inChunkCoord, int blockId)
+        private void appendBlockMesh(in Vector3Int inChunkCoord, int blockId)
         {
             for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT; faceIdx++)
             {
@@ -67,7 +73,7 @@ namespace MyCraft.Rendering
             }
         }
 
-        protected void CreateMesh()
+        public void CreateMesh()
         {
             Mesh mesh = new Mesh();
             mesh.vertices = verts.ToArray();
@@ -79,7 +85,7 @@ namespace MyCraft.Rendering
             meshFilter.mesh = mesh;
         }
 
-        protected void ClearMesh()
+        private void clearMesh()
         {
             verts.Clear();
             tris.Clear();
