@@ -11,6 +11,8 @@ namespace MyCraft.WorldEnvironment
     public class BiomeAttribute : ScriptableObject
     {
         public static readonly int BASE_GROUND_HEIGHT = 42;
+        public static readonly Block stem = new Block(17, true);
+        public static readonly Block leave = new Block(18, true);
 
         public int id;
         public float offset;
@@ -26,8 +28,10 @@ namespace MyCraft.WorldEnvironment
         public List<LodeAttribute> lodes;
         public List<TerrianPlantAttribute> plants;
 
-        public Block GenerateBlock(Vector3Int pos, int noiseHeight)
+        public (Block, List<BlockEdit>) GenerateBlock(Vector3Int pos, int noiseHeight)
         {
+            var additionalBlocks = new List<BlockEdit>();
+
             bool isTreePlacable()
             {
                 if (plants.Count == 0) return false;
@@ -38,18 +42,16 @@ namespace MyCraft.WorldEnvironment
                         && NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, treeAttr.noisePlacementScale) > treeAttr.noisePlacementThreshold;
                 }
             }
-            void PlaceTree()
+            List<BlockEdit> PlaceTree()
             {
-                var stem = new Block(17, true);
-                var leave = new Block(18, true);
-                // TODO: Replace to queue system
-                var world = GameObject.Find("World").GetComponent<World>();
+                var res = new List<BlockEdit>();
+
                 var attr = plants[0];
                 int height = Mathf.FloorToInt(attr.maxHeight * NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 250f, 3f));
                 height = Math.Max(height, attr.minHeight);
 
                 foreach (var i in Enumerable.Range(1, height - 1))
-                    world.EditBlock(new BlockEdit(new Vector3Int(pos.x, pos.y + i, pos.z), stem));
+                    res.Add(new BlockEdit(new Vector3Int(pos.x, pos.y + i, pos.z), stem));
 
                 var leaveCoords = (
                     from x in Enumerable.Range(-3, 7)
@@ -58,14 +60,16 @@ namespace MyCraft.WorldEnvironment
                     select pos + new Vector3Int(x, height + y, z)
                 );
                 foreach (var v in leaveCoords)
-                    world.EditBlock(new BlockEdit(v, leave));
+                    res.Add(new BlockEdit(v, leave));
+                return res;
             }
 
             Block res = new Block() { isSolid = true };
             if (pos.y == noiseHeight)
             {
                 res.id = surfaceBlockId;
-                if (isTreePlacable()) PlaceTree();
+                if (isTreePlacable())
+                    additionalBlocks.AddRange(PlaceTree());
             }
             else if (noiseHeight - subSurfaceHeight <= pos.y && pos.y < noiseHeight)
             {
@@ -73,7 +77,7 @@ namespace MyCraft.WorldEnvironment
             }
             else if (noiseHeight < pos.y)
             {
-                return new Blocks.Air();
+                return (new Blocks.Air(), additionalBlocks);
             }
             else
             {
@@ -85,7 +89,7 @@ namespace MyCraft.WorldEnvironment
                           where blockExistInNoise(lode)
                           select lode.blockId).Last();
             }
-            return res;
+            return (res, additionalBlocks);
         }
     }
 

@@ -1,29 +1,34 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using MyCraft.Rendering;
 using MyCraft.Utils;
+using MyCraft.WorldEnvironment;
 
 namespace MyCraft
 {
     public class Chunk
     {
-        public Block[,,] BlockMap = new Block[ChunkShape.x, ChunkShape.y, ChunkShape.x];
         public static readonly Vector2Int ChunkShape = new Vector2Int(16, 128);
+        public Block[,,] BlockMap = new Block[ChunkShape.x, ChunkShape.y, ChunkShape.x];
 
         protected World world;
         public GameObject gameObj;
 
+        public static BiomeAttribute[] biomes;
+
         public ChunkCoord coord { get; private set; }
-        public Vector3Int worldPos { get; private set; }
+        public Vector3Int chunkWorldPos { get; private set; }
         public bool Initialized { get; private set; }
 
         private ChunkRenderer renderer;
 
         private Queue<BlockEdit> editsQueue = new Queue<BlockEdit>();
-        private bool threadLocked = false;
+        public bool ThreadLocked = false;
 
         public Chunk(ChunkCoord _coord, World _world)
         {
@@ -34,7 +39,7 @@ namespace MyCraft
             gameObj.name = $"Chunk [{coord.x}, {coord.z}]";
             gameObj.transform.SetParent(world.transform);
             gameObj.transform.position = new Vector3(coord.x * ChunkShape.x, 0f, coord.z * ChunkShape.x);
-            worldPos = Vector3Int.CeilToInt(gameObj.transform.position);
+            chunkWorldPos = Vector3Int.CeilToInt(gameObj.transform.position);
 
             Initialized = false;
             renderer = new ChunkRenderer(this, world.BlockTable);
@@ -45,7 +50,7 @@ namespace MyCraft
             void GenerateBlocks()
             {
                 foreach (var pos in CoordHelper.ChunkIndexIterator())
-                    BlockMap[pos.x, pos.y, pos.z] = world.GenerateBlock(worldPos + pos);
+                    BlockMap[pos.x, pos.y, pos.z] = GenerateBlock(pos);
             }
 
             if (Initialized)
@@ -64,17 +69,55 @@ namespace MyCraft
 
         public void _update()
         {
-            threadLocked = true;
+            if (!Initialized)
+                return;
+
+            ThreadLocked = true;
 
             while (0 < editsQueue.Count)
             {
-                var e = editsQueue.Dequeue().ConvertInChunkCoord();
-                this[e.pos] = e.block;
+                var e = editsQueue.Dequeue();
+                if (e == null)
+                    Debug.Log(editsQueue.Count);
+
+                var a = e.ConvertInChunkCoord();
+                this[a.pos] = a.block;
             }
 
             renderer.RefreshMesh();
 
-            threadLocked = false;
+            ThreadLocked = false;
+        }
+
+        public Block GenerateBlock(Vector3Int blockChunkPos)
+        {
+            (BiomeAttribute, int) strongestBiome(Vector3Int worldPos)
+            {
+                float sumOfHeights = 0f;
+                float strongestWeight = 0f;
+                BiomeAttribute res = biomes[0];
+
+                foreach (var biome in biomes)
+                {
+                    float weight = Utils.NoiseHelper.Get2DPerlin(new Vector2(worldPos.x, worldPos.z), biome.offset, biome.scale);
+                    if (weight > strongestWeight)
+                    {
+                        strongestWeight = weight;
+                        res = biome;
+                    }
+                    float height = biome.terrainHeight * Utils.NoiseHelper.Get2DPerlin(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale) * weight;
+                    sumOfHeights += height;
+                }
+                return (res, Mathf.FloorToInt(sumOfHeights / biomes.Length));
+            }
+
+            (var biome, var noiseHeight) = strongestBiome(chunkWorldPos + blockChunkPos);
+            (var block, var additionalEdits) = biome.GenerateBlock(chunkWorldPos + blockChunkPos, noiseHeight + BiomeAttribute.BASE_GROUND_HEIGHT);
+
+            foreach (var edit in additionalEdits)
+                world.EditBlock(edit);
+
+            return block;
         }
 
         public void EditBlock(BlockEdit edit)
@@ -90,7 +133,7 @@ namespace MyCraft
                         continue;
 
                     var faceCoord = coord + VoxelData.SurfaceNormal[faceIdx];
-                    var targetPos = worldPos + faceCoord;
+                    var targetPos = chunkWorldPos + faceCoord;
                     var chunk = world.GetChunk(CoordHelper.ToChunkCoord(targetPos).Item1);
                     if (chunk != null && chunk.Initialized && !IsVoxelInChunk(faceCoord))
                     {
@@ -105,7 +148,7 @@ namespace MyCraft
 
         public bool IsSolidBlock(in Vector3Int chunkPos)
         {
-            if (IsVoxelInChunk(chunkPos))
+            if (IsVoxelInChunk(chunkPos) && this[chunkPos] != null)
                 return this[chunkPos].isSolid;
             else
                 return false;
@@ -120,6 +163,6 @@ namespace MyCraft
 
         public Block this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
         public bool Activated { get => gameObj.activeSelf; set => gameObj.SetActive(value); }
-        public bool IsEditable => Initialized && !threadLocked;
+        public bool IsEditable => Initialized && !ThreadLocked;
     }
 }

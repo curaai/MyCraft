@@ -31,6 +31,7 @@ namespace MyCraft
         {
             BlockTable = new BlockTable();
             biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
+            Chunk.biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
 
             Cursor.lockState = CursorLockMode.Locked;
 
@@ -92,33 +93,6 @@ namespace MyCraft
                     idx++;
                 }
             }
-        }
-
-        public Block GenerateBlock(Vector3Int pos)
-        {
-            (BiomeAttribute, int) strongestBiome()
-            {
-                float sumOfHeights = 0f;
-                float strongestWeight = 0f;
-                BiomeAttribute res = biomes[0];
-
-                foreach (var biome in biomes)
-                {
-                    float weight = Utils.NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), biome.offset, biome.scale);
-                    if (weight > strongestWeight)
-                    {
-                        strongestWeight = weight;
-                        res = biome;
-                    }
-                    float height = biome.terrainHeight * Utils.NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale) * weight;
-                    sumOfHeights += height;
-                }
-                return (res, Mathf.FloorToInt(sumOfHeights / biomes.Length));
-            }
-            if (IsSolidBlock(pos)) return GetBlock(pos);
-
-            (var biome, var noiseHeight) = strongestBiome();
-            return biome.GenerateBlock(pos, noiseHeight + BiomeAttribute.BASE_GROUND_HEIGHT);
         }
 
         public void EditBlock(BlockEdit edit)
