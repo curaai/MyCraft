@@ -16,3 +16,4 @@ MonoBehaviour:
   textureModelName: cobblestone
   materialType: 0
   hardness: 2
+  iconSprite: {fileID: 5228055884160678915, guid: 3f1382667b0e248159f4e9fca3428560, type: 3}

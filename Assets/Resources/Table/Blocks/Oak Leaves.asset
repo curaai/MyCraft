@@ -16,3 +16,4 @@ MonoBehaviour:
   textureModelName: oak_leaves
   materialType: 2
   hardness: 0.2
+  iconSprite: {fileID: -1010865352807580001, guid: 3f1382667b0e248159f4e9fca3428560, type: 3}

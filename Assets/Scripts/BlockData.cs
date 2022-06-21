@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MyCraft
 {
@@ -15,7 +16,6 @@ namespace MyCraft
         public List<Vector2[]> uvs;
 
         public override string ToString() => $"BlockData [{id}, {name}]";
-
         public Texture2D GetTexture(VoxelFace face) => textures[(int)face];
         public Vector2[] GetUv(VoxelFace face) => uvs[(int)face];
     }

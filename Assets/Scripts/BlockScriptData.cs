@@ -1,6 +1,7 @@
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MyCraft
 {
@@ -11,7 +12,6 @@ namespace MyCraft
         public string textureModelName;
         public MaterialType materialType;
         public float hardness;
-
-        public override string ToString() => $"BlockData [{id}, {name}]";
+        public Sprite iconSprite;
     }
 }

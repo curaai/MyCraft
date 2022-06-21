@@ -16,3 +16,4 @@ MonoBehaviour:
   textureModelName: oak_log
   materialType: 2
   hardness: 2
+  iconSprite: {fileID: 6240558089505865355, guid: 3f1382667b0e248159f4e9fca3428560, type: 3}

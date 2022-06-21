@@ -16,3 +16,4 @@ MonoBehaviour:
   textureModelName: bedrock
   materialType: 0
   hardness: -1
+  iconSprite: {fileID: -7282595338986229304, guid: 3f1382667b0e248159f4e9fca3428560, type: 3}

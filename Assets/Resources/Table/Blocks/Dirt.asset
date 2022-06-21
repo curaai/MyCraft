@@ -16,3 +16,4 @@ MonoBehaviour:
   textureModelName: dirt
   materialType: 1
   hardness: 0.6
+  iconSprite: {fileID: -18494435726205854, guid: 3f1382667b0e248159f4e9fca3428560, type: 3}

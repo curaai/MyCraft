@@ -4,7 +4,7 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: -8311860710908914152
-    second: item-icons_0
+    second: icon-Stone
   - first:
       213: -1536813237239439180
     second: item-icons_1
@@ -40,7 +40,7 @@ TextureImporter:
     second: item-icons_11
   - first:
       213: -1010865352807580001
-    second: item-icons_12
+    second: icon-Oak Leaves
   - first:
       213: 1041389821522244084
     second: item-icons_13
@@ -406,7 +406,7 @@ TextureImporter:
     second: item-icons_133
   - first:
       213: -971471231554378930
-    second: item-icons_134
+    second: icon-Sand
   - first:
       213: 8229005940656308329
     second: item-icons_135
@@ -562,7 +562,7 @@ TextureImporter:
     second: item-icons_185
   - first:
       213: 4726778488496307572
-    second: item-icons_186
+    second: icon-Oak Wood Plank
   - first:
       213: -2898323831268923081
     second: item-icons_187
@@ -895,7 +895,7 @@ TextureImporter:
     second: item-icons_296
   - first:
       213: 6240558089505865355
-    second: item-icons_297
+    second: icon-Oak Wood
   - first:
       213: -8985209543194875415
     second: item-icons_298
@@ -1093,7 +1093,7 @@ TextureImporter:
     second: item-icons_362
   - first:
       213: 7644506160718801889
-    second: item-icons_363
+    second: icon-Grass
   - first:
       213: 220523227853486941
     second: item-icons_364
@@ -1207,7 +1207,7 @@ TextureImporter:
     second: item-icons_400
   - first:
       213: 5228055884160678915
-    second: item-icons_401
+    second: icon-CobbleStone
   - first:
       213: 1926191623608654432
     second: item-icons_402
@@ -1480,7 +1480,7 @@ TextureImporter:
     second: item-icons_491
   - first:
       213: -18494435726205854
-    second: item-icons_492
+    second: icon-Dirt
   - first:
       213: -2710557719818639175
     second: item-icons_493
@@ -2065,7 +2065,7 @@ TextureImporter:
     second: item-icons_686
   - first:
       213: -7282595338986229304
-    second: item-icons_687
+    second: icon-Bedrock
   - first:
       213: -7777401510466573621
     second: item-icons_688
@@ -2158,7 +2158,7 @@ TextureImporter:
     second: item-icons_717
   - first:
       213: 574008883218168096
-    second: item-icons_718
+    second: icon-Air
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -2189,7 +2189,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -2260,7 +2260,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: item-icons_0
+      name: icon-Stone
       rect:
         serializedVersion: 2
         x: 32
@@ -2512,7 +2512,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_12
+      name: icon-Oak Leaves
       rect:
         serializedVersion: 2
         x: 416
@@ -2830,7 +2830,7 @@ TextureImporter:
       name: item-icons_27
       rect:
         serializedVersion: 2
-        x: 32
+        x: 33
         y: 800
         width: 32
         height: 32
@@ -5074,7 +5074,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_134
+      name: icon-Sand
       rect:
         serializedVersion: 2
         x: 0
@@ -6166,7 +6166,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_186
+      name: icon-Oak Wood Plank
       rect:
         serializedVersion: 2
         x: 800
@@ -8497,7 +8497,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_297
+      name: icon-Oak Wood
       rect:
         serializedVersion: 2
         x: 32
@@ -9883,7 +9883,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_363
+      name: icon-Grass
       rect:
         serializedVersion: 2
         x: 416
@@ -10681,7 +10681,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_401
+      name: icon-CobbleStone
       rect:
         serializedVersion: 2
         x: 768
@@ -12592,7 +12592,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_492
+      name: icon-Dirt
       rect:
         serializedVersion: 2
         x: 224
@@ -16687,7 +16687,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_687
+      name: icon-Bedrock
       rect:
         serializedVersion: 2
         x: 416
@@ -17338,7 +17338,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_718
+      name: icon-Air
       rect:
         serializedVersion: 2
         x: 0

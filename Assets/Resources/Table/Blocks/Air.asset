@@ -16,3 +16,4 @@ MonoBehaviour:
   textureModelName: air
   materialType: 0
   hardness: -1
+  iconSprite: {fileID: 574008883218168096, guid: 3f1382667b0e248159f4e9fca3428560, type: 3}
