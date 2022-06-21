@@ -23,7 +23,7 @@ namespace MyCraft.Players
 
         public void Update()
         {
-            if (Input.GetMouseButton(0) && player.HighlightPos.HasValue) // Right Button
+            if (Input.GetMouseButton(0) && player.HighlightPos.HasValue) // left Button
             {
                 if (destoryBlockAnimator.IsUpdateNow)
                 {
@@ -37,12 +37,13 @@ namespace MyCraft.Players
                     destoryBlockAnimator.Init(sec, player.HighlightPos);
                 }
             }
-            if (Input.GetMouseButtonUp(0)) // Right Button
+            if (Input.GetMouseButtonUp(0)) // left Button
                 destoryBlockAnimator.Reset();
 
-            if (Input.GetMouseButtonDown(1) && player.PlacedPos.HasValue) // Right Button
+            if (Input.GetMouseButtonDown(1) && player.PlacedPos.HasValue)// Right Button
             {
-                world.EditBlock(new BlockEdit(player.PlacedPos.Value, player.SelectedBlock));
+                if (!player.SelectedSlot.isEmpty)
+                    world.EditBlock(new BlockEdit(player.PlacedPos.Value, player.SelectedSlot.Take(1).Item1));
             }
         }
 

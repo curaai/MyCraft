@@ -12,12 +12,7 @@ namespace MyCraft
         // TODO: User interaction methods can be added
         public Block() { }
 
-        public Block(int _id)
-        {
-            id = _id;
-            isSolid = true;
-        }
-        public Block(int _id, bool _isSolid)
+        public Block(int _id, bool _isSolid = true)
         {
             id = _id;
             isSolid = _isSolid;

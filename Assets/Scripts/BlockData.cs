@@ -14,6 +14,7 @@ namespace MyCraft
 
         public List<Texture2D> textures;
         public List<Vector2[]> uvs;
+        public Sprite iconSprite;
 
         public override string ToString() => $"BlockData [{id}, {name}]";
         public Texture2D GetTexture(VoxelFace face) => textures[(int)face];

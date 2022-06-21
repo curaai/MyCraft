@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MyCraft.Utils;
+using MyCraft.Players;
+using MyCraft.UI;
 
 namespace MyCraft
 {
@@ -16,14 +18,18 @@ namespace MyCraft
         public Transform cam;
         public ChunkCoord CurChunkCoord => CoordHelper.ToChunkCoord(transform.position).Item1;
 
-        public Block? HighlightBlock => GetComponent<Players.PlaceBlockComponent>().HighlightBlock;
-        public Vector3Int? HighlightPos => GetComponent<Players.PlaceBlockComponent>().HighlightPos;
-        public Vector3Int? PlacedPos => GetComponent<Players.PlaceBlockComponent>().PlacedPos;
-        public Block SelectedBlock;
+        public Block? HighlightBlock => GetComponent<PlaceBlockComponent>().HighlightBlock;
+        public Vector3Int? HighlightPos => GetComponent<PlaceBlockComponent>().HighlightPos;
+        public Vector3Int? PlacedPos => GetComponent<PlaceBlockComponent>().PlacedPos;
+
+        public ItemSlot SelectedSlot => uiObj.GetComponentInChildren<Hotbar>().SelectedSlot;
+
+        private GameObject uiObj;
 
         public void Start()
         {
             cam = transform.GetChild(0);
+            uiObj = GameObject.Find("PlayerUI");
         }
     }
 }

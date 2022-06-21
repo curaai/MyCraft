@@ -122,6 +122,7 @@ namespace MyCraft
                     hardness = scriptData.hardness,
                     textures = textures,
                     uvs = uvs,
+                    iconSprite = scriptData.iconSprite,
                 };
                 DataDict[scriptData.id] = res;
             }
