@@ -14,10 +14,8 @@ namespace MyCraft
         public static readonly int WidthByChunk = 100;
         public static readonly int SizeByVoxels = WidthByChunk * Chunk.ChunkShape.x;
 
-        [SerializeField]
-        public Transform player;
-        [SerializeField]
-        private GameObject debugScreen;
+        [SerializeField] public Transform player;
+        [SerializeField] private GameObject debugScreen;
 
         public BlockTable BlockTable;
 
@@ -27,23 +25,41 @@ namespace MyCraft
         private List<Chunk> chunksToUpdate = new List<Chunk>();
         public Queue<Rendering.ChunkRenderer> ChunksToDraw = new Queue<Rendering.ChunkRenderer>();
 
-        private void Awake()
+        public bool InUI
+        {
+            get { return _InUI; }
+            private set
+            {
+                _InUI = value;
+                if (_InUI)
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                    GameObject.Find("Inventory").GetComponent<UI.Inventory>().enabled = true;
+                }
+                else
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    GameObject.Find("Inventory").GetComponent<UI.Inventory>().enabled = false;
+                }
+            }
+        }
+        private bool _InUI = false;
+
+        void Awake()
         {
             BlockTable = new BlockTable();
             biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
             Chunk.biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
 
-            Cursor.lockState = CursorLockMode.Locked;
+            InUI = false;
 
             int ctr = WidthByChunk / 2;
             player.position = new Vector3(ctr * Chunk.ChunkShape.x, Chunk.ChunkShape.y - 20, ctr * Chunk.ChunkShape.x);
         }
 
-        private void Update()
+        void Update()
         {
-            // TODO: Move checker to preferences class
-            if (Input.GetKeyDown(KeyCode.F3))
-                debugScreen.SetActive(!debugScreen.activeSelf);
+            fetchPlayerInputs();
 
             if (0 < blockEditQueue.Count)
                 ApplyBlockModification();
@@ -58,6 +74,14 @@ namespace MyCraft
                         ChunksToDraw.Dequeue().CreateMesh();
                 }
             }
+        }
+
+        private void fetchPlayerInputs()
+        {
+            if (Input.GetKeyDown(KeyCode.F3))
+                debugScreen.SetActive(!debugScreen.activeSelf);
+            if (Input.GetKeyDown(KeyCode.I))
+                InUI = !InUI;
         }
 
         public void ApplyBlockModification()

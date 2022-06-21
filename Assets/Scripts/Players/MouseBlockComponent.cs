@@ -23,6 +23,9 @@ namespace MyCraft.Players
 
         public void Update()
         {
+            if (world.InUI)
+                return;
+
             if (Input.GetMouseButton(0) && player.HighlightPos.HasValue) // left Button
             {
                 if (destoryBlockAnimator.IsUpdateNow)

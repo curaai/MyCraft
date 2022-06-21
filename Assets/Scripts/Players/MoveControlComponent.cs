@@ -38,6 +38,9 @@ namespace MyCraft.Players
 
         private void Update()
         {
+            if (world.InUI)
+                return;
+
             FetchPlayerInput();
         }
 
