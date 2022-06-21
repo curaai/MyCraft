@@ -7,29 +7,17 @@ namespace MyCraft.UI
 {
     public class ItemSlot : MonoBehaviour, IDropHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
+        public static readonly int MAX_AMOUNT = 64;
+
         public static ItemSlot? CurDragSlot;
         public static Vector3? CurBeginDragPos;
-        public static readonly int MAX_AMOUNT = 64;
-        [SerializeField]
-        private Text amountText;
-        [SerializeField]
-        public Image iconImage;
 
-        private BlockData? block;
+        [SerializeField] protected Text amountText;
+        [SerializeField] protected Image iconImage;
+
+        public BlockData? block;
         public int amount { get; private set; }
         public bool isEmpty => amount == 0;
-
-        void OnEnable()
-        {
-            refresh();
-            iconImage.enabled = true;
-            amountText.enabled = true;
-        }
-        void OnDisable()
-        {
-            iconImage.enabled = false;
-            amountText.enabled = false;
-        }
 
         public void Set(BlockData? block, int amount)
         {
@@ -62,7 +50,7 @@ namespace MyCraft.UI
             }
         }
 
-        private void refresh()
+        protected virtual void refresh()
         {
             if (block is BlockData _block)
             {
@@ -76,7 +64,7 @@ namespace MyCraft.UI
             }
         }
 
-        private void clear()
+        protected virtual void clear()
         {
             amount = 0;
             block = null;
@@ -84,6 +72,18 @@ namespace MyCraft.UI
             iconImage.sprite = null;
             iconImage.color = new Color(0, 0, 0, 0);
             amountText.text = "";
+        }
+
+        public void OnEnable()
+        {
+            refresh();
+            iconImage.enabled = true;
+            amountText.enabled = true;
+        }
+        public void OnDisable()
+        {
+            iconImage.enabled = false;
+            amountText.enabled = false;
         }
 
         public void OnDrop(PointerEventData eventData)

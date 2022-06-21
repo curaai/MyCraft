@@ -7,15 +7,14 @@ namespace MyCraft.UI
 {
     public class Hotbar : MonoBehaviour
     {
-        public ItemSlot[] ItemSlots => GetComponentsInChildren<ItemSlot>().Reverse().ToArray();
-
-        [SerializeField]
-        public RectTransform highlightTransform;
+        [SerializeField] private RectTransform highlightTransform;
 
         World world;
         Player player;
+        Inventory inventory;
 
-        public ItemSlot SelectedSlot => ItemSlots[SlotIndex];
+        public HotbarItemSlot[] ItemSlots => inventory.InventorySlots;
+        public HotbarItemSlot SelectedSlot => ItemSlots[SlotIndex];
 
         public int SlotIndex
         {
@@ -29,18 +28,21 @@ namespace MyCraft.UI
                 else
                     _slotIndex = value;
 
-                highlightTransform.position = ItemSlots[SlotIndex].transform.position;
+                var slotContainers = transform.GetChild(0);
+                highlightTransform.position = slotContainers.GetChild(SlotIndex).transform.position;
             }
         }
         private int _slotIndex = 0;
-
 
         private void Start()
         {
             world = GameObject.Find("World").GetComponent<World>();
             player = world.player.GetComponent<Player>();
+            inventory = GameObject.Find("Inventory").GetComponent<Inventory>();
 
             ItemSlots[0].Set(world.BlockTable[1], ItemSlot.MAX_AMOUNT);
+            ItemSlots[1].Set(world.BlockTable[5], ItemSlot.MAX_AMOUNT);
+            ItemSlots[2].Set(world.BlockTable[12], ItemSlot.MAX_AMOUNT);
         }
 
         private void Update()
