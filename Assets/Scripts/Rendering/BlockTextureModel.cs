@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace MyCraft.Rendering
 {
@@ -30,5 +32,16 @@ namespace MyCraft.Rendering
             }
             return 0;
         }
+    }
+    public struct BlockTextureModelNew
+    {
+        public struct Element
+        {
+            public Vector3 from;
+            public Vector3 to;
+            public Dictionary<string, (Texture2D, Rect)> faces;
+        }
+
+        public List<Element> elements;
     }
 }
