@@ -6,14 +6,14 @@ namespace MyCraft.Rendering
 {
     public struct BlockTextureModel
     {
-        public int up;
-        public int down;
-        public int east;
-        public int west;
-        public int south;
-        public int north;
+        public (Texture2D, Vector2[]) up;
+        public (Texture2D, Vector2[]) down;
+        public (Texture2D, Vector2[]) east;
+        public (Texture2D, Vector2[]) west;
+        public (Texture2D, Vector2[]) south;
+        public (Texture2D, Vector2[]) north;
 
-        public int GetFace(VoxelFace face)
+        public (Texture2D, Vector2[])? GetFace(VoxelFace face)
         {
             switch (face)
             {
@@ -30,7 +30,7 @@ namespace MyCraft.Rendering
                 case VoxelFace.NORTH:
                     return north;
             }
-            return 0;
+            return null;
         }
     }
     public struct BlockTextureModelNew

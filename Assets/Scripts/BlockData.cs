@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using MyCraft.Rendering;
 
 namespace MyCraft
 {
@@ -12,13 +13,13 @@ namespace MyCraft
         public MaterialType materialType;
         public float hardness;
 
-        public List<Texture2D> textures;
-        public List<Vector2[]> uvs;
+        public BlockTextureModel textureModel;
+
         public Sprite iconSprite;
 
         public override string ToString() => $"BlockData [{id}, {name}]";
-        public Texture2D GetTexture(VoxelFace face) => textures[(int)face];
-        public Vector2[] GetUv(VoxelFace face) => uvs[(int)face];
+        public Texture2D GetTexture(VoxelFace face) => textureModel.GetFace(face)?.Item1;
+        public Vector2[] GetUv(VoxelFace face) => textureModel.GetFace(face)?.Item2;
     }
     public enum MaterialType
     {
