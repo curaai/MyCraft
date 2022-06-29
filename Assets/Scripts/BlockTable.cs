@@ -26,7 +26,7 @@ namespace MyCraft
 
         public BlockTable()
         {
-            Dictionary<int, BlockTextureModel> _textureModelsLoad(in Dictionary<int, BlockScriptData> dataDict, List<Texture2D> textures, List<Vector2[]> uvs)
+            Dictionary<int, BlockTextureModel> _textureModelsLoad(List<TextAsset> assets, Dictionary<string, int> dataIdDict, List<Texture2D> textures, List<Vector2[]> uvs)
             {
                 Dictionary<String, Texture2D> texDict = textures.ToDictionary(x => x.name, x => x);
                 Func<String, String> getName = x => x.Substring(x.IndexOf('/') + 1);
@@ -53,7 +53,7 @@ namespace MyCraft
                         case "grass":
                         case "block":
                             var topTex = texDict[getName(textureJson["top"].ToString())];
-                            var botTex = texDict[getName(textureJson["bot"].ToString())];
+                            var botTex = texDict[getName(textureJson["bottom"].ToString())];
                             var sideTex = texDict[getName(textureJson["side"].ToString())];
                             res.up = (topTex, uvs[textures.IndexOf(topTex)]);
                             res.down = (botTex, uvs[textures.IndexOf(botTex)]);
@@ -77,11 +77,9 @@ namespace MyCraft
                     return res;
                 }
 
-                var assets = loadBundle(TextureModelBundlePath).LoadAllAssets<TextAsset>();
-                var supportNames = dataDict.Values.ToDictionary(x => x.textureModelName, x => x.id);
                 return (from x in assets
-                        where supportNames.Keys.Contains(x.name)
-                        select (supportNames[x.name], parseModel(x)))
+                        where dataIdDict.Keys.Contains(x.name)
+                        select (dataIdDict[x.name], parseModel(x)))
                         .ToDictionary(x => x.Item1, x => x.Item2);
             }
 
@@ -99,17 +97,18 @@ namespace MyCraft
             var textModelList = loadBundle(TextureModelBundlePath).LoadAllAssets<TextAsset>().ToList();
 
             material = new Material(Shader.Find("Unlit/Texture"));
-            AtlasTexture = new Texture2D(512, 512) { filterMode = FilterMode.Point };
-            var textureUvs = AtlasTexture.PackTextures(textureList.ToArray(), 0, 512, true).Select(rect2vec).ToList();
+            AtlasTexture = new Texture2D(512, 512) { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
+            var atlas = AtlasTexture.PackTextures(textureList.ToArray(), 0, 512, true);
+            var textureUvs = atlas.Select(rect2vec).ToList();
             material.mainTexture = AtlasTexture;
 
             // TODO: Temp Code for compatiabilty
             var scriptDict = Resources.LoadAll<BlockScriptData>("Table/Blocks").ToDictionary(x => x.id, x => x);
-            var textureModels = _textureModelsLoad(scriptDict, textureList, textureUvs);
+            var dataIdDict = scriptDict.Values.ToDictionary(x => x.textureModelName, x => x.id);
+            var textureModels = _textureModelsLoad(textModelList, dataIdDict, textureList, textureUvs);
 
             // TODO: Original Code for WIP
-            // var textureModels = textureModelsLoad(textModelList, textureList);
-
+            var newTextureModels = textureModelsLoad(textModelList, dataIdDict, textureList, atlas);
 
             DataDict = new Dictionary<int, BlockData>();
             foreach (var scriptData in Resources.LoadAll<BlockScriptData>("Table/Blocks"))
@@ -121,13 +120,14 @@ namespace MyCraft
                     materialType = scriptData.materialType,
                     hardness = scriptData.hardness,
                     textureModel = textureModels[scriptData.id],
+                    newTextureModel = newTextureModels[scriptData.id],
                     iconSprite = scriptData.iconSprite,
                 };
                 DataDict[scriptData.id] = res;
             }
         }
 
-        private static Dictionary<string, Rendering.BlockTextureModelNew> textureModelsLoad(List<TextAsset> modelAssets, List<Texture2D> textures)
+        private static Dictionary<int, Rendering.BlockTextureModelNew> textureModelsLoad(List<TextAsset> modelAssets, Dictionary<string, int> dataIdDict, List<Texture2D> textures, Rect[] atlasUvs)
         {
             Dictionary<String, int> texDict = textures.Select((e, i) => new { e, i }).ToDictionary(x => x.e.name, x => x.i);
             var tempModels = new Dictionary<string, BlockTextureModelNew>();
@@ -170,18 +170,22 @@ namespace MyCraft
                 }
             }
 
-            Rendering.BlockTextureModelNew? convert2newmodel(BlockTextureModelNew model)
+            Rendering.BlockTextureModelNew? convert2newmodel(BlockTextureModelNew model, Rect[] atlasUvs)
             {
-                Rendering.BlockTextureModelNew res = new Rendering.BlockTextureModelNew();
-                res.elements = new List<Rendering.BlockTextureModelNew.Element>();
+                var elements = new List<Rendering.BlockTextureModelNew.Element>();
 
                 for (int i = 0; i < model.elements.Count; i++)
                 {
                     var elem = model.elements[i];
                     var resElem = new Rendering.BlockTextureModelNew.Element();
-                    resElem.faces = new Dictionary<string, (Texture2D, Rect)>();
                     resElem.from = elem.from;
                     resElem.to = elem.to;
+                    resElem.textures = new Dictionary<string, Texture2D>();
+                    resElem.patchUvDict = new Dictionary<string, Rect>();
+                    resElem.atlasUvDict = new Dictionary<string, Rect>();
+
+                    if (elem.faces.Values.Select(x => x.Item1).Contains("#overlay"))
+                        continue;
 
                     foreach (var prop in elem.faces)
                     {
@@ -193,24 +197,27 @@ namespace MyCraft
                         if (!model.textureTagMap.ContainsKey(textureTag))
                             return null;
 
-                        var texture = textures[texDict[model.textureTagMap[textureTag]]];
-                        resElem.faces[prop.Key] = (texture, prop.Value.Item2);
+                        var idx = texDict[model.textureTagMap[textureTag]];
+                        var texture = textures[idx];
+                        resElem.textures[prop.Key] = texture;
+                        resElem.patchUvDict[prop.Key] = prop.Value.Item2;
+                        resElem.atlasUvDict[prop.Key] = atlasUvs[idx];
                     }
-                    res.elements.Add(resElem);
+                    elements.Add(resElem);
                 }
-                return res;
+                return new Rendering.BlockTextureModelNew(elements);
             }
 
             loadTempModels();
-            var models = new Dictionary<string, Rendering.BlockTextureModelNew>();
+            var models = new Dictionary<int, Rendering.BlockTextureModelNew>();
             foreach (var pair in tempModels)
             {
                 if (pair.Value.textureTagMap.Count == 0)
                     continue;
 
-                var model = convert2newmodel(pair.Value);
-                if (model != null)
-                    models[pair.Key] = model.Value;
+                var model = convert2newmodel(pair.Value, atlasUvs);
+                if (model != null && dataIdDict.ContainsKey(pair.Key))
+                    models[dataIdDict[pair.Key]] = model.Value;
             }
             return models;
         }

@@ -14,6 +14,7 @@ namespace MyCraft
         public float hardness;
 
         public BlockTextureModel textureModel;
+        public BlockTextureModelNew newTextureModel;
 
         public Sprite iconSprite;
 
