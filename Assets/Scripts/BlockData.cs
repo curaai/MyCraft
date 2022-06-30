@@ -12,6 +12,7 @@ namespace MyCraft
         public string name;
         public MaterialType materialType;
         public float hardness;
+        public bool isTransparent;
         public BlockTextureModel textureModel;
         public Sprite iconSprite;
 

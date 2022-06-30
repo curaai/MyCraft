@@ -12,6 +12,7 @@ namespace MyCraft
         public string textureModelName;
         public MaterialType materialType;
         public float hardness;
+        public bool isTransparent;
         public Sprite iconSprite;
     }
 }

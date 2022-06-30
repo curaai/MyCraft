@@ -17,6 +17,7 @@ namespace MyCraft.Rendering
 
         private List<Vector3> verts = new List<Vector3>();
         private List<int> tris = new List<int>();
+        private List<int> transparentTris = new List<int>();
         private List<Vector2> uvs = new List<Vector2>();
         private MeshRenderer meshRenderer;
         private MeshFilter meshFilter;
@@ -29,7 +30,7 @@ namespace MyCraft.Rendering
             meshRenderer = chunkObj.AddComponent<MeshRenderer>();
             meshFilter = chunkObj.AddComponent<MeshFilter>();
             meshCollider = chunkObj.AddComponent<MeshCollider>();
-            meshRenderer.material = _blockTable.material;
+            meshRenderer.materials = new Material[] { _blockTable.material, _blockTable.transparentMaterial };
 
             blockTable = _blockTable;
 
@@ -69,7 +70,12 @@ namespace MyCraft.Rendering
 
                 var toRender = blockTable[blockId].textureModel.renderElements;
                 verts.AddRange(toRender.Item1.Select(v => v + inChunkCoord));
-                tris.AddRange(toRender.Item2.Select(i => i + vertIdx));
+
+                var _tris = toRender.Item2.Select(i => i + vertIdx).ToList();
+                if (blockTable[blockId].isTransparent)
+                    transparentTris.AddRange(_tris);
+                else
+                    tris.AddRange(_tris);
                 uvs.AddRange(toRender.Item3);
             }
         }
@@ -78,8 +84,11 @@ namespace MyCraft.Rendering
         {
             Mesh mesh = new Mesh();
             mesh.vertices = verts.ToArray();
-            mesh.triangles = tris.ToArray();
             mesh.uv = uvs.ToArray();
+
+            mesh.subMeshCount = 2;
+            mesh.SetTriangles(tris.ToArray(), 0);
+            mesh.SetTriangles(transparentTris.ToArray(), 1);
 
             mesh.RecalculateNormals();
 

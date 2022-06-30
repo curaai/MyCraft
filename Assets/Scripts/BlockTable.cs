@@ -17,10 +17,10 @@ namespace MyCraft
         private static readonly string TextureModelBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "models");
         public static readonly List<String> CurSupportModels = new List<string>() { "block", "cube", "cube_all", "cube_column", "grass", "leaves" };
 
-        public Texture2D AtlasTexture;
         public Material material;
+        public Material transparentMaterial;
 
-        public Dictionary<int, BlockData> DataDict;
+        public Dictionary<int, BlockData> DataDict = new Dictionary<int, BlockData>();
 
         public BlockData this[int id] { get => DataDict[id]; }
 
@@ -29,15 +29,16 @@ namespace MyCraft
             var textureAssets = loadBundle(TextureBundlePath).LoadAllAssets<Texture2D>();
             var textModelList = loadBundle(TextureModelBundlePath).LoadAllAssets<TextAsset>().ToList();
 
+            var atlasTexture = new Texture2D(512, 512) { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
+            var atlasRects = atlasTexture.PackTextures(textureAssets, 0, 512, true);
             material = new Material(Shader.Find("Unlit/Texture"));
-            AtlasTexture = new Texture2D(512, 512) { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
-            var atlas = AtlasTexture.PackTextures(textureAssets, 0, 512, true);
-            material.mainTexture = AtlasTexture;
+            material.mainTexture = atlasTexture;
+            transparentMaterial = new Material(Shader.Find("Unlit/Transparent"));
+            transparentMaterial.mainTexture = atlasTexture;
 
             var scriptDatas = Resources.LoadAll<BlockScriptData>("Table/Blocks");
-            var textureModels = textureModelsLoad(textModelList, scriptDatas, textureAssets.Zip(atlas, (x, y) => (x, y)).ToList());
+            var textureModels = textureModelsLoad(textModelList, scriptDatas, textureAssets.Zip(atlasRects, (x, y) => (x, y)).ToList());
 
-            DataDict = new Dictionary<int, BlockData>();
             foreach (var scriptData in scriptDatas)
             {
                 DataDict[scriptData.id] = new BlockData()
@@ -48,6 +49,7 @@ namespace MyCraft
                     hardness = scriptData.hardness,
                     textureModel = textureModels[scriptData.id],
                     iconSprite = scriptData.iconSprite,
+                    isTransparent = scriptData.isTransparent,
                 };
 
             }
