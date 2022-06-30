@@ -5,38 +5,10 @@ using UnityEngine;
 
 namespace MyCraft.Rendering
 {
+
     public struct BlockTextureModel
     {
-        public (Texture2D, Vector2[]) up;
-        public (Texture2D, Vector2[]) down;
-        public (Texture2D, Vector2[]) east;
-        public (Texture2D, Vector2[]) west;
-        public (Texture2D, Vector2[]) south;
-        public (Texture2D, Vector2[]) north;
-
-        public (Texture2D, Vector2[])? GetFace(VoxelFace face)
-        {
-            switch (face)
-            {
-                case VoxelFace.UP:
-                    return up;
-                case VoxelFace.DOWN:
-                    return down;
-                case VoxelFace.EAST:
-                    return east;
-                case VoxelFace.WEST:
-                    return west;
-                case VoxelFace.SOUTH:
-                    return south;
-                case VoxelFace.NORTH:
-                    return north;
-            }
-            return null;
-        }
-    }
-    public struct BlockTextureModelNew
-    {
-        public BlockTextureModelNew(List<Element> elements)
+        public BlockTextureModel(List<Element> elements)
         {
             Vector3[] GenerateVerts(Vector3 min, Vector3 max)
             {

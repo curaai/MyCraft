@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using MyCraft.Utils;
 
@@ -55,21 +56,21 @@ namespace MyCraft.Rendering
             }
         }
 
-        private void appendBlockMesh(in Vector3Int inChunkCoord, int blockId)
+        private void appendBlockMesh(Vector3Int inChunkCoord, int blockId)
         {
-            for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT; faceIdx++)
-            {
+            bool isAppendMesh = false;
+            for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT && !isAppendMesh; faceIdx++)
                 if (!chunk.IsSolidBlock(inChunkCoord + VoxelData.SurfaceNormal[faceIdx]))
-                {
-                    int vertIdx = verts.Count;
-                    for (int i = 0; i < 4; i++)
-                        verts.Add(inChunkCoord + VoxelData.Verts[VoxelData.Tris[faceIdx, i]]);
+                    isAppendMesh = true;
 
-                    foreach (var i in VoxelData.TriIdxOrder)
-                        tris.Add(vertIdx + i);
+            if (isAppendMesh)
+            {
+                int vertIdx = verts.Count;
 
-                    uvs.AddRange(blockTable[blockId].GetUv((VoxelFace)faceIdx));
-                }
+                var toRender = blockTable[blockId].textureModel.renderElements;
+                verts.AddRange(toRender.Item1.Select(v => v + inChunkCoord));
+                tris.AddRange(toRender.Item2.Select(i => i + vertIdx));
+                uvs.AddRange(toRender.Item3);
             }
         }
 

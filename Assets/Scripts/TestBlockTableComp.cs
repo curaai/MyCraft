@@ -24,15 +24,15 @@ namespace MyCraft
 
         public void Start()
         {
-            void main()
-            {
-                var block = table[37];
-                var elem = block.newTextureModel.renderElements;
+            // void main()
+            // {
+            //     var block = table[37];
+            //     var elem = block.newTextureModel.renderElements;
 
-                verts.AddRange(elem.Item1);
-                tris.AddRange(elem.Item2);
-                uvs.AddRange(elem.Item3);
-            }
+            //     verts.AddRange(elem.Item1);
+            //     tris.AddRange(elem.Item2);
+            //     uvs.AddRange(elem.Item3);
+            // }
 
             table = new BlockTable();
             meshRenderer = gameObject.AddComponent<MeshRenderer>();
@@ -40,7 +40,7 @@ namespace MyCraft
             meshCollider = gameObject.AddComponent<MeshCollider>();
             meshRenderer.material = table.material;
 
-            main();
+            // main();
 
             Mesh mesh = new Mesh();
             mesh.vertices = verts.ToArray();
