@@ -96,7 +96,7 @@ namespace MyCraft
             var textureList = loadBundle(TextureBundlePath).LoadAllAssets<Texture2D>().ToList(); ;
             var textModelList = loadBundle(TextureModelBundlePath).LoadAllAssets<TextAsset>().ToList();
 
-            material = new Material(Shader.Find("Unlit/Texture"));
+            material = new Material(Shader.Find("Unlit/Transparent"));
             AtlasTexture = new Texture2D(512, 512) { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
             var atlas = AtlasTexture.PackTextures(textureList.ToArray(), 0, 512, true);
             var textureUvs = atlas.Select(rect2vec).ToList();
@@ -226,8 +226,7 @@ namespace MyCraft
             Func<JToken, string, float[]> toFloatArr = (parent, key) => JArray.Parse(parent[key].ToString()).ToObject<float[]>();
             Func<float[], float[]> divide16 = (arr) => arr.Select(x => x / 16f).ToArray();
             Func<float[], Vector3> toVec = (a) => new Vector3(a[0], a[1], a[2]);
-
-            (Vector3, Vector3) rotate(JToken obj, Vector3 from, Vector3 to)
+            Rendering.BlockTextureModelNew.Element.Rotation parseRotation(JToken obj)
             {
                 var pivot = toVec(divide16(toFloatArr(obj, "origin")));
                 Vector3 axis;
@@ -246,8 +245,12 @@ namespace MyCraft
                         throw new InvalidCastException("Cannot find axis");
                 }
                 var angle = obj["angle"].ToObject<float>();
-                return (Quaternion.AngleAxis(angle, axis) * (from - pivot) + pivot,
-                        Quaternion.AngleAxis(angle, axis) * (to - pivot) + pivot);
+                return new Rendering.BlockTextureModelNew.Element.Rotation()
+                {
+                    pivot = pivot,
+                    axis = axis,
+                    angle = angle
+                };
             }
 
             BlockTextureModelNew res = new BlockTextureModelNew();
@@ -293,7 +296,8 @@ namespace MyCraft
                     elem.to = toVec(divide16(toFloatArr(elemJson, "to")));
 
                     if (elemJson["rotation"] != null)
-                        (elem.from, elem.to) = rotate(elemJson["rotation"], elem.from, elem.to);
+                        elem.rotation = parseRotation(elemJson["rotation"]);
+                    // (elem.from, elem.to) = rotate(elemJson["rotation"], elem.from, elem.to);
 
                     elem.faces = new Dictionary<string, (string, Rect)>();
                     foreach (var face in elemJson["faces"].ToObject<JObject>())
@@ -348,6 +352,7 @@ namespace MyCraft
         {
             public class Element
             {
+                public Rendering.BlockTextureModelNew.Element.Rotation? rotation;
                 public Vector3 from;
                 public Vector3 to;
                 public Dictionary<string, (string, Rect)> faces = new Dictionary<string, (string, Rect)>();

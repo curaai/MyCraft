@@ -71,6 +71,11 @@ namespace MyCraft.Rendering
             foreach (var elem in elements)
             {
                 var vertList = GenerateVerts(elem.from, elem.to);
+                if (elem.rotation.HasValue)
+                {
+                    var rotation = elem.rotation.Value;
+                    vertList = vertList.Select(v => Quaternion.AngleAxis(rotation.angle, rotation.axis) * (v - rotation.pivot) + rotation.pivot).ToArray();
+                }
                 foreach (var enumFace in Enum.GetValues(typeof(VoxelFace)))
                 {
                     var face = enumFace.ToString().ToLower();
@@ -89,6 +94,15 @@ namespace MyCraft.Rendering
 
         public struct Element
         {
+            public struct Rotation
+            {
+                public Vector3 pivot;
+                public Vector3 axis;
+                public float angle;
+            }
+
+            public Rotation? rotation;
+
             public Vector3 from;
             public Vector3 to;
             public Dictionary<string, Texture2D> textures;
