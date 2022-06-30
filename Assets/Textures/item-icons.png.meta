@@ -1711,7 +1711,7 @@ TextureImporter:
     second: item-icons_568
   - first:
       213: 8200269197591335237
-    second: item-icons_569
+    second: icon-Dandelion
   - first:
       213: 6174270763231285206
     second: item-icons_570
@@ -14209,7 +14209,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_569
+      name: icon-Dandelion
       rect:
         serializedVersion: 2
         x: 96
