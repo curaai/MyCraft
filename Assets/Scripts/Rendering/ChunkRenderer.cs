@@ -47,8 +47,8 @@ namespace MyCraft.Rendering
             foreach (var pos in CoordHelper.ChunkIndexIterator())
             {
                 var block = chunk[pos];
-                if (block.isSolid)
-                    appendBlockMesh(pos, block.id);
+                if (world.BlockTable[block].isSolid)
+                    appendBlockMesh(pos, block);
             }
 
             lock (world.ChunksToDraw)

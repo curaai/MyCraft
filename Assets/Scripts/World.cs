@@ -124,7 +124,7 @@ namespace MyCraft
             blockEditQueue.Enqueue(edit);
         }
 
-        public Block GetBlock(Vector3 worldPos)
+        public byte GetBlock(Vector3 worldPos)
         {
             var pair = CoordHelper.ToChunkCoord(worldPos);
             return GetChunk(pair.Item1)[pair.Item2];
@@ -153,8 +153,8 @@ namespace MyCraft
             if (pos.Item2.y < 0 || Chunk.ChunkShape.y <= pos.Item2.y)
                 return false;
 
-            if (GetChunk(pos.Item1) != null && GetBlock(worldPos) != null)
-                return GetBlock(worldPos).isSolid;
+            if (GetChunk(pos.Item1) != null)
+                return BlockTable[GetBlock(worldPos)].isSolid;
             return false;
         }
     }

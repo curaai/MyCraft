@@ -11,8 +11,8 @@ namespace MyCraft.WorldEnvironment
     public class BiomeAttribute : ScriptableObject
     {
         public static readonly int BASE_GROUND_HEIGHT = 42;
-        public static readonly Block stem = new Block(17, true);
-        public static readonly Block leave = new Block(18, true);
+        public static readonly byte stem = 17;
+        public static readonly byte leave = 18;
 
         public int id;
         public float offset;
@@ -21,14 +21,14 @@ namespace MyCraft.WorldEnvironment
         public int terrainHeight;
         public float terrainScale;
 
-        public int surfaceBlockId;
-        public int subSurfaceBlockId;
+        public byte surfaceBlockId;
+        public byte subSurfaceBlockId;
         public int subSurfaceHeight;
 
         public List<LodeAttribute> lodes;
         public List<TerrianPlantAttribute> plants;
 
-        public (Block, List<BlockEdit>) GenerateBlock(Vector3Int pos, int noiseHeight)
+        public (byte, List<BlockEdit>) GenerateBlock(Vector3Int pos, int noiseHeight)
         {
             var additionalBlocks = new List<BlockEdit>();
 
@@ -64,30 +64,30 @@ namespace MyCraft.WorldEnvironment
                 return res;
             }
 
-            Block res = new Block() { isSolid = true };
+            byte res;
             if (pos.y == noiseHeight)
             {
-                res.id = surfaceBlockId;
+                res = surfaceBlockId;
                 if (isTreePlacable())
                     additionalBlocks.AddRange(PlaceTree());
             }
             else if (noiseHeight - subSurfaceHeight <= pos.y && pos.y < noiseHeight)
             {
-                res.id = subSurfaceBlockId;
+                res = subSurfaceBlockId;
             }
             else if (noiseHeight < pos.y)
             {
-                return (new Blocks.Air(), additionalBlocks);
+                return (0, additionalBlocks);
             }
             else
             {
                 Func<LodeAttribute, bool> inRange = lode => lode.minHeight <= pos.y && pos.y <= lode.maxHeight;
                 Func<LodeAttribute, bool> blockExistInNoise = lode => NoiseHelper.Get3DPerlin(pos, lode.noiseOffset, lode.noiseScale, lode.noiseThreshold);
 
-                res.id = (from lode in lodes
-                          where inRange(lode)
-                          where blockExistInNoise(lode)
-                          select lode.blockId).Last();
+                res = (byte)(from lode in lodes
+                             where inRange(lode)
+                             where blockExistInNoise(lode)
+                             select lode.blockId).Last();
             }
             return (res, additionalBlocks);
         }

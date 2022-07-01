@@ -8,7 +8,7 @@ namespace MyCraft
     [CreateAssetMenu(fileName = "BlockScriptData", menuName = "MyCraft/Block Attribute")]
     public class BlockScriptData : ScriptableObject
     {
-        public int id;
+        public byte id;
         public string textureModelName;
         public MaterialType materialType;
         public float hardness;

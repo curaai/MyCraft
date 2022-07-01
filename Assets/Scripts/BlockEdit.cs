@@ -7,11 +7,11 @@ namespace MyCraft
     public class BlockEdit
     {
         public Vector3Int pos;
-        public Block block;
+        public byte block;
 
         public bool worldCoord;
 
-        public BlockEdit(Vector3Int _pos, Block _block, bool _worldCoord = true)
+        public BlockEdit(Vector3Int _pos, byte _block, bool _worldCoord = true)
         {
             pos = _pos;
             block = _block;

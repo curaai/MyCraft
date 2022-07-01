@@ -30,23 +30,23 @@ namespace MyCraft.UI
             refresh();
         }
 
-        public (Block, int) Take(int amt)
+        public (byte, int) Take(int amt)
         {
             if (!block.HasValue)
                 throw new InvalidOperationException("Cannot take item from empty slot");
 
-            var _block = (BlockData)block;
+            var _block = block.Value;
             if (amt >= amount)
             {
                 var _amt = amount;
                 clear();
-                return (new Block(_block.id), _amt);
+                return (_block.id, _amt);
             }
             else
             {
                 amount -= amt;
                 refresh();
-                return (new Block(_block.id), amt);
+                return (_block.id, amt);
             }
         }
 

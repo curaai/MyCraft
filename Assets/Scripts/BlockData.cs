@@ -8,7 +8,7 @@ namespace MyCraft
 {
     public struct BlockData
     {
-        public int id;
+        public byte id;
         public string name;
         public MaterialType materialType;
         public float hardness;

@@ -31,11 +31,11 @@ namespace MyCraft.Players
                 if (destoryBlockAnimator.IsUpdateNow)
                 {
                     if (destoryBlockAnimator.Update(player.HighlightPos.Value))
-                        world.EditBlock(new BlockEdit(player.HighlightPos.Value, new Blocks.Air()));
+                        world.EditBlock(new BlockEdit(player.HighlightPos.Value, 0));
                 }
                 else
                 {
-                    var blockData = world.BlockTable[player.HighlightBlock.id];
+                    var blockData = world.BlockTable[player.HighlightBlock.Value];
                     var sec = CalcBreakSecond(blockData, 1);
                     destoryBlockAnimator.Init(sec, player.HighlightPos);
                 }

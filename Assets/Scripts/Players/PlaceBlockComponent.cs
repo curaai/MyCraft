@@ -16,7 +16,7 @@ namespace MyCraft.Players
         protected World world;
         protected Transform Cam => player.cam;
 
-        public Block? HighlightBlock { get; protected set; }
+        public byte? HighlightBlock { get; protected set; }
         public Vector3Int? HighlightPos { get; protected set; }
         public Vector3Int? PlacedPos { get; protected set; }
         public Material DestroyMaterial => HighlightBlockTransform.GetChild(0).GetComponent<MeshRenderer>().materials[1];
@@ -38,7 +38,7 @@ namespace MyCraft.Players
 
                 var blockPos = Vector3Int.FloorToInt(targetPos);
                 var tempBlock = world.GetBlock(blockPos);
-                if (tempBlock.isSolid)
+                if (world.BlockTable[tempBlock].isSolid)
                 {
                     HighlightBlockTransform.position = blockPos;
                     HighlightBlockTransform.gameObject.SetActive(true);

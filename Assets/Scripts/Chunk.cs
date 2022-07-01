@@ -14,7 +14,7 @@ namespace MyCraft
     public class Chunk
     {
         public static readonly Vector2Int ChunkShape = new Vector2Int(16, 128);
-        public Block[,,] BlockMap = new Block[ChunkShape.x, ChunkShape.y, ChunkShape.x];
+        public byte[,,] BlockMap = new byte[ChunkShape.x, ChunkShape.y, ChunkShape.x];
 
         protected World world;
         public GameObject gameObj;
@@ -89,7 +89,7 @@ namespace MyCraft
             ThreadLocked = false;
         }
 
-        public Block GenerateBlock(Vector3Int blockChunkPos)
+        public byte GenerateBlock(Vector3Int blockChunkPos)
         {
             (BiomeAttribute, int) strongestBiome(Vector3Int worldPos)
             {
@@ -148,8 +148,8 @@ namespace MyCraft
 
         public bool IsSolidBlock(in Vector3Int chunkPos)
         {
-            if (IsVoxelInChunk(chunkPos) && this[chunkPos] != null)
-                return this[chunkPos].isSolid;
+            if (IsVoxelInChunk(chunkPos))
+                return world.BlockTable[this[chunkPos]].isSolid;
             else
                 return false;
         }
@@ -161,7 +161,8 @@ namespace MyCraft
                     0 <= v.z && v.z < ChunkShape.x);
         }
 
-        public Block this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
+        // public Block this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
+        public byte this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
         public bool Activated { get => gameObj.activeSelf; set => gameObj.SetActive(value); }
         public bool IsEditable => Initialized && !ThreadLocked;
     }

@@ -18,7 +18,7 @@ namespace MyCraft
         public Transform cam;
         public ChunkCoord CurChunkCoord => CoordHelper.ToChunkCoord(transform.position).Item1;
 
-        public Block? HighlightBlock => GetComponent<PlaceBlockComponent>().HighlightBlock;
+        public byte? HighlightBlock => GetComponent<PlaceBlockComponent>().HighlightBlock;
         public Vector3Int? HighlightPos => GetComponent<PlaceBlockComponent>().HighlightPos;
         public Vector3Int? PlacedPos => GetComponent<PlaceBlockComponent>().PlacedPos;
 
