@@ -13,6 +13,7 @@ namespace MyCraft
         public MaterialType materialType;
         public float hardness;
         public bool isTransparent;
+        public bool isSolid;
         public Sprite iconSprite;
     }
 }

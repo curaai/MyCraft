@@ -16,4 +16,6 @@ MonoBehaviour:
   textureModelName: stone
   materialType: 0
   hardness: 1.5
+  isTransparent: 0
+  isSolid: 1
   iconSprite: {fileID: -8311860710908914152, guid: 3f1382667b0e248159f4e9fca3428560, type: 3}

@@ -50,6 +50,7 @@ namespace MyCraft
                     textureModel = textureModels[scriptData.id],
                     iconSprite = scriptData.iconSprite,
                     isTransparent = scriptData.isTransparent,
+                    isSolid = scriptData.isSolid,
                 };
 
             }

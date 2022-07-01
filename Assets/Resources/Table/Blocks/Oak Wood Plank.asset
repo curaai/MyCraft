@@ -16,4 +16,6 @@ MonoBehaviour:
   textureModelName: oak_planks
   materialType: 2
   hardness: 2
+  isTransparent: 0
+  isSolid: 1
   iconSprite: {fileID: 4726778488496307572, guid: 3f1382667b0e248159f4e9fca3428560, type: 3}
