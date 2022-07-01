@@ -66,6 +66,7 @@ namespace MyCraft
 
             if (0 < chunksToUpdate.Count)
                 UpdateChunks();
+
             if (0 < ChunksToDraw.Count)
             {
                 lock (ChunksToDraw)

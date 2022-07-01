@@ -20,9 +20,9 @@ namespace MyCraft
         public Material material;
         public Material transparentMaterial;
 
-        public Dictionary<int, BlockData> DataDict = new Dictionary<int, BlockData>();
+        private Dictionary<int, BlockData> dataDict = new Dictionary<int, BlockData>();
 
-        public BlockData this[int id] { get => DataDict[id]; }
+        public BlockData this[int id] { get => dataDict[id]; }
 
         public BlockTable()
         {
@@ -41,7 +41,7 @@ namespace MyCraft
 
             foreach (var scriptData in scriptDatas)
             {
-                DataDict[scriptData.id] = new BlockData()
+                dataDict[scriptData.id] = new BlockData()
                 {
                     id = scriptData.id,
                     name = scriptData.name,
@@ -142,7 +142,6 @@ namespace MyCraft
             }
             return models;
         }
-
         private static BlockTextureModelAbstract parseModel(BlockTextureModelAbstract? parent, in TextAsset asset)
         {
             Func<JToken, string, float[]> toFloatArr = (parent, key) => JArray.Parse(parent[key].ToString()).ToObject<float[]>();

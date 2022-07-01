@@ -58,11 +58,13 @@ namespace MyCraft
 
             GenerateBlocks();
             Initialized = true;
+
             _update();
         }
 
         public void Update()
         {
+            ThreadLocked = true;
             var thread = new Thread(new ThreadStart(_update));
             thread.Start();
         }
@@ -71,8 +73,6 @@ namespace MyCraft
         {
             if (!Initialized)
                 return;
-
-            ThreadLocked = true;
 
             while (0 < editsQueue.Count)
             {
@@ -164,6 +164,6 @@ namespace MyCraft
         // public Block this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
         public byte this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
         public bool Activated { get => gameObj.activeSelf; set => gameObj.SetActive(value); }
-        public bool IsEditable => Initialized && !ThreadLocked;
+        public bool IsEditable => Initialized && !ThreadLocked && !renderer.ThreadLocked;
     }
 }

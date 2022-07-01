@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 
 namespace MyCraft.UI
 {

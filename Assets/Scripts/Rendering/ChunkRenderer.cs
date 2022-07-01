@@ -23,6 +23,8 @@ namespace MyCraft.Rendering
         private MeshFilter meshFilter;
         private MeshCollider meshCollider;
 
+        public bool ThreadLocked { get; private set; }
+
         public ChunkRenderer(Chunk _chunk, BlockTable _blockTable)
         {
             chunk = _chunk;
@@ -42,6 +44,8 @@ namespace MyCraft.Rendering
             if (!chunk.Initialized)
                 return;
 
+            ThreadLocked = true;
+
             clearMesh();
 
             foreach (var pos in CoordHelper.ChunkIndexIterator())
@@ -55,6 +59,8 @@ namespace MyCraft.Rendering
             {
                 world.ChunksToDraw.Enqueue(this);
             }
+
+            ThreadLocked = false;
         }
 
         private void appendBlockMesh(Vector3Int inChunkCoord, int blockId)
@@ -82,6 +88,8 @@ namespace MyCraft.Rendering
 
         public void CreateMesh()
         {
+            ThreadLocked = true;
+
             Mesh mesh = new Mesh();
             mesh.vertices = verts.ToArray();
             mesh.uv = uvs.ToArray();
@@ -93,6 +101,8 @@ namespace MyCraft.Rendering
             mesh.RecalculateNormals();
 
             meshFilter.mesh = mesh;
+
+            ThreadLocked = false;
         }
 
         private void clearMesh()
