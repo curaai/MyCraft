@@ -47,6 +47,8 @@ namespace MyCraft
 
         void Awake()
         {
+            Application.targetFrameRate = 120;
+
             BlockTable = new BlockTable();
             biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
             Chunk.biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
