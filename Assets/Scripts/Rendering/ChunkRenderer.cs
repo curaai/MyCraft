@@ -91,6 +91,8 @@ namespace MyCraft.Rendering
             ThreadLocked = true;
 
             Mesh mesh = new Mesh();
+
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.vertices = verts.ToArray();
             mesh.uv = uvs.ToArray();
 
@@ -109,6 +111,7 @@ namespace MyCraft.Rendering
         {
             verts.Clear();
             tris.Clear();
+            transparentTris.Clear();
             uvs.Clear();
         }
     }
