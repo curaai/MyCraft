@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 928a353201bcbe84698a2221c624dc75, type: 3}
   m_Name: Dandelion
   m_EditorClassIdentifier: 
-  noiseZoneScale: 0.1234
-  noiseZoneThreshold: 0.3
-  noisePlacementScale: 0
-  noisePlacementThreshold: 0.228
+  noiseZoneScale: 4
+  noiseZoneThreshold: 0.7
+  noisePlacementScale: 15
+  noisePlacementThreshold: 0.772
   flowerBlockId: 37

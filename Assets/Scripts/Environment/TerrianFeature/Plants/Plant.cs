@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MyCraft.Environment.TerrianFeature.Plants
@@ -11,6 +12,6 @@ namespace MyCraft.Environment.TerrianFeature.Plants
         public float noisePlacementScale;
         [Range(0.1f, 1f)]
         public float noisePlacementThreshold;
-        public abstract BlockEdit[] Generate(Vector3Int placePosInWorld);
+        public abstract List<BlockEdit> Generate(Vector3Int placePos);
     }
 }

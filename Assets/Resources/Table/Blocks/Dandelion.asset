@@ -17,5 +17,5 @@ MonoBehaviour:
   materialType: 0
   hardness: 0
   isTransparent: 1
-  isSolid: 1
+  isSolid: 0
   iconSprite: {fileID: 8200269197591335237, guid: 3f1382667b0e248159f4e9fca3428560, type: 3}

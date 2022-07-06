@@ -51,7 +51,7 @@ namespace MyCraft.Rendering
             foreach (var pos in CoordHelper.ChunkIndexIterator())
             {
                 var block = chunk[pos];
-                if (world.BlockTable[block].isSolid)
+                if (world.BlockTable[block].id != 0)
                     appendBlockMesh(pos, block);
             }
 

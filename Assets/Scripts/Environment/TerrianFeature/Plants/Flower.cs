@@ -1,5 +1,5 @@
-
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MyCraft.Environment.TerrianFeature.Plants
@@ -9,9 +9,10 @@ namespace MyCraft.Environment.TerrianFeature.Plants
     {
         public byte flowerBlockId;
 
-        public override BlockEdit[] Generate(Vector3Int placePosInWorld)
+        public override List<BlockEdit> Generate(Vector3Int placePos)
         {
-            throw new NotImplementedException();
+            var pos = placePos + Vector3Int.up;
+            return new List<BlockEdit> { new BlockEdit(pos, flowerBlockId) };
         }
     }
 }

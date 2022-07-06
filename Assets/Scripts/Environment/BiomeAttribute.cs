@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using MyCraft.Utils;
-using MyCraft.Environment;
+using MyCraft.Environment.TerrianFeature.Plants;
 
 namespace MyCraft.Environment
 {
@@ -27,7 +27,7 @@ namespace MyCraft.Environment
         public int subSurfaceHeight;
 
         public List<LodeAttribute> lodes;
-        public List<MyCraft.Environment.TerrianFeature.Plants.Plant> plants;
+        public List<Plant> plants;
 
         public (byte, List<BlockEdit>) GenerateBlock(Vector3Int pos, int noiseHeight)
         {
@@ -37,6 +37,14 @@ namespace MyCraft.Environment
             if (pos.y == noiseHeight)
             {
                 res = surfaceBlockId;
+                foreach (var plant in plants)
+                {
+                    if (isPlacable(pos, plant))
+                    {
+                        additionalBlocks.AddRange(plant.Generate(pos));
+                        break;
+                    }
+                }
             }
             else if (noiseHeight - subSurfaceHeight <= pos.y && pos.y < noiseHeight)
             {
@@ -57,6 +65,12 @@ namespace MyCraft.Environment
                              select lode.blockId).Last();
             }
             return (res, additionalBlocks);
+        }
+
+        private static bool isPlacable(Vector3Int pos, Plant plant)
+        {
+            return NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, plant.noiseZoneScale) > plant.noiseZoneThreshold
+                && NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, plant.noisePlacementScale) > plant.noisePlacementThreshold;
         }
     }
 
