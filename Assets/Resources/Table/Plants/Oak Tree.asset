@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d96ca828c31a89489d37ff6b0cfd2ab, type: 3}
   m_Name: Oak Tree
   m_EditorClassIdentifier: 
-  noiseZoneScale: 1.3
-  noiseZoneThreshold: 0.7
-  noisePlacementScale: 13
-  noisePlacementThreshold: 0.62
-  logBlockId: 17
-  leaveBlockId: 18
-  logMinHeight: 4
-  logMaxHeight: 8
-  logHeightNoise: 250
+  NoiseZoneScale: 1.3
+  NoiseZoneThreshold: 0.7
+  NoisePlacementScale: 13
+  NoisePlacementThreshold: 0.62
+  LogBlockId: 17
+  LeaveBlockId: 18
+  LogMinHeight: 4
+  LogMaxHeight: 8
+  LogHeightNoise: 250

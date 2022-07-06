@@ -9,11 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 928a353201bcbe84698a2221c624dc75, type: 3}
-  m_Name: Dandelion
+  m_Script: {fileID: 11500000, guid: 56b5ffebf53f54d40a620dc013a1c593, type: 3}
+  m_Name: Cactus
   m_EditorClassIdentifier: 
-  NoiseZoneScale: 4.1
-  NoiseZoneThreshold: 0.7
-  NoisePlacementScale: 15
-  NoisePlacementThreshold: 0.772
-  FlowerBlockId: 37
+  id: 81
+  textureModelName: cactus
+  materialType: 0
+  hardness: 0.4
+  isTransparent: 0
+  isSolid: 1
+  iconSprite: {fileID: -7864570765913771538, guid: 3f1382667b0e248159f4e9fca3428560, type: 3}

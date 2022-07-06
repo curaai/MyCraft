@@ -79,7 +79,7 @@ TextureImporter:
     second: item-icons_24
   - first:
       213: -7864570765913771538
-    second: item-icons_25
+    second: icon-Cactus
   - first:
       213: -855682626455553340
     second: item-icons_26
@@ -1273,7 +1273,7 @@ TextureImporter:
     second: item-icons_422
   - first:
       213: 6338987961456908307
-    second: item-icons_423
+    second: icon-Dead Bush
   - first:
       213: 5334942853140825874
     second: item-icons_424
@@ -1744,7 +1744,7 @@ TextureImporter:
     second: item-icons_579
   - first:
       213: -4066338730861263827
-    second: item-icons_580
+    second: item-icons_584
   - first:
       213: -6796422847127127945
     second: item-icons_581
@@ -2785,7 +2785,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_25
+      name: icon-Cactus
       rect:
         serializedVersion: 2
         x: 832
@@ -11143,7 +11143,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_423
+      name: icon-Dead Bush
       rect:
         serializedVersion: 2
         x: 608
@@ -14440,7 +14440,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_580
+      name: icon-Poppy
       rect:
         serializedVersion: 2
         x: 448

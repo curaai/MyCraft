@@ -42,3 +42,4 @@ MonoBehaviour:
   plants:
   - {fileID: 11400000, guid: 2a97c1f8d9904d745a667f77f30632ff, type: 2}
   - {fileID: 11400000, guid: ee964ec031f064c42863f8993ca362b0, type: 2}
+  - {fileID: 11400000, guid: 7cbf07b9cb8d20f4b930b01a0d4c27ab, type: 2}

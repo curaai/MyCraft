@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 928a353201bcbe84698a2221c624dc75, type: 3}
-  m_Name: Dandelion
+  m_Name: Poppy
   m_EditorClassIdentifier: 
-  NoiseZoneScale: 4.1
+  NoiseZoneScale: 4.2
   NoiseZoneThreshold: 0.7
   NoisePlacementScale: 15
-  NoisePlacementThreshold: 0.772
-  FlowerBlockId: 37
+  NoisePlacementThreshold: 0.879
+  FlowerBlockId: 38

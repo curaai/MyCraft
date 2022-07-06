@@ -33,4 +33,6 @@ MonoBehaviour:
     noiseScale: 0
     noiseThreshold: 0
     noiseOffset: 5000
-  plants: []
+  plants:
+  - {fileID: 11400000, guid: 215b4c1358979fa479b52937ef8564e6, type: 2}
+  - {fileID: 11400000, guid: 896b4f571de032843ab152ee572edd7c, type: 2}

@@ -69,8 +69,8 @@ namespace MyCraft.Environment
 
         private static bool isPlacable(Vector3Int pos, Plant plant)
         {
-            return NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, plant.noiseZoneScale) > plant.noiseZoneThreshold
-                && NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, plant.noisePlacementScale) > plant.noisePlacementThreshold;
+            return NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, plant.NoiseZoneScale) > plant.NoiseZoneThreshold
+                && NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, plant.NoisePlacementScale) > plant.NoisePlacementThreshold;
         }
     }
 
