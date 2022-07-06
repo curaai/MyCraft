@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using MyCraft.Rendering;
 using MyCraft.Utils;
-using MyCraft.WorldEnvironment;
+using MyCraft.Environment;
 
 namespace MyCraft
 {

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using MyCraft.Utils;
+using MyCraft.Environment;
 
-namespace MyCraft.WorldEnvironment
+namespace MyCraft.Environment
 {
     [CreateAssetMenu(fileName = "BiomeAttribute", menuName = "MyCraft/Biome Attribute")]
     public class BiomeAttribute : ScriptableObject
@@ -26,50 +27,16 @@ namespace MyCraft.WorldEnvironment
         public int subSurfaceHeight;
 
         public List<LodeAttribute> lodes;
-        public List<TerrianPlantAttribute> plants;
+        public List<MyCraft.Environment.TerrianFeature.Plants.Plant> plants;
 
         public (byte, List<BlockEdit>) GenerateBlock(Vector3Int pos, int noiseHeight)
         {
             var additionalBlocks = new List<BlockEdit>();
 
-            bool isTreePlacable()
-            {
-                if (plants.Count == 0) return false;
-                else
-                {
-                    var treeAttr = plants[0];
-                    return NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, treeAttr.noiseZoneScale) > treeAttr.noiseZoneThreshold
-                        && NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 0, treeAttr.noisePlacementScale) > treeAttr.noisePlacementThreshold;
-                }
-            }
-            List<BlockEdit> PlaceTree()
-            {
-                var res = new List<BlockEdit>();
-
-                var attr = plants[0];
-                int height = Mathf.FloorToInt(attr.maxHeight * NoiseHelper.Get2DPerlin(new Vector2(pos.x, pos.z), 250f, 3f));
-                height = Math.Max(height, attr.minHeight);
-
-                foreach (var i in Enumerable.Range(1, height - 1))
-                    res.Add(new BlockEdit(new Vector3Int(pos.x, pos.y + i, pos.z), stem));
-
-                var leaveCoords = (
-                    from x in Enumerable.Range(-3, 7)
-                    from y in Enumerable.Range(0, 7)
-                    from z in Enumerable.Range(-3, 7)
-                    select pos + new Vector3Int(x, height + y, z)
-                );
-                foreach (var v in leaveCoords)
-                    res.Add(new BlockEdit(v, leave));
-                return res;
-            }
-
             byte res;
             if (pos.y == noiseHeight)
             {
                 res = surfaceBlockId;
-                if (isTreePlacable())
-                    additionalBlocks.AddRange(PlaceTree());
             }
             else if (noiseHeight - subSurfaceHeight <= pos.y && pos.y < noiseHeight)
             {
@@ -102,20 +69,5 @@ namespace MyCraft.WorldEnvironment
         public float noiseScale;
         public float noiseThreshold;
         public int noiseOffset;
-    }
-
-    // TODO: Now only support tree, it need refactor for use flower or weeds
-    [Serializable]
-    public class TerrianPlantAttribute
-    {
-        public float noiseZoneScale;
-        [Range(0.1f, 1f)]
-        public float noiseZoneThreshold;
-        public float noisePlacementScale;
-        [Range(0.1f, 1f)]
-        public float noisePlacementThreshold;
-
-        public int minHeight;
-        public int maxHeight;
     }
 }

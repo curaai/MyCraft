@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using MyCraft.WorldEnvironment;
+using MyCraft.Environment;
 using MyCraft.Utils;
 
 namespace MyCraft
