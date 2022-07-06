@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MyCraft.Environment.TerrianFeature.Plants
+namespace MyCraft.Environment.terrainFeature.Plants
 {
     public abstract class Plant : ScriptableObject
     {

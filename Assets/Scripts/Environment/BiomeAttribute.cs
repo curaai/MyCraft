@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using MyCraft.Utils;
-using MyCraft.Environment.TerrianFeature.Plants;
+using MyCraft.Environment.terrainFeature.Plants;
 
 namespace MyCraft.Environment
 {

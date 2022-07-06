@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using MyCraft.Utils;
 
-namespace MyCraft.Environment.TerrianFeature.Plants
+namespace MyCraft.Environment.terrainFeature.Plants
 {
     [CreateAssetMenu(menuName = "MyCraft/Plant Attribute/Tree")]
     public class Tree : Plant
