@@ -43,6 +43,9 @@ namespace MyCraft.UI
             ItemSlots[0].Set(world.BlockTable[1], ItemSlot.MAX_AMOUNT);
             ItemSlots[1].Set(world.BlockTable[5], ItemSlot.MAX_AMOUNT);
             ItemSlots[2].Set(world.BlockTable[12], ItemSlot.MAX_AMOUNT);
+
+            foreach (var slot in ItemSlots)
+                slot.DisableOriginal();
         }
 
         private void Update()
