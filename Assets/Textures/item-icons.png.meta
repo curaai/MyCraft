@@ -25,7 +25,7 @@ TextureImporter:
     second: item-icons_6
   - first:
       213: 3116799998321510763
-    second: item-icons_7
+    second: icon-Gold Ore
   - first:
       213: -4315003923446866887
     second: item-icons_8
@@ -274,7 +274,7 @@ TextureImporter:
     second: item-icons_89
   - first:
       213: 6710492704334638619
-    second: item-icons_90
+    second: icon-Coal Ore
   - first:
       213: -2313047853495532345
     second: item-icons_91
@@ -658,7 +658,7 @@ TextureImporter:
     second: item-icons_217
   - first:
       213: -2483615269371169425
-    second: item-icons_218
+    second: icon-Iron Ore
   - first:
       213: -3517850908042391148
     second: item-icons_219
@@ -1534,7 +1534,7 @@ TextureImporter:
     second: item-icons_509
   - first:
       213: 8374981316355205269
-    second: item-icons_510
+    second: icon-Diamond Ore
   - first:
       213: -6825126965139781631
     second: item-icons_511
@@ -2407,7 +2407,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_7
+      name: icon-Gold Ore
       rect:
         serializedVersion: 2
         x: 256
@@ -4150,7 +4150,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_90
+      name: icon-Coal Ore
       rect:
         serializedVersion: 2
         x: 320
@@ -6838,7 +6838,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_218
+      name: icon-Iron Ore
       rect:
         serializedVersion: 2
         x: 96
@@ -12970,7 +12970,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item-icons_510
+      name: icon-Diamond Ore
       rect:
         serializedVersion: 2
         x: 800
