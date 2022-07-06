@@ -123,27 +123,6 @@ namespace MyCraft
         public void EditBlock(BlockEdit edit)
         {
             editsQueue.Enqueue(edit);
-
-            void UpdateSurroundedChunks(Vector3Int coord)
-            {
-                for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT; faceIdx++)
-                {
-                    // except y changes
-                    if ((VoxelFace)faceIdx == VoxelFace.UP || (VoxelFace)faceIdx == VoxelFace.DOWN)
-                        continue;
-
-                    var faceCoord = coord + VoxelData.SurfaceNormal[faceIdx];
-                    var targetPos = chunkWorldPos + faceCoord;
-                    var chunk = world.GetChunk(CoordHelper.ToChunkCoord(targetPos).Item1);
-                    if (chunk != null && chunk.Initialized && !IsVoxelInChunk(faceCoord))
-                    {
-                        var dummyPos = targetPos + VoxelData.SurfaceNormal[faceIdx]; // avoid infinite call
-                        var dummyReqForUpdate = new BlockEdit(dummyPos, chunk[CoordHelper.ToChunkCoord(dummyPos).Item2]);
-                        world.EditBlock(dummyReqForUpdate);
-                    }
-                }
-            }
-            UpdateSurroundedChunks(edit.ConvertInChunkCoord().pos);
         }
 
         public bool IsSolidBlock(in Vector3Int chunkPos)
@@ -161,7 +140,6 @@ namespace MyCraft
                     0 <= v.z && v.z < ChunkShape.x);
         }
 
-        // public Block this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
         public byte this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
         public bool Activated { get => gameObj.activeSelf; set => gameObj.SetActive(value); }
         public bool IsEditable => Initialized && !ThreadLocked && !renderer.ThreadLocked;
