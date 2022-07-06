@@ -4,7 +4,7 @@ using MyCraft.Utils;
 
 namespace MyCraft
 {
-    public class BlockEdit
+    public struct BlockEdit
     {
         public Vector3Int pos;
         public byte block;

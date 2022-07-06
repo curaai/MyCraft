@@ -22,7 +22,7 @@ namespace MyCraft
 
         public override int GetHashCode() => (x, z).GetHashCode();
 
-        public override string ToString() => $"ChunkCoord: {(x, z).ToString()}";
+        public override string ToString() => $"ChunkCoord [{(x, z).ToString()}]";
 
         public static bool operator ==(ChunkCoord a, ChunkCoord b) => a.Equals(b);
         public static bool operator !=(ChunkCoord a, ChunkCoord b) => !(a == b);

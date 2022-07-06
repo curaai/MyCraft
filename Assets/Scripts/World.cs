@@ -100,7 +100,7 @@ namespace MyCraft
                 if (!chunksToUpdate.Contains(chunk))
                     chunksToUpdate.Add(chunk);
 
-                GetChunk(chunkCoord).EditBlock(mod);
+                GetChunk(chunkCoord).EnqueueEdit(mod);
             }
         }
 

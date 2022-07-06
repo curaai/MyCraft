@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
 using System.Linq;
+
+using UnityEngine;
+using MyCraft.Utils;
 
 namespace MyCraft.Players
 {
@@ -31,7 +33,11 @@ namespace MyCraft.Players
                 if (destoryBlockAnimator.IsUpdateNow)
                 {
                     if (destoryBlockAnimator.Update(player.HighlightPos.Value))
-                        world.EditBlock(new BlockEdit(player.HighlightPos.Value, 0));
+                    {
+                        var chunkCoord = CoordHelper.ToChunkCoord(player.HighlightPos.Value).Item1;
+                        world.GetChunk(chunkCoord).EditBlock(new BlockEdit(player.HighlightPos.Value, 0));
+                        Debug.Log($"Player destoried block: {player.HighlightPos.Value}");
+                    }
                 }
                 else
                 {
@@ -46,7 +52,11 @@ namespace MyCraft.Players
             if (Input.GetMouseButtonDown(1) && player.PlacedPos.HasValue)// Right Button
             {
                 if (!player.SelectedSlot.isEmpty)
-                    world.EditBlock(new BlockEdit(player.PlacedPos.Value, player.SelectedSlot.Take(1).Item1));
+                {
+                    var chunkCoord = CoordHelper.ToChunkCoord(player.PlacedPos.Value).Item1;
+                    world.GetChunk(chunkCoord).EditBlock(new BlockEdit(player.PlacedPos.Value, player.SelectedSlot.Take(1).Item1));
+                    Debug.Log($"Player placed block: {player.PlacedPos.Value}");
+                }
             }
         }
 

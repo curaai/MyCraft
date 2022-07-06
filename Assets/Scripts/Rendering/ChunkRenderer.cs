@@ -57,7 +57,8 @@ namespace MyCraft.Rendering
 
             lock (world.ChunksToDraw)
             {
-                world.ChunksToDraw.Enqueue(this);
+                if (!world.ChunksToDraw.Contains(this))
+                    world.ChunksToDraw.Enqueue(this);
             }
 
             ThreadLocked = false;
@@ -88,6 +89,8 @@ namespace MyCraft.Rendering
 
         public void CreateMesh()
         {
+            Debug.Log($"{chunk.coord}: Create mesh");
+
             ThreadLocked = true;
 
             Mesh mesh = new Mesh();

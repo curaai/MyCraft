@@ -64,6 +64,9 @@ namespace MyCraft
 
         public void Update()
         {
+            if (ThreadLocked)
+                return;
+
             ThreadLocked = true;
             var thread = new Thread(new ThreadStart(_update));
             thread.Start();
@@ -74,14 +77,12 @@ namespace MyCraft
             if (!Initialized)
                 return;
 
+            Debug.Log($"{coord}: Updated stared");
+
             while (0 < editsQueue.Count)
             {
-                var e = editsQueue.Dequeue();
-                if (e == null)
-                    Debug.Log(editsQueue.Count);
-
-                var a = e.ConvertInChunkCoord();
-                this[a.pos] = a.block;
+                var e = editsQueue.Dequeue().ConvertInChunkCoord();
+                this[e.pos] = e.block;
             }
 
             renderer.RefreshMesh();
@@ -120,9 +121,15 @@ namespace MyCraft
             return block;
         }
 
-        public void EditBlock(BlockEdit edit)
+        public void EnqueueEdit(BlockEdit edit)
         {
             editsQueue.Enqueue(edit);
+        }
+
+        public void EditBlock(BlockEdit edit)
+        {
+            EnqueueEdit(edit);
+            Update();
         }
 
         public bool IsSolidBlock(in Vector3Int chunkPos)
