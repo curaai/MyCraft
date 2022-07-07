@@ -21,24 +21,48 @@ MonoBehaviour:
   subSurfaceBlockId: 3
   subSurfaceHeight: 4
   lodes:
-  - blockId: 3
-    minHeight: 30
-    maxHeight: 60
-    noiseScale: 0
-    noiseThreshold: 0
-    noiseOffset: 5000
-  - blockId: 1
-    minHeight: 1
-    maxHeight: 255
-    noiseScale: 0
-    noiseThreshold: 0
-    noiseOffset: 0
-  - blockId: 7
-    minHeight: 0
-    maxHeight: 0
-    noiseScale: 0.77
-    noiseThreshold: 0
-    noiseOffset: 5000
+  - BlockId: 1
+    MinHeight: 1
+    MaxHeight: 255
+    NoiseScale: 0
+    NoiseThresholdMinBound: 0
+    NoiseThresholdMaxBound: 1
+    NoiseOffset: 0
+  - BlockId: 16
+    MinHeight: 5
+    MaxHeight: 132
+    NoiseScale: 2
+    NoiseThresholdMinBound: 0.6
+    NoiseThresholdMaxBound: 0.7
+    NoiseOffset: 1000
+  - BlockId: 15
+    MinHeight: 5
+    MaxHeight: 68
+    NoiseScale: 2
+    NoiseThresholdMinBound: 0.6
+    NoiseThresholdMaxBound: 0.65
+    NoiseOffset: 2000
+  - BlockId: 14
+    MinHeight: 5
+    MaxHeight: 34
+    NoiseScale: 2
+    NoiseThresholdMinBound: 0.6
+    NoiseThresholdMaxBound: 0.63
+    NoiseOffset: 3000
+  - BlockId: 56
+    MinHeight: 5
+    MaxHeight: 34
+    NoiseScale: 2
+    NoiseThresholdMinBound: 0.6
+    NoiseThresholdMaxBound: 0.63
+    NoiseOffset: 4000
+  - BlockId: 7
+    MinHeight: 0
+    MaxHeight: 0
+    NoiseScale: 0
+    NoiseThresholdMinBound: 0
+    NoiseThresholdMaxBound: 1
+    NoiseOffset: 5000
   plants:
   - {fileID: 11400000, guid: 2a97c1f8d9904d745a667f77f30632ff, type: 2}
   - {fileID: 11400000, guid: ee964ec031f064c42863f8993ca362b0, type: 2}

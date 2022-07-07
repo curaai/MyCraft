@@ -26,7 +26,20 @@ namespace MyCraft.Utils
 
             var _list = new List<(float, float)> { (x, y), (y, x), (x, z), (z, x), (y, z), (z, y) };
             var res = (from a in _list select Mathf.PerlinNoise(a.Item1, a.Item2)).Average();
-            return res > threshold;
+            return threshold < res;
+        }
+        public static bool Get3DPerlinBound(Vector3 position, float offset, float scale, (float, float) thresholdBound)
+        {
+            // https://www.youtube.com/watch?v=Aga0TBJkchM Carpilot on YouTube
+
+            float x = (position.x + offset + 0.1f) * scale;
+            float y = (position.y + offset + 0.1f) * scale;
+            float z = (position.z + offset + 0.1f) * scale;
+
+            var _list = new List<(float, float)> { (x, y), (y, x), (x, z), (z, x), (y, z), (z, y) };
+            var noise = (from a in _list select Mathf.PerlinNoise(a.Item1, a.Item2)).Average();
+            var res = thresholdBound.Item1 <= noise && noise <= thresholdBound.Item2;
+            return res;
         }
     }
 }

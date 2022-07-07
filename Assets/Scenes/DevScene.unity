@@ -1688,7 +1688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8a9fb1269a5947d287dd98c452b56dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ViewDistanceInChunk: 4
+  ViewDistanceInChunk: 2
   player: {fileID: 1621593439}
 --- !u!114 &554214900
 MonoBehaviour:

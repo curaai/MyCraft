@@ -29,6 +29,9 @@ namespace MyCraft.Environment
         public List<LodeAttribute> lodes;
         public List<Plant> plants;
 
+        // TODO: Only Debug, remove after
+        byte[] debugOreTargets = new byte[] { 14, 15, 16, 56 };
+
         public (byte, List<BlockEdit>) GenerateBlock(Vector3Int pos, int noiseHeight)
         {
             var additionalBlocks = new List<BlockEdit>();
@@ -56,13 +59,21 @@ namespace MyCraft.Environment
             }
             else
             {
-                Func<LodeAttribute, bool> inRange = lode => lode.minHeight <= pos.y && pos.y <= lode.maxHeight;
-                Func<LodeAttribute, bool> blockExistInNoise = lode => NoiseHelper.Get3DPerlin(pos, lode.noiseOffset, lode.noiseScale, lode.noiseThreshold);
+                Func<LodeAttribute, bool> inRange = lode => lode.MinHeight <= pos.y && pos.y <= lode.MaxHeight;
+                Func<LodeAttribute, bool> blockExistInNoise = lode => NoiseHelper.Get3DPerlinBound(
+                    pos,
+                    lode.NoiseOffset,
+                    lode.NoiseScale,
+                    (lode.NoiseThresholdMinBound, lode.NoiseThresholdMaxBound)
+                );
 
                 res = (byte)(from lode in lodes
                              where inRange(lode)
                              where blockExistInNoise(lode)
-                             select lode.blockId).Last();
+                             select lode.BlockId).Last();
+
+                if (debugOreTargets.Contains(res))
+                    Debug.Log($"Ore generated on: {CoordHelper.ToChunkCoord(pos)}");
             }
             return (res, additionalBlocks);
         }
@@ -77,11 +88,12 @@ namespace MyCraft.Environment
     [Serializable]
     public class LodeAttribute
     {
-        public int blockId;
-        public int minHeight;
-        public int maxHeight;
-        public float noiseScale;
-        public float noiseThreshold;
-        public int noiseOffset;
+        public int BlockId;
+        public int MinHeight;
+        public int MaxHeight;
+        public float NoiseScale;
+        public float NoiseThresholdMinBound;
+        public float NoiseThresholdMaxBound;
+        public int NoiseOffset;
     }
 }

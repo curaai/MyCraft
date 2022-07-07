@@ -23,6 +23,9 @@ namespace MyCraft.Rendering
         private MeshFilter meshFilter;
         private MeshCollider meshCollider;
 
+        // TODO: Only Debug, remove after
+        private static byte[] debugOreTargets = new byte[] { 14, 15, 16, 56 };
+
         public bool ThreadLocked { get; private set; }
 
         public ChunkRenderer(Chunk _chunk, BlockTable _blockTable)
@@ -64,12 +67,15 @@ namespace MyCraft.Rendering
             ThreadLocked = false;
         }
 
-        private void appendBlockMesh(Vector3Int inChunkCoord, int blockId)
+        private void appendBlockMesh(Vector3Int inChunkCoord, byte blockId)
         {
             bool isAppendMesh = false;
             for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT && !isAppendMesh; faceIdx++)
                 if (!chunk.IsSolidBlock(inChunkCoord + VoxelData.SurfaceNormal[faceIdx]))
                     isAppendMesh = true;
+
+            if (debugOreTargets.Contains(blockId))
+                isAppendMesh = true;
 
             if (isAppendMesh)
             {
