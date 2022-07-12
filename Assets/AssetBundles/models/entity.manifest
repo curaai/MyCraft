@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2118332998
+CRC: 3489509883
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: cf3443305a23eb2c9b7910379169fd7b
+    Hash: 738375c8da6ae5ba6c2a874095b031d3
   TypeTreeHash:
     serializedVersion: 2
     Hash: 5ad585dd02dfb5016c0dad519eab8f49
@@ -44,11 +44,12 @@ Assets:
 - Assets/MinecraftPackage/models/entity/axolotl.geo.json
 - Assets/MinecraftPackage/models/entity/cat.geo.json
 - Assets/MinecraftPackage/models/entity/minecart_v1.0.geo.json
+- Assets/MinecraftPackage/models/mobs.json
 - Assets/MinecraftPackage/models/entity/stray.geo.json
-- Assets/MinecraftPackage/models/entity/tadpole.geo.json
 - Assets/MinecraftPackage/models/entity/stray_v1.0.geo.json
 - Assets/MinecraftPackage/models/entity/piglin.geo.json
 - Assets/MinecraftPackage/models/entity/zombie_villager.v1.0.geo.json
+- Assets/MinecraftPackage/models/entity/tadpole.geo.json
 - Assets/MinecraftPackage/models/entity/blaze.geo.json
 - Assets/MinecraftPackage/models/entity/zombie_pigman_baby.geo.json
 - Assets/MinecraftPackage/models/entity/creeper.geo.json
@@ -111,16 +112,16 @@ Assets:
 - Assets/MinecraftPackage/models/entity/ocelot_v1.0.geo.json
 - Assets/MinecraftPackage/models/entity/hoglin.geo.json
 - Assets/MinecraftPackage/models/entity/wither_boss_armor.v1.0.geo.json
-- Assets/MinecraftPackage/models/entity/snow_golem.v1.0.geo.json
 - Assets/MinecraftPackage/models/entity/magma_cube.geo.json
 - Assets/MinecraftPackage/models/entity/pig.geo.json
 - Assets/MinecraftPackage/models/entity/fishing_hook.geo.json
-- Assets/MinecraftPackage/models/entity/endermite.geo.json
 - Assets/MinecraftPackage/models/entity/frog.geo.json
+- Assets/MinecraftPackage/models/entity/endermite.geo.json
+- Assets/MinecraftPackage/models/entity/zombie_villager_v2.geo.json
 - Assets/MinecraftPackage/models/entity/horse_v2.geo.json
 - Assets/MinecraftPackage/models/entity/pufferfish_v1.0.geo.json
-- Assets/MinecraftPackage/models/entity/zombie_villager_v2.geo.json
 - Assets/MinecraftPackage/models/entity/horse_v3.geo.json
+- Assets/MinecraftPackage/models/entity/snow_golem.v1.0.geo.json
 - Assets/MinecraftPackage/models/entity/silverfish.geo.json
 - Assets/MinecraftPackage/models/entity/cow_v1.0.geo.json
 - Assets/MinecraftPackage/models/entity/drowned.geo.json
