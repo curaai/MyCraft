@@ -9,7 +9,7 @@ using MyCraft.Rendering;
 using System.Reflection;
 using System.Globalization;
 
-namespace MyCraft
+namespace MyCraft.Environment
 {
     public class BlockTable
     {

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using MyCraft.Environment;
 using MyCraft.Rendering;
 
 namespace MyCraft
