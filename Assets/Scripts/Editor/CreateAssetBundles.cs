@@ -16,7 +16,7 @@ namespace MyCraft.Editor
             }
             BuildPipeline.BuildAssetBundles(assetBundleDirectory,
                                             BuildAssetBundleOptions.UncompressedAssetBundle,
-                                            BuildTarget.StandaloneOSX);
+                                            BuildTarget.StandaloneWindows64);
         }
     }
 }
