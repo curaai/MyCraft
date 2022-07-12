@@ -1,10 +1,16 @@
 ManifestFileVersion: 0
-CRC: 916883832
+CRC: 2337325627
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: models
+      Name: models/blocks
       Dependencies: {}
     Info_1:
-      Name: textures
+      Name: models/entity
+      Dependencies: {}
+    Info_2:
+      Name: textures/blocks
+      Dependencies: {}
+    Info_3:
+      Name: textures/entity
       Dependencies: {}

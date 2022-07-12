@@ -6,16 +6,13 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using MyCraft.Rendering;
-using System.Reflection;
-using System.Globalization;
 
 namespace MyCraft.Environment
 {
     public class BlockTable
     {
-        private static readonly string TextureBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "textures");
-        private static readonly string TextureModelBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "models");
-        public static readonly List<String> CurSupportModels = new List<string>() { "block", "cube", "cube_all", "cube_column", "grass", "leaves" };
+        private static readonly string TextureBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "textures", "blocks");
+        private static readonly string TextureModelBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "models", "blocks");
 
         public Material material;
         public Material transparentMaterial;
@@ -52,13 +49,12 @@ namespace MyCraft.Environment
                     isTransparent = scriptData.isTransparent,
                     isSolid = scriptData.isSolid,
                 };
-
             }
         }
 
         private static Dictionary<int, Rendering.BlockTextureModel> textureModelsLoad(List<TextAsset> modelAssets, BlockScriptData[] targets, List<(Texture2D, Rect)> atlasTextures)
         {
-            var tempModels = new Dictionary<string, BlockTextureModelAbstract>();
+            var tempModels = new Dictionary<string, BlockTextureAbstractModel>();
 
             string parseParentName(TextAsset asset)
             {
@@ -69,13 +65,13 @@ namespace MyCraft.Environment
                 return parent;
             }
 
-            BlockTextureModelAbstract load(TextAsset asset)
+            BlockTextureAbstractModel load(TextAsset asset)
             {
                 if (tempModels.ContainsKey(asset.name))
                     return tempModels[asset.name];
 
                 var parentName = parseParentName(asset);
-                BlockTextureModelAbstract? parent;
+                BlockTextureAbstractModel? parent;
                 if (parentName == null || parentName == "block" || parentName == "thin_block")
                     parent = null;
                 else if (tempModels.ContainsKey(parentName))
@@ -86,7 +82,7 @@ namespace MyCraft.Environment
                 return parseModel(parent, asset);
             }
 
-            Rendering.BlockTextureModel? convert2newmodel(BlockTextureModelAbstract model)
+            Rendering.BlockTextureModel? convert2newmodel(BlockTextureAbstractModel model)
             {
                 string findNameFromVariable(string directionKey)
                 {
@@ -142,7 +138,7 @@ namespace MyCraft.Environment
             }
             return models;
         }
-        private static BlockTextureModelAbstract parseModel(BlockTextureModelAbstract? parent, in TextAsset asset)
+        private static BlockTextureAbstractModel parseModel(BlockTextureAbstractModel? parent, in TextAsset asset)
         {
             Func<JToken, string, float[]> toFloatArr = (parent, key) => JArray.Parse(parent[key].ToString()).ToObject<float[]>();
             Func<float[], float[]> divide16 = (arr) => arr.Select(x => x / 16f).ToArray();
@@ -172,7 +168,7 @@ namespace MyCraft.Environment
                 };
             }
 
-            BlockTextureModelAbstract res = new BlockTextureModelAbstract();
+            BlockTextureAbstractModel res = new BlockTextureAbstractModel();
 
             var json = JObject.Parse(asset.text);
             // Parent Model
@@ -210,11 +206,11 @@ namespace MyCraft.Environment
 
                 foreach (var elemJson in JArray.Parse(json["elements"].ToString()))
                 {
-                    var elem = new BlockTextureModelAbstract.Element()
+                    var elem = new BlockTextureAbstractModel.Element()
                     {
                         from = toVec(divide16(toFloatArr(elemJson, "from"))),
                         to = toVec(divide16(toFloatArr(elemJson, "to"))),
-                        faces = new Dictionary<string, BlockTextureModelAbstract.FaceElement>(),
+                        faces = new Dictionary<string, BlockTextureAbstractModel.FaceElement>(),
                     };
 
                     if (elemJson["rotation"] != null)
@@ -226,7 +222,7 @@ namespace MyCraft.Environment
                         if (face.Value["uv"] != null)
                             uv = divide16(toFloatArr(face.Value, "uv"));
 
-                        elem.faces[face.Key] = new BlockTextureModelAbstract.FaceElement()
+                        elem.faces[face.Key] = new BlockTextureAbstractModel.FaceElement()
                         {
                             textureVariable = face.Value["texture"].ToString(),
                             patchUv = Rect.MinMaxRect(uv[0], uv[1], uv[2], uv[3])
@@ -238,7 +234,7 @@ namespace MyCraft.Environment
             else
             {
                 // becareful copy
-                res.elements = new List<BlockTextureModelAbstract.Element>(parent.elements);
+                res.elements = new List<BlockTextureAbstractModel.Element>(parent.elements);
                 res.texVariableDict = new Dictionary<string, string>(parent?.texVariableDict);
             }
 
@@ -266,7 +262,7 @@ namespace MyCraft.Environment
         private static String getName(string x) => x.Substring(x.IndexOf('/') + 1);
         private static string removeHashtag(string x) => x.Substring(1);
 
-        private class BlockTextureModelAbstract
+        private class BlockTextureAbstractModel
         {
             public class FaceElement
             {
