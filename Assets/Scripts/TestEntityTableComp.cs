@@ -14,6 +14,7 @@ namespace MyCraft
     public class TestEntityTableComp : MonoBehaviour
     {
         public EntityTable table;
+        public EntityTable.EntityTextureModel steveModel;
 
         private List<Vector3> verts = new List<Vector3>();
         private List<int> tris = new List<int>();
@@ -25,11 +26,14 @@ namespace MyCraft
         public void Start()
         {
             table = new EntityTable();
+            this.steveModel = table.steve;
 
             meshRenderer = gameObject.AddComponent<MeshRenderer>();
             meshFilter = gameObject.AddComponent<MeshFilter>();
             meshCollider = gameObject.AddComponent<MeshCollider>();
             meshRenderer.material = table.material;
+
+            main();
 
             Mesh mesh = new Mesh();
             mesh.vertices = verts.ToArray();
@@ -39,6 +43,18 @@ namespace MyCraft
             mesh.RecalculateNormals();
 
             meshFilter.mesh = mesh;
+        }
+
+        void main()
+        {
+            foreach (var bone in steveModel.bones)
+            {
+                foreach (var cube in bone.cubes)
+                {
+                    Debug.Log("uv" + cube.uv);
+                }
+                break;
+            }
         }
     }
 }

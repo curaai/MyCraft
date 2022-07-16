@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using MyCraft.Rendering;
 
@@ -15,21 +16,74 @@ namespace MyCraft.Environment
         private static readonly string TextureModelBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "models", "entity");
 
         public Material material;
+        public EntityTextureModel steve;
+        public Texture2D steveTex;
 
         public EntityTable()
         {
-            var modelAssets = loadBundle(TextureModelBundlePath).LoadAllAssets<TextAsset>();
-            foreach (var model in modelAssets)
-            {
-                Debug.Log($"model name: {model.name}");
-            }
+            var modelAssets = loadBundle(TextureModelBundlePath).LoadAllAssets<TextAsset>().ToList();
 
-            var textureAssets = loadBundle(TextureBundlePath).LoadAllAssets<Texture2D>();
-            foreach (var texture in textureAssets)
-            {
-                Debug.Log($"texture name: {texture.name}");
-            }
+            var steveModel = modelAssets.Find(x => x.name == "mobs");
 
+            var textureAssets = loadBundle(TextureBundlePath).LoadAllAssets<Texture2D>().ToList();
+            var steveTex = textureAssets.Find(x => x.name == "steve");
+
+            this.steve = loadSteve(steveModel, steveTex);
+            this.steveTex = steveTex;
+
+            foreach (var bone in steve.bones)
+            {
+                foreach (var cube in bone.cubes)
+                    Debug.Log(bone.ToString() + cube.ToString() + FindCubeSize(steveTex, cube.uv));
+            }
+        }
+
+        private Vector3Int FindCubeSize(Texture2D tex, Vector2Int uvLeftTop)
+        {
+            int getDepth()
+            {
+                var i = 0;
+                while (true)
+                {
+                    var color = tex.GetPixel(uvLeftTop.x, 63 - (uvLeftTop.y + i));
+                    if (color != Color.clear)
+                        return i;
+                    i++;
+                }
+                throw new InvalidDataException("Cannot find depth from texture");
+            }
+            int getWidth(int depth)
+            {
+                var i = 0;
+                while (true)
+                {
+                    var color = tex.GetPixel(uvLeftTop.x + depth + i, 63 - uvLeftTop.y);
+                    if (color == Color.clear)
+                        return i / 2;
+                    i++;
+                }
+                throw new InvalidDataException("Cannot find width from texture");
+            }
+            int getHeight(int depth)
+            {
+                var i = 0;
+                while (true)
+                {
+                    var color = tex.GetPixel(uvLeftTop.x, 63 - (uvLeftTop.y + depth + i));
+                    if (color == Color.clear)
+                        return i;
+                    i++;
+                }
+                throw new InvalidDataException("Cannot find height from texture");
+            }
+            var depth = getDepth();
+            return new Vector3Int(getWidth(depth), getHeight(depth), depth);
+        }
+
+        private EntityTextureModel loadSteve(TextAsset text, Texture2D tex)
+        {
+            var a = JsonConvert.DeserializeObject<EntityTextureModel>(JObject.Parse(text.text)["geometry.humanoid"].ToString());
+            return a;
         }
 
         private static AssetBundle loadBundle(string path)
@@ -42,5 +96,47 @@ namespace MyCraft.Environment
             }
             return bundle;
         }
+
+
+        public class EntityTextureModel
+        {
+            public class Cube
+            {
+                public Cube(float[] origin, float[] size, float[] uv)
+                {
+                    this.origin = divide16(arr2vec3(origin));
+                    this.size = divide16(arr2vec3(size));
+                    this.uv = Vector2Int.RoundToInt(arr2vec2(uv));
+                }
+
+                public Vector3 origin;
+                public Vector3 size;
+                public Vector2Int uv;
+
+                public override string ToString() => $"{uv}";
+            }
+
+            public class Bone
+            {
+                public Bone(string name, float[] pivot)
+                {
+                    this.name = name;
+                    this.pivot = divide16(arr2vec3(pivot));
+                }
+
+                public string name;
+                public Vector3 pivot;
+
+                public List<Cube> cubes = new List<Cube>();
+
+                public override string ToString() => $"{name}, {pivot}";
+            }
+
+            public List<Bone> bones = new List<Bone>();
+        }
+
+        public static Vector3 divide16(Vector3 v) => v / 16;
+        public static Vector3 arr2vec3(float[] a) => new Vector3(a[0], a[1], a[2]);
+        public static Vector2 arr2vec2(float[] a) => new Vector2(a[0], a[1]);
     }
 }
