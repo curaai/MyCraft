@@ -2,39 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using MyCraft.Utils;
 
 namespace MyCraft.Rendering
 {
-
     public struct BlockTextureModel
     {
         public BlockTextureModel(List<Element> elements)
         {
-            Vector3[] GenerateVerts(Vector3 min, Vector3 max)
-            {
-                return new Vector3[] {
-                    new Vector3(min.x, min.y, min.z),
-                    new Vector3(max.x, min.y, min.z),
-                    new Vector3(max.x, max.y, min.z),
-                    new Vector3(min.x, max.y, min.z),
-                    new Vector3(min.x, min.y, max.z),
-                    new Vector3(max.x, min.y, max.z),
-                    new Vector3(max.x, max.y, max.z),
-                    new Vector3(min.x, max.y, max.z)
-                };
-            }
-            Vector2[] GetPatchedAtlasUv(Rect atlas, Rect patch)
-            {
-                var minAtlas = atlas.min + atlas.size * patch.min;
-                var maxAtlas = atlas.min + atlas.size * patch.max;
-                return new Vector2[] {
-                    minAtlas,
-                    new Vector2 (minAtlas.x, maxAtlas.y),
-                    new Vector2 (maxAtlas.x, minAtlas.y),
-                    maxAtlas,
-                };
-            }
-
             this.elements = elements;
             this.verts = new List<Vector3>();
             this.tris = new List<int>();
@@ -42,7 +17,7 @@ namespace MyCraft.Rendering
 
             foreach (var elem in elements)
             {
-                var vertList = GenerateVerts(elem.from, elem.to);
+                var vertList = RenderHelper.GenerateVerts(elem.from, elem.to);
                 if (elem.rotation.HasValue)
                 {
                     var rotation = elem.rotation.Value;
@@ -56,7 +31,7 @@ namespace MyCraft.Rendering
                     {
                         for (int i = 0; i < 4; i++)
                             verts.Add(vertList[VoxelData.Tris[(int)enumFace, i]]);
-                        uvs.AddRange(GetPatchedAtlasUv(elem.atlasUvDict[face], elem.patchUvDict[face]));
+                        uvs.AddRange(RenderHelper.GetPatchedAtlasUv(elem.atlasUvDict[face], elem.patchUvDict[face]));
                         tris.AddRange(VoxelData.TriIdxOrder.Select(i => i + vertIdx));
                     }
                 }
