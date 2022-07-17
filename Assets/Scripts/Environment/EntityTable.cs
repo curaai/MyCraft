@@ -16,7 +16,8 @@ namespace MyCraft.Environment
         private static readonly string TextureModelBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "models", "entity");
 
         public Material material;
-        public EntityTextureModel steve;
+        public MyCraft.Rendering.EntityTextureModel steve;
+
         public Texture2D steveTex;
 
         public EntityTable()
@@ -28,56 +29,12 @@ namespace MyCraft.Environment
             var textureAssets = loadBundle(TextureBundlePath).LoadAllAssets<Texture2D>().ToList();
             var steveTex = textureAssets.Find(x => x.name == "steve");
 
-            this.steve = loadSteve(steveModel, steveTex);
+            var steve = loadSteve(steveModel, steveTex);
             this.steveTex = steveTex;
 
-            foreach (var bone in steve.bones)
-            {
-                foreach (var cube in bone.cubes)
-                    Debug.Log(bone.ToString() + cube.ToString() + FindCubeSize(steveTex, cube.uv));
-            }
-        }
-
-        private Vector3Int FindCubeSize(Texture2D tex, Vector2Int uvLeftTop)
-        {
-            int getDepth()
-            {
-                var i = 0;
-                while (true)
-                {
-                    var color = tex.GetPixel(uvLeftTop.x, 63 - (uvLeftTop.y + i));
-                    if (color != Color.clear)
-                        return i;
-                    i++;
-                }
-                throw new InvalidDataException("Cannot find depth from texture");
-            }
-            int getWidth(int depth)
-            {
-                var i = 0;
-                while (true)
-                {
-                    var color = tex.GetPixel(uvLeftTop.x + depth + i, 63 - uvLeftTop.y);
-                    if (color == Color.clear)
-                        return i / 2;
-                    i++;
-                }
-                throw new InvalidDataException("Cannot find width from texture");
-            }
-            int getHeight(int depth)
-            {
-                var i = 0;
-                while (true)
-                {
-                    var color = tex.GetPixel(uvLeftTop.x, 63 - (uvLeftTop.y + depth + i));
-                    if (color == Color.clear)
-                        return i;
-                    i++;
-                }
-                throw new InvalidDataException("Cannot find height from texture");
-            }
-            var depth = getDepth();
-            return new Vector3Int(getWidth(depth), getHeight(depth), depth);
+            this.steve = new MyCraft.Rendering.EntityTextureModel(steve, steveTex);
+            material = new Material(Shader.Find("Unlit/Texture"));
+            material.mainTexture = steveTex;
         }
 
         private EntityTextureModel loadSteve(TextAsset text, Texture2D tex)
@@ -118,14 +75,18 @@ namespace MyCraft.Environment
 
             public class Bone
             {
-                public Bone(string name, float[] pivot)
+                public Bone(string name, float[] pivot, bool neverRender = false, bool mirror = false)
                 {
                     this.name = name;
                     this.pivot = divide16(arr2vec3(pivot));
+                    this.neverRender = neverRender;
+                    this.mirror = mirror;
                 }
 
                 public string name;
                 public Vector3 pivot;
+                public bool neverRender;
+                public bool mirror;
 
                 public List<Cube> cubes = new List<Cube>();
 

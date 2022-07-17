@@ -26,7 +26,6 @@ namespace MyCraft
         public void Start()
         {
             table = new EntityTable();
-            this.steveModel = table.steve;
 
             meshRenderer = gameObject.AddComponent<MeshRenderer>();
             meshFilter = gameObject.AddComponent<MeshFilter>();
@@ -47,14 +46,10 @@ namespace MyCraft
 
         void main()
         {
-            foreach (var bone in steveModel.bones)
-            {
-                foreach (var cube in bone.cubes)
-                {
-                    Debug.Log("uv" + cube.uv);
-                }
-                break;
-            }
+            var elem = table.steve.renderElements;
+            verts.AddRange(elem.Item1);
+            tris.AddRange(elem.Item2);
+            uvs.AddRange(elem.Item3);
         }
     }
 }
