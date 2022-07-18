@@ -18,8 +18,6 @@ namespace MyCraft.Players
 
         private float moveH;
         private float moveV;
-        private float mouseH;
-        private float mouseV;
         private Vector3 velocity;
         protected float verticalMomentum;
         protected bool JumpRequest;
@@ -48,7 +46,6 @@ namespace MyCraft.Players
         {
             CalcVelocity();
             if (JumpRequest) Jump();
-            RotatePlayerView();
 
             transform.Translate(velocity, Space.Self);
         }
@@ -109,18 +106,11 @@ namespace MyCraft.Players
             checkAndRefineCollidingBlock();
         }
 
-        protected void RotatePlayerView()
-        {
-            transform.Rotate(Vector3.up * mouseH);
-            player.cam.Rotate(Vector3.right * -mouseV);
-        }
 
         public void FetchPlayerInput()
         {
             moveH = Input.GetAxis("Horizontal");
             moveV = Input.GetAxis("Vertical");
-            mouseH = Input.GetAxis("Mouse X");
-            mouseV = Input.GetAxis("Mouse Y");
 
             IsSprinting = Input.GetButton("Sprint");
             if (IsGrounding && Input.GetButton("Jump"))

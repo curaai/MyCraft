@@ -58,7 +58,7 @@ namespace MyCraft
             InUI = false;
 
             int ctr = WidthByChunk / 2;
-            player.position = new Vector3(ctr * Chunk.ChunkShape.x, Chunk.ChunkShape.y - 20, ctr * Chunk.ChunkShape.x);
+            player.position = new Vector3(ctr * Chunk.ChunkShape.x, Chunk.ChunkShape.y - 60, ctr * Chunk.ChunkShape.x);
         }
 
         void Update()
