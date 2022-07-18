@@ -18,6 +18,7 @@ namespace MyCraft
         [SerializeField] private GameObject debugScreen;
 
         public BlockTable BlockTable;
+        public EntityTable EntityTable;
 
         public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
         private BiomeAttribute[] biomes;
@@ -50,6 +51,7 @@ namespace MyCraft
             Application.targetFrameRate = 120;
 
             BlockTable = new BlockTable();
+            EntityTable = new EntityTable();
             biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
             Chunk.biomes = Resources.LoadAll<BiomeAttribute>("Table/Biomes");
 
