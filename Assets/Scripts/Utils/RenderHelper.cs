@@ -43,6 +43,11 @@ namespace MyCraft.Utils
                     new Vector2(uv.xMax, uv.yMax) };
         }
 
+        public static Rect vec2rect(Vector2[] uv)
+        {
+            return Rect.MinMaxRect(uv[0].x, uv[0].y, uv[3].x, uv[3].y);
+        }
+
         public static Vector3Int FindCubeSizeFromTex(Texture2D tex, Vector2Int uvLeftTop)
         {
             int getDepth()
@@ -50,7 +55,7 @@ namespace MyCraft.Utils
                 var i = 0;
                 while (i < tex.height)
                 {
-                    var color = tex.GetPixel(uvLeftTop.x, 63 - (uvLeftTop.y + i));
+                    var color = tex.GetPixel(uvLeftTop.x, (tex.height - 1) - (uvLeftTop.y + i));
                     if (color != Color.clear)
                         return i;
                     i++;
@@ -62,24 +67,24 @@ namespace MyCraft.Utils
                 var i = 0;
                 while (i < tex.width)
                 {
-                    var color = tex.GetPixel(uvLeftTop.x + depth + i, 63 - uvLeftTop.y);
+                    var color = tex.GetPixel(uvLeftTop.x + depth + i, (tex.height - 1) - uvLeftTop.y);
                     if (color == Color.clear)
                         return i / 2;
                     i++;
                 }
-                throw new InvalidDataException("Cannot find width from texture");
+                return Mathf.FloorToInt(i / 2);
             }
             int getHeight(int depth)
             {
                 var i = 0;
                 while (i < tex.height)
                 {
-                    var color = tex.GetPixel(uvLeftTop.x, 63 - (uvLeftTop.y + depth + i));
+                    var color = tex.GetPixel(uvLeftTop.x, (tex.height - 1) - (uvLeftTop.y + depth + i));
                     if (color == Color.clear)
                         return i;
                     i++;
                 }
-                throw new InvalidDataException("Cannot find height from texture");
+                return Mathf.FloorToInt(i);
             }
             var depth = getDepth();
             return new Vector3Int(getWidth(depth), getHeight(depth), depth);

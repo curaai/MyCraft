@@ -46,10 +46,10 @@ namespace MyCraft
 
         void main()
         {
-            // var elem = table.steve.renderElements;
-            // verts.AddRange(elem.Item1);
-            // tris.AddRange(elem.Item2);
-            // uvs.AddRange(elem.Item3);
+            var elem = table["zombie"].renderElements;
+            verts.AddRange(elem.Item1);
+            tris.AddRange(elem.Item2);
+            uvs.AddRange(elem.Item3);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace MyCraft.Rendering
 {
     public struct EntityTextureModel
     {
-        public EntityTextureModel(MyCraft.Environment.EntityTable.JsonTextureModel tempModel, Texture2D tex)
+        public EntityTextureModel(MyCraft.Environment.EntityTable.JsonTextureModel tempModel, Texture2D tex, Rect atlasRect)
         {
             this.verts = new List<Vector3>();
             this.tris = new List<int>();
@@ -25,7 +25,9 @@ namespace MyCraft.Rendering
                 {
                     var cubeSize = RenderHelper.FindCubeSizeFromTex(tex, cube.uv);
                     var _verts = RenderHelper.GenerateVerts(cube.origin, cube.origin + cube.size);
-                    var _uvs = RenderHelper.GenerateCubeUvs(texSize, cube.uv, cubeSize, bone.mirror);
+                    var _uvs = RenderHelper.GenerateCubeUvs(texSize, cube.uv, cubeSize, bone.mirror)
+                        .Select(RenderHelper.vec2rect)
+                        .Select(rect => RenderHelper.GetPatchedAtlasUv(atlasRect, rect)).ToList();
 
                     foreach (var enumFace in Enum.GetValues(typeof(VoxelFace)))
                     {

@@ -10,20 +10,35 @@ using MyCraft.Rendering;
 
 namespace MyCraft.Environment
 {
+    // ! Support only Steve & zombie now
     public class EntityTable
     {
         private static readonly string TextureBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "textures", "entity");
         private static readonly string TextureModelBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "models", "entity");
 
+        // TODO: Make Entity int id & EntityData
+        public EntityTextureModel this[string name] { get => table[name]; }
         public Material material;
 
-        private static string[] ignoreCases = { "arrow", "experience_orb", "fishing_hook" };
-        public Dictionary<string, MyCraft.Rendering.EntityTextureModel> table = new Dictionary<string, Rendering.EntityTextureModel>();
+        private static string[] ignoreCases = {
+            // not mob
+            "arrow", "experience_orb", "fishing_hook", 
+            // not cube texture template
+            "bat", 
+            // overlapped texture template
+            // ! not tested all entities in table (except Steve & zombie)
+            "pig", "piglin", 
+        };
+
+        private Dictionary<string, MyCraft.Rendering.EntityTextureModel> table = new Dictionary<string, Rendering.EntityTextureModel>();
 
         public EntityTable()
         {
             var modelAssets = loadBundle(TextureModelBundlePath).LoadAllAssets<TextAsset>().ToList();
             var textureAssets = loadBundle(TextureBundlePath).LoadAllAssets<Texture2D>().ToList();
+            var atlasTexture = new Texture2D(4096, 4096) { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
+            var atlasRects = atlasTexture.PackTextures(textureAssets.ToArray(), 0, 4096);
+
             foreach (var model in modelAssets)
             {
                 var name = model.name;
@@ -37,20 +52,13 @@ namespace MyCraft.Environment
                 || model.name.Contains("v1.0") // duplicate model
                 || ignoreCases.Contains(name))
                     continue;
-                try
-                {
-                    var temp = load(model, tex);
-                    table[name] = new EntityTextureModel(temp, tex); // * WIP
-                }
-                catch (Exception e)
-                {
-                    // * WIP Debug
-                    Debug.LogError($"{name}: Failed {e}, {e.StackTrace}");
-                }
+
+                var idx = textureAssets.IndexOf(tex);
+                table[name] = new EntityTextureModel(load(model, tex), tex, atlasRects[idx]);
             }
 
             material = new Material(Shader.Find("Unlit/Texture"));
-            // TODO: set atlas material
+            material.mainTexture = atlasTexture;
         }
 
         private JsonTextureModel? load(TextAsset text, Texture2D tex)
