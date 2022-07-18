@@ -14,11 +14,11 @@ namespace MyCraft
     public class TestEntityTableComp : MonoBehaviour
     {
         public EntityTable table;
-        public EntityTable.EntityTextureModel steveModel;
 
         private List<Vector3> verts = new List<Vector3>();
         private List<int> tris = new List<int>();
         private List<Vector2> uvs = new List<Vector2>();
+
         private MeshRenderer meshRenderer;
         private MeshFilter meshFilter;
         private MeshCollider meshCollider;
@@ -46,10 +46,10 @@ namespace MyCraft
 
         void main()
         {
-            var elem = table.steve.renderElements;
-            verts.AddRange(elem.Item1);
-            tris.AddRange(elem.Item2);
-            uvs.AddRange(elem.Item3);
+            // var elem = table.steve.renderElements;
+            // verts.AddRange(elem.Item1);
+            // tris.AddRange(elem.Item2);
+            // uvs.AddRange(elem.Item3);
         }
     }
 }

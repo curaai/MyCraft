@@ -9,7 +9,7 @@ namespace MyCraft.Rendering
 {
     public struct EntityTextureModel
     {
-        public EntityTextureModel(MyCraft.Environment.EntityTable.EntityTextureModel tempModel, Texture2D tex)
+        public EntityTextureModel(MyCraft.Environment.EntityTable.JsonTextureModel tempModel, Texture2D tex)
         {
             this.verts = new List<Vector3>();
             this.tris = new List<int>();

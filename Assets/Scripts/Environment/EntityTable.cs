@@ -16,31 +16,52 @@ namespace MyCraft.Environment
         private static readonly string TextureModelBundlePath = Path.Combine(Application.dataPath + "/AssetBundles", "models", "entity");
 
         public Material material;
-        public MyCraft.Rendering.EntityTextureModel steve;
 
-        public Texture2D steveTex;
+        private static string[] ignoreCases = { "arrow", "experience_orb", "fishing_hook" };
+        public Dictionary<string, MyCraft.Rendering.EntityTextureModel> table = new Dictionary<string, Rendering.EntityTextureModel>();
 
         public EntityTable()
         {
             var modelAssets = loadBundle(TextureModelBundlePath).LoadAllAssets<TextAsset>().ToList();
-
-            var steveModel = modelAssets.Find(x => x.name == "mobs");
-
             var textureAssets = loadBundle(TextureBundlePath).LoadAllAssets<Texture2D>().ToList();
-            var steveTex = textureAssets.Find(x => x.name == "steve");
+            foreach (var model in modelAssets)
+            {
+                var name = model.name;
+                if (model.name.Contains(".geo"))
+                    name = model.name.Remove(model.name.IndexOf(".geo"));
+                else if (name == "mobs")
+                    name = "steve";
 
-            var steve = loadSteve(steveModel, steveTex);
-            this.steveTex = steveTex;
+                var tex = textureAssets.Find(x => x.name == name);
+                if (tex == null
+                || model.name.Contains("v1.0") // duplicate model
+                || ignoreCases.Contains(name))
+                    continue;
+                try
+                {
+                    var temp = load(model, tex);
+                    table[name] = new EntityTextureModel(temp, tex); // * WIP
+                }
+                catch (Exception e)
+                {
+                    // * WIP Debug
+                    Debug.LogError($"{name}: Failed {e}, {e.StackTrace}");
+                }
+            }
 
-            this.steve = new MyCraft.Rendering.EntityTextureModel(steve, steveTex);
             material = new Material(Shader.Find("Unlit/Texture"));
-            material.mainTexture = steveTex;
+            // TODO: set atlas material
         }
 
-        private EntityTextureModel loadSteve(TextAsset text, Texture2D tex)
+        private JsonTextureModel? load(TextAsset text, Texture2D tex)
         {
-            var a = JsonConvert.DeserializeObject<EntityTextureModel>(JObject.Parse(text.text)["geometry.humanoid"].ToString());
-            return a;
+            var root = JObject.Parse(text.text);
+            var mainKey = root.Properties().Select(p => p.Name).Where(s => !s.Contains("format_version")).First();
+
+            var temp = root[mainKey];
+            if (temp.Type == JTokenType.Array)
+                temp = temp[0];
+            return JsonConvert.DeserializeObject<JsonTextureModel>(temp.ToString());
         }
 
         private static AssetBundle loadBundle(string path)
@@ -55,36 +76,50 @@ namespace MyCraft.Environment
         }
 
 
-        public class EntityTextureModel
+        public class JsonTextureModel
         {
             public class Cube
             {
-                public Cube(float[] origin, float[] size, float[] uv)
+                public Cube(float[] origin, float[] size, float[] uv, float inflate = 0)
                 {
                     this.origin = divide16(arr2vec3(origin));
                     this.size = divide16(arr2vec3(size));
                     this.uv = Vector2Int.RoundToInt(arr2vec2(uv));
+                    this.inflate = inflate;
                 }
 
                 public Vector3 origin;
                 public Vector3 size;
                 public Vector2Int uv;
+                public float inflate; // * ignore now
 
                 public override string ToString() => $"{uv}";
             }
 
             public class Bone
             {
-                public Bone(string name, float[] pivot, bool neverRender = false, bool mirror = false)
+                public Bone(string name, float[] pivot, string parent = null, float[] rotation = null, bool neverRender = false, bool mirror = false)
                 {
                     this.name = name;
-                    this.pivot = divide16(arr2vec3(pivot));
+                    this.parent = parent;
                     this.neverRender = neverRender;
                     this.mirror = mirror;
+
+                    if (pivot != null && pivot.Length > 0)
+                        this.pivot = divide16(arr2vec3(pivot));
+                    else
+                        this.pivot = Vector3.zero;
+
+                    if (rotation != null && rotation.Length > 0)
+                        this.rotation = arr2vec3(pivot);
+                    else
+                        this.rotation = Vector3.zero;
                 }
 
                 public string name;
+                public string parent;
                 public Vector3 pivot;
+                public Vector3 rotation;
                 public bool neverRender;
                 public bool mirror;
 

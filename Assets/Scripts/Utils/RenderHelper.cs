@@ -48,7 +48,7 @@ namespace MyCraft.Utils
             int getDepth()
             {
                 var i = 0;
-                while (true)
+                while (i < tex.height)
                 {
                     var color = tex.GetPixel(uvLeftTop.x, 63 - (uvLeftTop.y + i));
                     if (color != Color.clear)
@@ -60,7 +60,7 @@ namespace MyCraft.Utils
             int getWidth(int depth)
             {
                 var i = 0;
-                while (true)
+                while (i < tex.width)
                 {
                     var color = tex.GetPixel(uvLeftTop.x + depth + i, 63 - uvLeftTop.y);
                     if (color == Color.clear)
@@ -72,7 +72,7 @@ namespace MyCraft.Utils
             int getHeight(int depth)
             {
                 var i = 0;
-                while (true)
+                while (i < tex.height)
                 {
                     var color = tex.GetPixel(uvLeftTop.x, 63 - (uvLeftTop.y + depth + i));
                     if (color == Color.clear)
