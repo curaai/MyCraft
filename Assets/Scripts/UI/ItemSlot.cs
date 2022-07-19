@@ -50,6 +50,12 @@ namespace MyCraft.UI
             }
         }
 
+        public void Add(int amt)
+        {
+            amount += amt;
+            refresh();
+        }
+
         protected virtual void refresh()
         {
             if (block is BlockData _block)
@@ -92,8 +98,7 @@ namespace MyCraft.UI
             {
                 var diff = MAX_AMOUNT - amount;
                 var append = CurDragSlot.Take(diff).Item2;
-                amount += append;
-                refresh();
+                Add(append);
             }
             void Move()
             {

@@ -21,6 +21,7 @@ namespace MyCraft.Rendering
         private List<Vector2> uvs = new List<Vector2>();
 
         private MeshFilter meshFilter;
+        private MeshCollider meshCollider;
 
         public bool ThreadLocked { get; private set; }
 
@@ -30,6 +31,7 @@ namespace MyCraft.Rendering
             blockTable = _blockTable;
 
             meshFilter = chunk.GetComponent<MeshFilter>();
+            meshCollider = chunk.GetComponent<MeshCollider>();
         }
 
         public void RefreshMesh()
@@ -88,6 +90,7 @@ namespace MyCraft.Rendering
 
             mesh.RecalculateNormals();
 
+            meshCollider.sharedMesh = mesh;
             meshFilter.mesh = mesh;
         }
 

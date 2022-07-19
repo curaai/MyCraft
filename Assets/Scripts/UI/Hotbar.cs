@@ -13,7 +13,7 @@ namespace MyCraft.UI
         Player player;
         Inventory inventory;
 
-        public HotbarItemSlot[] ItemSlots => inventory.InventorySlots;
+        public HotbarItemSlot[] ItemSlots => inventory.HotbarSlots;
         public HotbarItemSlot SelectedSlot => ItemSlots[SlotIndex];
 
         public int SlotIndex

@@ -25,11 +25,13 @@ namespace MyCraft
         public ItemSlot SelectedSlot => uiObj.GetComponentInChildren<Hotbar>().SelectedSlot;
 
         private GameObject uiObj;
+        public Inventory inventory;
 
         public void Start()
         {
             cam = transform.GetChild(0);
             uiObj = GameObject.Find("PlayerUI");
+            inventory = GameObject.FindGameObjectWithTag("Inventory").GetComponent<Inventory>();
         }
     }
 }

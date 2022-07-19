@@ -10,20 +10,20 @@ namespace MyCraft.Environment
 {
     public class DropItemComponent : MonoBehaviour
     {
-        public static readonly float DespawnTime = 5;
+        public static readonly float DespawnTime = 50;
 
         public byte id;
-        public int count;
+        public int amount;
 
         public DateTime SpawnTime;
         public BlockTable table => GameObject.Find("World").GetComponent<World>().BlockTable;
 
-        public void Init(byte id, int count)
+        public void Init(byte id, int amount)
         {
             SpawnTime = DateTime.Now;
 
             this.id = id;
-            this.count = count;
+            this.amount = amount;
 
             // rendering 
             var mesh = new Mesh();
@@ -37,6 +37,7 @@ namespace MyCraft.Environment
             mesh.RecalculateNormals();
 
             GetComponent<MeshFilter>().mesh = mesh;
+            GetComponent<MeshCollider>().sharedMesh = mesh;
         }
 
         void Update()
@@ -45,6 +46,16 @@ namespace MyCraft.Environment
 
             if (DespawnTime < diff.TotalSeconds)
                 Destroy(gameObject);
+        }
+
+        void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                var inventory = other.GetComponent<Player>().inventory;
+                if (inventory.AddItem(id, amount))
+                    Destroy(gameObject);
+            }
         }
     }
 }

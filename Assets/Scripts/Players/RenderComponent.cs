@@ -13,18 +13,10 @@ namespace MyCraft.Players
         private List<int> tris = new List<int>();
         private List<Vector2> uvs = new List<Vector2>();
 
-        private MeshRenderer meshRenderer;
-        private MeshFilter meshFilter;
-        private MeshCollider meshCollider;
-
         public void Start()
         {
             var entityTable = GameObject.Find("World").GetComponent<World>().EntityTable;
-
-            meshRenderer = gameObject.AddComponent<MeshRenderer>();
-            meshFilter = gameObject.AddComponent<MeshFilter>();
-            meshCollider = gameObject.AddComponent<MeshCollider>();
-            meshRenderer.material = entityTable.material;
+            GetComponent<MeshRenderer>().material = entityTable.material;
 
             var elem = entityTable["steve"].renderElements;
             verts.AddRange(elem.Item1);
@@ -38,7 +30,8 @@ namespace MyCraft.Players
 
             mesh.RecalculateNormals();
 
-            meshFilter.mesh = mesh;
+            GetComponent<MeshCollider>().sharedMesh = mesh;
+            GetComponent<MeshFilter>().mesh = mesh;
         }
     }
 }
