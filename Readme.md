@@ -12,5 +12,8 @@
 |---|---|
 | Move Mouse | Look around |
 | W,A,S,D | Move |
+| Shift | Dash when move |
 | Space | Jump |
+| I | Inventory |
 | F3 | Toggle Debug Mode |
+| F5 | Change Camera Mode |
