@@ -14,6 +14,7 @@ namespace MyCraft
     public class Chunk : MonoBehaviour
     {
         public static readonly Vector2Int ChunkShape = new Vector2Int(16, 128);
+        [SerializeField] private GameObject dropItemPrefab;
         public byte[,,] BlockMap = new byte[ChunkShape.x, ChunkShape.y, ChunkShape.x];
 
         protected World world;
@@ -52,6 +53,13 @@ namespace MyCraft
 
         public void Update()
         {
+            void DropItem(BlockEdit e)
+            {
+                var dropItemObj = Instantiate(dropItemPrefab, Vector3.zero, Quaternion.identity, transform);
+                dropItemObj.transform.localPosition = e.pos + new Vector3(0.3f, 0, 0.3f);
+                dropItemObj.GetComponent<DropItemComponent>().Init(this[e.pos], 1);
+            }
+
             if (!Initialized)
                 return;
 
@@ -60,6 +68,9 @@ namespace MyCraft
             while (0 < editsQueue.Count)
             {
                 var e = editsQueue.Dequeue().ConvertInChunkCoord();
+                if (this[e.pos] != 0 && e.block == 0)
+                    DropItem(e);
+
                 this[e.pos] = e.block;
             }
 

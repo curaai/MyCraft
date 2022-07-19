@@ -37,7 +37,7 @@ namespace MyCraft.Rendering
                 }
             }
         }
-        public (List<Vector3>, List<int>, List<Vector2>) renderElements => (verts, tris, uvs);
+        public (Vector3[], int[], Vector2[]) renderElements => (verts.ToArray(), tris.ToArray(), uvs.ToArray());
 
         public struct Element
         {
