@@ -10,7 +10,6 @@ namespace MyCraft.Rendering
 {
     public class ChunkRenderer
     {
-        private World world;
         public Chunk chunk;
         private GameObject chunkObj;
 
@@ -20,27 +19,17 @@ namespace MyCraft.Rendering
         private List<int> tris = new List<int>();
         private List<int> transparentTris = new List<int>();
         private List<Vector2> uvs = new List<Vector2>();
-        private MeshRenderer meshRenderer;
-        private MeshFilter meshFilter;
-        private MeshCollider meshCollider;
 
-        // TODO: Only Debug, remove after
-        private static byte[] debugOreTargets = new byte[] { 14, 15, 16, 56 };
+        private MeshFilter meshFilter;
 
         public bool ThreadLocked { get; private set; }
 
         public ChunkRenderer(Chunk _chunk, BlockTable _blockTable)
         {
             chunk = _chunk;
-            chunkObj = chunk.gameObj;
-            meshRenderer = chunkObj.AddComponent<MeshRenderer>();
-            meshFilter = chunkObj.AddComponent<MeshFilter>();
-            meshCollider = chunkObj.AddComponent<MeshCollider>();
-            meshRenderer.materials = new Material[] { _blockTable.material, _blockTable.transparentMaterial };
-
             blockTable = _blockTable;
 
-            world = GameObject.Find("World").GetComponent<World>();
+            meshFilter = chunk.GetComponent<MeshFilter>();
         }
 
         public void RefreshMesh()
@@ -48,24 +37,16 @@ namespace MyCraft.Rendering
             if (!chunk.Initialized)
                 return;
 
-            ThreadLocked = true;
-
             clearMesh();
 
             foreach (var pos in CoordHelper.ChunkIndexIterator())
             {
                 var block = chunk[pos];
-                if (world.BlockTable[block].id != 0)
+                if (blockTable[block].id != 0)
                     appendBlockMesh(pos, block);
             }
 
-            lock (world.ChunksToDraw)
-            {
-                if (!world.ChunksToDraw.Contains(this))
-                    world.ChunksToDraw.Enqueue(this);
-            }
-
-            ThreadLocked = false;
+            CreateMesh();
         }
 
         private void appendBlockMesh(Vector3Int inChunkCoord, byte blockId)
@@ -74,9 +55,6 @@ namespace MyCraft.Rendering
             for (int faceIdx = 0; faceIdx < VoxelData.FACE_COUNT && !isAppendMesh; faceIdx++)
                 if (!chunk.IsSolidBlock(inChunkCoord + VoxelData.SurfaceNormal[faceIdx]))
                     isAppendMesh = true;
-
-            if (debugOreTargets.Contains(blockId))
-                isAppendMesh = true;
 
             if (isAppendMesh)
             {
@@ -98,23 +76,19 @@ namespace MyCraft.Rendering
         {
             Debug.Log($"{chunk.coord}: Create mesh");
 
-            ThreadLocked = true;
-
             Mesh mesh = new Mesh();
 
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.vertices = verts.ToArray();
             mesh.uv = uvs.ToArray();
 
-            mesh.subMeshCount = 2;
+            mesh.subMeshCount = 4;
             mesh.SetTriangles(tris.ToArray(), 0);
             mesh.SetTriangles(transparentTris.ToArray(), 1);
 
             mesh.RecalculateNormals();
 
             meshFilter.mesh = mesh;
-
-            ThreadLocked = false;
         }
 
         private void clearMesh()

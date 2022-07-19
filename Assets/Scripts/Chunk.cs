@@ -11,13 +11,12 @@ using MyCraft.Environment;
 
 namespace MyCraft
 {
-    public class Chunk
+    public class Chunk : MonoBehaviour
     {
         public static readonly Vector2Int ChunkShape = new Vector2Int(16, 128);
         public byte[,,] BlockMap = new byte[ChunkShape.x, ChunkShape.y, ChunkShape.x];
 
         protected World world;
-        public GameObject gameObj;
 
         public static BiomeAttribute[] biomes;
 
@@ -25,59 +24,38 @@ namespace MyCraft
         public Vector3Int chunkWorldPos { get; private set; }
         public bool Initialized { get; private set; }
 
-        private ChunkRenderer renderer;
+        private ChunkRenderer chunkRenderer;
 
         private Queue<BlockEdit> editsQueue = new Queue<BlockEdit>();
-        public bool ThreadLocked = false;
 
-        public Chunk(ChunkCoord _coord, World _world)
+        public void Initialize(ChunkCoord coord)
         {
-            world = _world;
-            coord = _coord;
+            world = GetComponentInParent<World>();
 
-            gameObj = new GameObject();
-            gameObj.name = $"Chunk [{coord.x}, {coord.z}]";
-            gameObj.transform.SetParent(world.transform);
-            gameObj.transform.position = new Vector3(coord.x * ChunkShape.x, 0f, coord.z * ChunkShape.x);
-            chunkWorldPos = Vector3Int.CeilToInt(gameObj.transform.position);
+            name = $"Chunk [{coord.x}, {coord.z}]";
+            transform.SetParent(world.transform);
+            transform.position = new Vector3(coord.x * ChunkShape.x, 0f, coord.z * ChunkShape.x);
+            chunkWorldPos = Vector3Int.CeilToInt(transform.position);
 
-            Initialized = false;
-            renderer = new ChunkRenderer(this, world.BlockTable);
-        }
-
-        public void Init()
-        {
             void GenerateBlocks()
             {
                 foreach (var pos in CoordHelper.ChunkIndexIterator())
                     BlockMap[pos.x, pos.y, pos.z] = GenerateBlock(pos);
             }
 
-            if (Initialized)
-                return;
-
             GenerateBlocks();
             Initialized = true;
 
-            _update();
+            chunkRenderer = new ChunkRenderer(this, world.BlockTable);
+            chunkRenderer.RefreshMesh();
         }
 
         public void Update()
         {
-            if (ThreadLocked)
-                return;
-
-            ThreadLocked = true;
-            var thread = new Thread(new ThreadStart(_update));
-            thread.Start();
-        }
-
-        public void _update()
-        {
             if (!Initialized)
                 return;
 
-            Debug.Log($"{coord}: Updated stared");
+            var needMeshUpdate = editsQueue.Count != 0;
 
             while (0 < editsQueue.Count)
             {
@@ -85,9 +63,8 @@ namespace MyCraft
                 this[e.pos] = e.block;
             }
 
-            renderer.RefreshMesh();
-
-            ThreadLocked = false;
+            if (needMeshUpdate)
+                chunkRenderer.RefreshMesh();
         }
 
         public byte GenerateBlock(Vector3Int blockChunkPos)
@@ -148,7 +125,5 @@ namespace MyCraft
         }
 
         public byte this[Vector3Int v] { get => BlockMap[v.x, v.y, v.z]; protected set => BlockMap[v.x, v.y, v.z] = value; }
-        public bool Activated { get => gameObj.activeSelf; set => gameObj.SetActive(value); }
-        public bool IsEditable => Initialized && !ThreadLocked && !renderer.ThreadLocked;
     }
 }

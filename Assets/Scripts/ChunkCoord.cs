@@ -1,5 +1,8 @@
+using System;
+
 namespace MyCraft
 {
+    [Serializable]
     public readonly struct ChunkCoord
     {
         public readonly int x;

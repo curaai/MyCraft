@@ -16,11 +16,14 @@ namespace MyCraft
 
         [SerializeField] public Transform player;
         [SerializeField] private GameObject debugScreen;
+        [SerializeField] private GameObject chunkPrefab;
 
         public BlockTable BlockTable;
         public EntityTable EntityTable;
 
         public Chunk[,] chunks = new Chunk[WidthByChunk, WidthByChunk];
+        public Dictionary<ChunkCoord, Chunk> _chunks = new Dictionary<ChunkCoord, Chunk>();
+
         private BiomeAttribute[] biomes;
         private Queue<BlockEdit> blockEditQueue = new Queue<BlockEdit>();
         private List<Chunk> chunksToUpdate = new List<Chunk>();
@@ -67,18 +70,6 @@ namespace MyCraft
 
             if (0 < blockEditQueue.Count)
                 ApplyBlockModification();
-
-            if (0 < chunksToUpdate.Count)
-                UpdateChunks();
-
-            if (0 < ChunksToDraw.Count)
-            {
-                lock (ChunksToDraw)
-                {
-                    if (ChunksToDraw.Peek().chunk.IsEditable)
-                        ChunksToDraw.Dequeue().CreateMesh();
-                }
-            }
         }
 
         private void fetchPlayerInputs()
@@ -98,29 +89,11 @@ namespace MyCraft
                 var chunkCoord = CoordHelper.ToChunkCoord(mod.pos).Item1;
                 var chunk = GetChunk(chunkCoord);
                 if (chunk == null)
-                    chunk = chunks[chunkCoord.x, chunkCoord.z] = new Chunk(chunkCoord, this);
-                if (!chunksToUpdate.Contains(chunk))
-                    chunksToUpdate.Add(chunk);
+                    // chunk = chunks[chunkCoord.x, chunkCoord.z] = new Chunk(chunkCoord, this);
+                    if (!chunksToUpdate.Contains(chunk))
+                        chunksToUpdate.Add(chunk);
 
                 GetChunk(chunkCoord).EnqueueEdit(mod);
-            }
-        }
-
-        public void UpdateChunks()
-        {
-            int idx = 0;
-            while (idx < chunksToUpdate.Count - 1)
-            {
-                if (chunksToUpdate[idx].IsEditable)
-                {
-                    chunksToUpdate[idx].Update();
-                    chunksToUpdate.RemoveAt(idx);
-                    return;
-                }
-                else
-                {
-                    idx++;
-                }
             }
         }
 
@@ -151,7 +124,17 @@ namespace MyCraft
             var b = new Vector3Int(x, y, z);
             return (a, b);
         }
-        public Chunk GetChunk(ChunkCoord coord) => chunks[coord.x, coord.z];
+        public Chunk GetChunk(ChunkCoord coord)
+        {
+            if (!_chunks.ContainsKey(coord))
+            {
+                var chunkObj = Instantiate(chunkPrefab, Vector3.zero, Quaternion.identity, transform);
+                _chunks[coord] = chunkObj.GetComponent<Chunk>();
+                chunkObj.SetActive(false);
+            }
+
+            return _chunks[coord];
+        }
         public bool IsSolidBlock(in Vector3 worldPos)
         {
             var pos = CoordHelper.ToChunkCoord(worldPos);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using MyCraft.Utils;
 
@@ -25,22 +26,15 @@ namespace MyCraft
         public void Start()
         {
             world = GameObject.Find("World").GetComponent<World>();
-            void InitOnFirst()
-            {
-                CreateAdjacentChunk();
-                while (0 < toInitQueue.Count)
-                    toInitQueue.Dequeue().Init();
-            }
 
-            InitOnFirst();
+            CreateAdjacentChunk();
         }
 
         public void Update()
         {
             if (playerCoord != lastPlayerCoord)
                 CreateAdjacentChunk();
-            if (0 < toInitQueue.Count)
-                InitChunks();
+
             lastPlayerCoord = playerCoord;
         }
 
@@ -51,49 +45,30 @@ namespace MyCraft
 
             activatedList.Clear();
 
-            var targets = adjacentChunks();
-            foreach (var chunk in targets)
+            var targets = adjacentChunkCoords();
+            foreach (var coord in targets)
             {
-                if (!chunk.Activated)
-                    chunk.Activated = true;
+                var chunk = world.GetChunk(coord);
+
                 if (!chunk.Initialized)
-                    toInitQueue.Enqueue(chunk);
+                    chunk.Initialize(coord);
+
+                if (!chunk.gameObject.activeSelf)
+                    chunk.gameObject.SetActive(true);
 
                 activatedList.Add(chunk);
                 toDeactivate.Remove(chunk);
             }
 
             foreach (var chunk in toDeactivate)
-                chunk.Activated = false;
+                chunk.gameObject.SetActive(false);
         }
 
-        void InitChunks()
+        private List<ChunkCoord> adjacentChunkCoords()
         {
-            while (0 < toInitQueue.Count)
-            {
-                var chunk = toInitQueue.Dequeue();
-                chunk.Init();
-            }
-        }
-
-        private List<Chunk> adjacentChunks()
-        {
-            var dist = ViewDistanceInChunk;
-            (int x, int z) viewMin = (playerCoord.x - dist, playerCoord.z - dist);
-            (int x, int z) viewMax = (playerCoord.x + dist, playerCoord.z + dist);
-            var res = new List<Chunk>();
-
-            for (int x = viewMin.x; x < viewMax.x; x++)
-            {
-                for (int z = viewMin.z; z < viewMax.z; z++)
-                {
-                    ref Chunk chunk = ref world.chunks[x, z];
-                    if (chunk == null)
-                        chunk = new Chunk(new ChunkCoord(x, z), world);
-                    res.Add(chunk);
-                }
-            }
-            return res;
+            return (from x in Enumerable.Range(playerCoord.x - ViewDistanceInChunk, ViewDistanceInChunk * 2)
+                    from z in Enumerable.Range(playerCoord.z - ViewDistanceInChunk, ViewDistanceInChunk * 2)
+                    select new ChunkCoord(x, z)).ToList();
         }
     }
 }

@@ -1704,6 +1704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1621593439}
   debugScreen: {fileID: 211893575}
+  chunkPrefab: {fileID: 5696102461972877986, guid: 821232cdfb122ff40b70badc520291fe, type: 3}
 --- !u!4 &554214901
 Transform:
   m_ObjectHideFlags: 0
