@@ -22,6 +22,9 @@ namespace MyCraft.Players
 
         private void Update()
         {
+            if (GameObject.Find("World").GetComponent<World>().InUI)
+                return;
+
             mouseH = Input.GetAxis("Mouse X");
             mouseV = Input.GetAxis("Mouse Y");
 
