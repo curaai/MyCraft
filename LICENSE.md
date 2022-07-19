@@ -12,6 +12,11 @@ This product contain the following open source software:
     - Purpose: Code reference
     - License: None
     - Source: https://github.com/b3agz/Code-A-Game-Like-Minecraft-In-Unity
+3. Minecraft Resource Pack Assets
+    - version: 1.19.1
+    - Purpose: use entity model & texture
+    - License: https://texture-packs.com/terms-and-conditions/
+    - Source: https://texture-packs.com/resourcepack/default-pack/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
